@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-BackElectromaniaApplication<Back_Electromania>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.W.M.Back_Electromania.BackElectromaniaApplication",
+            "projectName": "Back_Electromania",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
