@@ -9,6 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+enum Rol {
+    ADMIN, CLIENTE
+}
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,5 +27,6 @@ public class User {
     private String password;
     private String nit_ci;
     private String razon_social;
-    private String rol;
+    private Boolean activo;
+    private Rol rol;
 }

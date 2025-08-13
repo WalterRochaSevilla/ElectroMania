@@ -8,7 +8,6 @@ public class BackElectromaniaApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BackElectromaniaApplication.class, args);
-		System.out.println("My App Springboot");
 	}
 
 }
