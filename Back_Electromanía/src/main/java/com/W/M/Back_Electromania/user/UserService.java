@@ -1,4 +1,5 @@
 package com.W.M.Back_Electromania.user;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.W.M.Back_Electromania.utils.PasswordUtils;
@@ -14,24 +15,24 @@ public class UserService {
     public User saveUser(User user){
         return userRepository.save(user);
     }
-    public User createUser(UserCreateRequest user) {
+    public ResponseEntity<User> createUser(UserCreateRequest user) {
         user.setPassword(PasswordUtils.encodePassword(user.getPassword()));
-        return user == null ? null : saveUser(user.toUser());
+        return user == null ? ResponseEntity.notFound().build() : ResponseEntity.ok().body(saveUser(user.toUser()));
     }
-    public User updateUser(UserUpdateRequest user) {
+    public ResponseEntity<User> updateUser(UserUpdateRequest user) {
         User existingUser = userRepository.findByEmail(user.getEmail());
-        return existingUser == null ? null : saveUser(user.toUser(existingUser));
+        return existingUser == null ? ResponseEntity.notFound().build() :ResponseEntity.ok().body(saveUser(user.toUser(existingUser)));
     }
-    public List<User> getAllUsers() { 
-        return userRepository.findAll();
+    public ResponseEntity<List<User>> getAllUsers() { 
+        return userRepository.findAll() == null ? ResponseEntity.notFound().build() : ResponseEntity.ok().body(userRepository.findAll());
     }
-    public User getUserByNit(String nit) {
-        return userRepository.findByNit(nit);
+    public ResponseEntity<User> getUserByNit(String nit) {
+        return userRepository.findByNit(nit) == null ? ResponseEntity.notFound().build() : ResponseEntity.ok().body(userRepository.findByNit(nit));
     }
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public ResponseEntity<User> getUserByEmail(String email) {
+        return userRepository.findByEmail(email) == null ? ResponseEntity.notFound().build() : ResponseEntity.ok().body(userRepository.findByEmail(email));
     }
-    public List<User> getUserByRol(String rol) {
-        return userRepository.findByRol(rol);
+    public ResponseEntity<List<User>> getUserByRol(String rol) {
+        return userRepository.findByRol(rol) == null ? ResponseEntity.notFound().build() : ResponseEntity.ok().body(userRepository.findByRol(rol));
     }
 }
