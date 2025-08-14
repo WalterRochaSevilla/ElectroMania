@@ -1,1 +1,31 @@
-<p>home works!</p>
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>Bienvenido a Electromanía</h1>
+    <p>Encuentra lo último en tecnología al mejor precio</p>
+    <button class="btn-primary" routerLink="/productos">Ver catálogo</button>
+  </div>
+</section>
+
+<!-- Search & Filters -->
+<section class="filters container">
+  <input type="text" placeholder="Buscar productos..." class="search-input" />
+  <select class="filter-select">
+    <option value="">Categorías</option>
+    <option value="laptops">Laptops</option>
+    <option value="smartphones">Smartphones</option>
+    <option value="accesorios">Accesorios</option>
+  </select>
+</section>
+
+<!-- Product Grid -->
+<section class="product-grid container">
+  <div class="product-card" *ngFor="let p of productos">
+    <img [src]="p.imagen" [alt]="p.nombre" />
+    <div class="product-info">
+      <h3>{{ p.nombre }}</h3>
+      <p class="price">Bs. {{ p.precio }}</p>
+      <button class="btn-secondary" (click)="agregarAlCarrito(p)">Agregar al carrito</button>
+    </div>
+  </div>
+</section>

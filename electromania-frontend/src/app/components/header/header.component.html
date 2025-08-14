@@ -1,0 +1,13 @@
+<header class="main-header">
+  <div class="logo" (click)="goHome()">Electromanía</div>
+
+  <div class="search-bar">
+    <input type="text" placeholder="Buscar productos..." [(ngModel)]="searchTerm" (keyup.enter)="search()" />
+    <button (click)="search()">🔍</button>
+  </div>
+
+  <nav class="nav-links">
+    <a routerLink="/login">Iniciar sesión</a>
+    <a routerLink="/registro">Registrarse</a>
+  </nav>
+</header>
