@@ -29,6 +29,11 @@ public class UserController {
     public void updateUserNit(@RequestBody UserUpdateNitRequest user) {
         userService.updateUser(user);
     }
+    @PostMapping("/update-password")
+    public User updateUserPassword(@RequestBody UserUpdatePasswordRequest user) {
+        return userService.updateUser(user);
+    }
+    
     @GetMapping("/all")
     public List<User> getAll() {
         return userService.getAllUsers();
