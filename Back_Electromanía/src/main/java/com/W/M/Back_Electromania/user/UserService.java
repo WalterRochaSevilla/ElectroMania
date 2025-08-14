@@ -11,10 +11,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    public User saveUser(UserCreateRequest user) {
+    public User saveUser(User user){
+        return userRepository.save(user);
+    }
+    public User createUser(UserCreateRequest user) {
         user.setPassword(PasswordUtils.encodePassword(user.getPassword()));
-        return user == null ? null : 
-        userRepository.save(user.toUser());
+        return user == null ? null : saveUser(user.toUser());
+    }
+    public User updateUser(UserUpdateRequest user) {
+        User existingUser = userRepository.findByEmail(user.getEmail());
+        return existingUser == null ? null : saveUser(user.toUser(existingUser));
     }
     public List<User> getAllUsers() { 
         return userRepository.findAll();

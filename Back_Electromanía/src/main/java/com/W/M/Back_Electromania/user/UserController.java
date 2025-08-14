@@ -19,11 +19,15 @@ public class UserController {
     private final UserService userService;
     @PostMapping("/create")
     public void createUser(@RequestBody UserCreateRequest user) {
-        userService.saveUser(user);
+        userService.createUser(user);
     }
     @PostMapping("/create-admin")
     public void createAdmin(@RequestBody AdminCreateRequest user) {
-        userService.saveUser(user);
+        userService.createUser(user);
+    }
+    @PostMapping("/update-nit")
+    public void updateUserNit(@RequestBody UserUpdateNitRequest user) {
+        userService.updateUser(user);
     }
     @GetMapping("/all")
     public List<User> getAll() {
