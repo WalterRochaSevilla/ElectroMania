@@ -14,11 +14,13 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
     private final UserRepository userRepository;
     public User saveUser(User user){
-        if(userRepository.findByEmail(user.getEmail()) != null)
-            throw new EmailAlreadyExistException("Email already exists");
         return userRepository.save(user);
     }
+    public boolean existsByEmail(String email) {
+        return userRepository.findByEmail(email) != null;
+    }
     public ResponseEntity<User> createUser(UserCreateRequest user) {
+        if (existsByEmail(user.getEmail())) throw new EmailAlreadyExistException("El email ya existe");
         user.setPassword(PasswordUtils.encodePassword(user.getPassword()));
         return user == null ? ResponseEntity.notFound().build() : ResponseEntity.ok().body(saveUser(user.toUser()));
     }

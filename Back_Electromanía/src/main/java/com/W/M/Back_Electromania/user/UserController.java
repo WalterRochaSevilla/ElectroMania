@@ -2,6 +2,7 @@ package com.W.M.Back_Electromania.user;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,7 +35,7 @@ public class UserController {
         userService.updateUser(user);
     }
     @PostMapping("/update-password")
-    public ResponseEntity<User> updateUserPassword( @RequestBody UserUpdatePasswordRequest user) {
+    public ResponseEntity<User> updateUserPassword(@Valid @RequestBody UserUpdatePasswordRequest user) {
         return userService.updateUser(user);
     }
     

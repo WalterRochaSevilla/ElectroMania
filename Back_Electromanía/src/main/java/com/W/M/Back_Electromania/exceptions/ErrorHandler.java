@@ -17,18 +17,23 @@ public class ErrorHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(Exception ex) {
         ErrorResponse response = new ErrorResponse();
-        response.setStatus(getHttpStatus(ex));
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
         response.setMessage("Error de validación");
         response.setErrors(saveError(ex));
-        return ResponseEntity.status(response.getStatus()).body(response);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+
     public Map<String,String> saveError(Exception ex) {
-        if( ex instanceof EmailAlreadyExistException){
+        if( ex instanceof FieldException){
+            FieldException fe = (FieldException) ex;
             Map<String, String> errors = new HashMap<>();
-            errors.put("email", ex.getMessage());
+            errors.put(fe.getField(), ex.getMessage());
             return errors;
-        } else {
+        } else if(ex instanceof MethodArgumentNotValidException){
+            return ((MethodArgumentNotValidException) ex).getBindingResult().getFieldErrors().stream().collect(HashMap::new, (map, error) -> map.put(error.getField(), error.getDefaultMessage()), HashMap::putAll);
+        }
+        else {
             Map<String, String> errors = new HashMap<>();
             errors.put("error", ex.getMessage());
             return errors;
