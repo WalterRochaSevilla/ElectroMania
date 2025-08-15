@@ -1,7 +1,8 @@
 package com.W.M.Back_Electromania.user;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Getter;
@@ -12,21 +13,18 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserCreateRequest {
-    @NotNull
-    @NotEmpty
+    @NotBlank(message = "Nombre is required")
     private String nombre;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email should be valid")
     private String email;
-    @NotNull
-    @NotEmpty
+    @NotBlank(message = "Password is required")
+    @Size(min=8,max=20, message = "Password must be at least 8 characters long and at most 20 characters long")
     private String password;
-    @NotNull
-    @NotEmpty
+    @NotBlank(message = "NIT/CI is required")
     private String nit_ci;
-    @NotNull
-    @NotEmpty
+    @NotBlank(message = "Razon Social is required")
     private String razon_social;
     public User toUser(){
         return new User(null,nombre, email, password, nit_ci, razon_social, true, Rol.CLIENTE);

@@ -2,6 +2,7 @@ package com.W.M.Back_Electromania.user;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.W.M.Back_Electromania.exceptions.EmailAlreadyExistException;
 import com.W.M.Back_Electromania.utils.PasswordUtils;
 
 import java.util.List;
@@ -13,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
     private final UserRepository userRepository;
     public User saveUser(User user){
+        if(userRepository.findByEmail(user.getEmail()) != null)
+            throw new EmailAlreadyExistException("Email already exists");
         return userRepository.save(user);
     }
     public ResponseEntity<User> createUser(UserCreateRequest user) {

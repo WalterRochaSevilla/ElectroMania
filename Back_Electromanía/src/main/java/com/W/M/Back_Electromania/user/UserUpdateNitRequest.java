@@ -1,18 +1,15 @@
 package com.W.M.Back_Electromania.user;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class UserUpdateNitRequest extends UserUpdateRequest{
-    @NotNull
-    @NotEmpty
+    @NotBlank(message = "NIT/CI is required")
     private String nit_ci;
-    @NotNull
-    @NotEmpty
+    @NotBlank(message = "Razon Social is required")
     private String razon_social;
     @Override
     public User toUser(User user) {
