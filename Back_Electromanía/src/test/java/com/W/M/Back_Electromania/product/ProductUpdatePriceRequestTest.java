@@ -1,20 +1,28 @@
 package com.W.M.Back_Electromania.product;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @DisplayName("Test de solicitud de actualización de precio de producto")
 class ProductUpdatePriceRequestTest {
+    @Autowired
+    private Validator validator;
     @Test
     @DisplayName("Deberia devolver una excepcion null si el id es nulo")
     void deberiaFallarSiElIdEsNulo() {
-        assertThatThrownBy(()-> new ProductUpdatePriceRequest(null, 1000.0))
+        assertThatThrownBy(() -> new ProductUpdatePriceRequest(null, 1000.0))
         .isInstanceOf(NullPointerException.class)
         .hasMessage("El id no puede ser nulo");
     }
@@ -22,9 +30,8 @@ class ProductUpdatePriceRequestTest {
     @Test
     @DisplayName("Deberia devolver una excepcion null si el precio es nulo")
     void deberiaFallarSiElPrecioEsNulo() {
-        assertThatThrownBy(()-> new ProductUpdatePriceRequest(1L, null))
+        assertThatThrownBy(() -> new ProductUpdatePriceRequest(1L, null))
         .isInstanceOf(NullPointerException.class)
         .hasMessage("El precio no puede ser nulo");
     }
-
 }
