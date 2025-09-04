@@ -34,4 +34,11 @@ class ProductUpdatePriceRequestTest {
         .isInstanceOf(NullPointerException.class)
         .hasMessage("El precio no puede ser nulo");
     }
+    @Test
+    @DisplayName("Deberia devolver una excepcion si el precio es negativo")
+    void deberiaFallarSiElPrecioEsNegativo() {
+        assertThatThrownBy(() -> new ProductUpdatePriceRequest(1L, -1000.0))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("El precio no puede ser negativo");
+    }
 }
