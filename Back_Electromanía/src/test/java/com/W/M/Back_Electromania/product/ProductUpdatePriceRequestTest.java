@@ -18,6 +18,13 @@ class ProductUpdatePriceRequestTest {
         .isInstanceOf(NullPointerException.class)
         .hasMessage("El id no puede ser nulo");
     }
-    
+
+    @Test
+    @DisplayName("Deberia devolver una excepcion null si el precio es nulo")
+    void deberiaFallarSiElPrecioEsNulo() {
+        assertThatThrownBy(()-> new ProductUpdatePriceRequest(1L, null))
+        .isInstanceOf(NullPointerException.class)
+        .hasMessage("El precio no puede ser nulo");
+    }
 
 }
