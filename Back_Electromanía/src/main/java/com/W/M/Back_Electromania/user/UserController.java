@@ -32,11 +32,11 @@ public class UserController {
     }
     @PostMapping("/update-nit")
     public void updateUserNit(@RequestBody UserUpdateNitRequest user) {
-        userService.updateUser(user);
+        userService.updateUser(new UserUpdateRequestHandler(userService,user));
     }
     @PostMapping("/update-password")
     public ResponseEntity<User> updateUserPassword(@Valid @RequestBody UserUpdatePasswordRequest user) {
-        return userService.updateUser(user);
+        return userService.updateUser(new UserUpdateRequestHandler(userService,user));
     }
     
     @GetMapping("/all")

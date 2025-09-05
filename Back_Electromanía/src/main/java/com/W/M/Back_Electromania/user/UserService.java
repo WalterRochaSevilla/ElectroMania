@@ -23,9 +23,9 @@ public class UserService {
         if (existsByEmail(user.getEmail())) throw new EmailAlreadyExistException("El email ya existe");
         return user == null ? ResponseEntity.notFound().build() : ResponseEntity.ok().body(saveUser(user.toUser()));
     }
-    public ResponseEntity<User> updateUser(UserUpdateRequest user) {
-        User existingUser = userRepository.findByEmail(user.getEmail());
-        return existingUser == null ? ResponseEntity.notFound().build() :ResponseEntity.ok().body(saveUser(user.toUser(existingUser)));
+    public ResponseEntity<User> updateUser(UserUpdateRequestHandler handler) {
+        User existingUser = handler.toUser();
+        return existingUser == null ? ResponseEntity.notFound().build() :ResponseEntity.ok().body(saveUser(handler.toUser()));
     }
     public ResponseEntity<List<User>> getAllUsers() { 
         return userRepository.findAll() == null ? ResponseEntity.notFound().build() : ResponseEntity.ok().body(userRepository.findAll());
