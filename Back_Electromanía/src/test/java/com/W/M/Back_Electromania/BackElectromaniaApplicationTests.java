@@ -9,5 +9,12 @@ class BackElectromaniaApplicationTests {
 	@Test
 	void contextLoads() {
 	}
+	//[ ]:Add tests
 
+	//[ ]: Test for User Package
+	//          [ ] Test Create User
+	//[ ]: Test for Product Package
+	//          [ ] Test Create Product
+
+	//TODO: Add integration tests
 }

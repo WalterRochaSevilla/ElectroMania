@@ -24,11 +24,11 @@ public class UserController {
     private final UserService userService;
     @PostMapping("/create")
     public void createUser(@Validated @RequestBody UserCreateRequest user) {
-        userService.createUser(user);
+        userService.createUser(new CreateUserRequestHandler(user));
     }
     @PostMapping("/create-admin")
     public void createAdmin(@RequestBody AdminCreateRequest user) {
-        userService.createUser(user);
+        userService.createUser(new CreateUserRequestHandler(user));
     }
     @PostMapping("/update-nit")
     public void updateUserNit(@RequestBody UserUpdateNitRequest user) {
