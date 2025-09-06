@@ -19,5 +19,27 @@ public class UpdateUserRequestTest {
         .isInstanceOf(NullPointerException.class)
         .hasMessage("El email no puede ser nulo");
     }
-    
+
+    @Test
+    @DisplayName("Deberia devolver una excepcion si la password es nulo al actualizar la contraseña")
+    void deberiaDevolverUnaExcepcionSiLaPasswordEsNulo() {
+        assertThatThrownBy(() -> new UserUpdatePasswordRequest("email",null))
+        .isInstanceOf(NullPointerException.class)
+        .hasMessage("El password no puede ser nulo");
+    }
+
+    @Test
+    @DisplayName("Deberia devolver una excepcion si el correo electronico no es valido al actualizar el nit")
+    void deberiaDevolverUnaExcepcionSiElCorreoElectronicoNoEsValido() {
+        assertThatThrownBy(() -> new UserUpdateNitRequest("email",null,"razon_social"))
+        .isInstanceOf(NullPointerException.class)
+        .hasMessage("El nit no puede ser nulo");
+    }
+    @Test
+    @DisplayName("Deberia devolver una excepcion si la razon social no es valida al actualizar el nit")
+    void deberiaDevolverUnaExcepcionSiLaRazonSocialNoEsValida() {
+        assertThatThrownBy(() -> new UserUpdateNitRequest("email","nit_ci",null))
+        .isInstanceOf(NullPointerException.class)
+        .hasMessage("La razon social no puede ser nulo");
+    }
 }
