@@ -14,7 +14,7 @@ export class ProductMapper implements Mapper<ProductModel,Product,CreateProductR
         model.price = entity.price;
         model.stock = entity.stock;
         model.state = entity.state;
-        model.images = entity.productImages.map(image => image.image);
+        model.images =entity.productImages != null ? entity.productImages.map(image => image.image): [];
         return model;
     }
 

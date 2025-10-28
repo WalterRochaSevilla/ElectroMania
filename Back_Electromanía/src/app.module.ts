@@ -22,14 +22,14 @@ import Configuration from './config/Configuration';
     }),
     TypeOrmModule.forRootAsync({
       useFactory: (config = Configuration) => ({
-        type: 'mysql',
+        type: config().database.type,
         host: config().database.host,
         port: config().database.port,
         username: config().database.username,
         password: config().database.password,
         database: config().database.name,
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true,
+        synchronize: config().database.syncronize,
         autoLoadEntities: true
       }),
     }),
