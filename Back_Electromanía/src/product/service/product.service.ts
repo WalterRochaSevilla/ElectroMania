@@ -1,87 +1,98 @@
-import { Injectable } from '@nestjs/common';
-import { Product } from '../entity/Product.entity';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '../../prisma/service/prisma.service';
 import { ProductMapper } from '../mapper/Product.mapper';
-<<<<<<< HEAD
-import { ProductImageMapper } from '../mapper/ProductImage.mapper';
-=======
-import { ProductModel } from '../model/Product.model';
-import { CreateProductRequestModel } from '../model/CreateProductRequest.model';
-import { In, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { RegisterProductImageRequestModel } from '../model/RegisterProductImageRequest.model';
 import { ProductImageMapper } from '../mapper/ProductImage.mapper';
 import { PageProductMapper } from '../mapper/PageProduct.mapper';
+import { ProductModel } from '../model/Product.model';
+import { CreateProductRequestModel } from '../model/CreateProductRequest.model';
+import { RegisterProductImageRequestModel } from '../model/RegisterProductImageRequest.model';
 import { PageProductResponseModel } from '../model/PageProductResponse.model';
->>>>>>> parent of d53a59b (Migration: Migrates Db to postgress and prisma)
-import { ProductImage } from '../entity/ProdctImage.entity';
-
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ProductService {
-    productMapper = new ProductMapper();
-    productImageMapper= new ProductImageMapper();
-<<<<<<< HEAD
-=======
-    pageProductMapper = new PageProductMapper();
->>>>>>> parent of d53a59b (Migration: Migrates Db to postgress and prisma)
-    constructor(
-        @InjectRepository(Product)
-        private readonly productRepository: Repository<Product>,
-        @InjectRepository(ProductImage)
-        private readonly productImageRepository: Repository<ProductImage>
-    ){
+  private readonly productMapper = new ProductMapper();
+  private readonly productImageMapper = new ProductImageMapper();
+  private readonly pageProductMapper = new PageProductMapper();
+
+  constructor(private readonly prisma: PrismaService) {}
+
+  async createProduct(dto: CreateProductRequestModel): Promise<ProductModel> {
+    const data = this.productMapper.toEntity(dto);
+    const product = await this.prisma.product.create({ data });
+    return this.productMapper.toModel(product);
+  }
+
+  async registerProductImage(
+    dto: RegisterProductImageRequestModel,
+  ): Promise<ProductModel> {
+    const product = await this.prisma.product.findUnique({
+      where: { product_name: dto.name },
+      include: { productImages: true },
+    });
+
+    if (!product) {
+      throw new NotFoundException('Product not found');
     }
 
+    const imageData = this.productImageMapper.toEntity(dto, product);
 
-    registerProduct(product: Product): Promise<Product> {
-        return this.productRepository.save(product);
-    }
+    await this.prisma.productImage.create({ data: imageData });
 
-    createProduct(product: CreateProductRequestModel): Promise<Product> {
-        const entity = this.productMapper.toEntity(product);
-        return this.registerProduct(entity);
-    }
+    const updated = await this.prisma.product.findUnique({
+      where: { product_id: product.product_id },
+      include: { productImages: true },
+    });
 
-    getAllProducts(): Promise<ProductModel[]> {
-<<<<<<< HEAD
-        return this.productRepository.find().then(products => products.map(product => this.productMapper.toModel(product)));
-=======
-        const promise = this.productRepository.find();
-        const products = promise.then(products => products.map(product => this.productMapper.toModel(product)));
-        return products;
-    }
+    return this.productMapper.toModel(updated!);
+  }
+
+  async getAllProducts(): Promise<ProductModel[]> {
+    const products = await this.prisma.product.findMany({
+      include: { productImages: true },
+    });
+    return products.map((p) => this.productMapper.toModel(p));
+  }
+
+  async getPageProduct(page: number, filter?: any): Promise<PageProductResponseModel> {
+    const take = 20;
+    const skip = (page - 1) * take;
+
+    const products = await this.getPageProductsByFilter(filter, skip, take);
+
+    return this.pageProductMapper.toResponse(page, products);
+  }
+
+  private async getPageProductsByFilter(filter: any, skip?: number, take?: number): Promise<ProductModel[]> {
+    const products = await this.prisma.product.findMany({
+      where: filter,
+      skip,
+      take,
+      include: { productImages: true },
+    });
+    return products.map((p) => this.productMapper.toModel(p));
+  }
 
 
-    getPageProduct(page: number): Promise<PageProductResponseModel> {
-        const products = this.getPage(page);
-        return products.then(products => this.pageProductMapper.toResponse(page, products));
->>>>>>> parent of d53a59b (Migration: Migrates Db to postgress and prisma)
-    }
+  async getFilterBy(filter: Prisma.ProductWhereInput): Promise<ProductModel[]> {
+    const products = await this.prisma.product.findMany({
+      where: filter,
+      include: { productImages: true },
+    });
 
-    getfilterBy(filter: any): Promise<ProductModel[]> {
-        return this.productRepository.find(filter).then(products => products.map(product => this.productMapper.toModel(product)));
-    }
-    updateProduct(product: Product): Promise<Product> {
-        return this.productRepository.save(product);
-    }
+    return products.map((p) => this.productMapper.toModel(p));
+  }
 
+  async updateProduct(
+    productId: number,
+    dto: Partial<CreateProductRequestModel>,
+  ): Promise<ProductModel> {
+    const updated = await this.prisma.product.update({
+      where: { product_id: productId },
+      data: dto,
+      include: { productImages: true },
+    });
 
-    registerProductImage(productImage: RegisterProductImageRequestModel): Promise<ProductImage> {
-        let product = this.productRepository.findOne({where: {product_name: productImage.name},relations: ['productImages']});
-        return product.then(product => {
-            if(product){
-                return this.productImageRepository.save(this.productImageMapper.toEntity(productImage,product));
-            }else{
-                throw new Error('Product Not Found');
-            }
-        });
-    }
-<<<<<<< HEAD
-=======
-    private getPage(page: number): Promise<ProductModel[]> {
-        const promise = this.productRepository.find({skip: (page - 1) * 20, take: 20});
-        const products = promise.then(products => products.map(product => this.productMapper.toModel(product)));
-        return products;
-    }
->>>>>>> parent of d53a59b (Migration: Migrates Db to postgress and prisma)
+    return this.productMapper.toModel(updated);
+  }
 }
