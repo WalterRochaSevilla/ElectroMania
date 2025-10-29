@@ -1,41 +1,42 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../prisma/service/prisma.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../entity/User.entity';
+import { Repository } from 'typeorm';
 import { PasswordService } from 'src/common/utils/password.service';
 import { UserCreateRequestModel } from '../models/UserCreateRequest.model';
 import { UserMapper } from '../mapper/User.mapper';
 import { UserModel } from '../models/User.model';
-import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UserService {
-  private readonly userMapper = new UserMapper();
+    userMapper = new UserMapper();
+    constructor(
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
+        private readonly passwordService: PasswordService
+    ){
+    }
 
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly passwordService: PasswordService,
-  ) {}
-  async findAll() {
-    return this.prisma.user.findMany();
-  }
+    async findAll(): Promise<User[]>{
+        return await this.userRepository.find();
+    }
 
-  async getAllUsers(): Promise<UserModel[]> {
-    const users = await this.findAll();
-    return users.map((u) => this.userMapper.toModel(u));
-  }
+    async getAllUsers(): Promise<UserModel[]>{
+        const users = await this.findAll();
+        return users.map(user => this.userMapper.toModel(user));
+    }
+    
+    async registerUser(user: User): Promise<User> {
+        return this.userRepository.save(user);
+    }
 
-  async registerUser(user: Prisma.UserCreateInput) {
-    return this.prisma.user.create({ data: user });
-  }
+    async createUser(user: UserCreateRequestModel): Promise<User> {
+        const password = await this.passwordService.hashPassword(user.password);
+        user.password = password;
+        return this.registerUser(this.userMapper.toEntity(user));
+    }
 
-  async createUser(user: UserCreateRequestModel) {
-    const hashedPassword = await this.passwordService.hashPassword(user.password);
-    user.password = hashedPassword;
-
-    const entity = this.userMapper.toEntity(user);
-    return this.registerUser(entity);
-  }
-
-  async filterBy(filter: Prisma.UserWhereInput) {
-    return this.prisma.user.findMany({ where: filter });
-  }
+    async filterBy(filter: any): Promise<User[]>{
+        return await this.userRepository.find(filter);
+    }
 }
