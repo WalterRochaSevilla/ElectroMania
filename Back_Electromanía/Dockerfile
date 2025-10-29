@@ -18,5 +18,5 @@ COPY . .
 # Expone el puerto de NestJS
 EXPOSE 3000
 
-# Comando de hot reload
-CMD ["pnpm", "run", "start:dev"]
+
+CMD ["pnpm","run","start:dev"]
