@@ -1,11 +1,9 @@
 import { Mapper } from "src/common/interfaces/Mapper.interface";
-import { User } from "../entity/User.entity";
 import { UserModel } from "../models/User.model";
-import { UserRole } from "../enums/UserRole.enum";
 import { UserCreateRequestModel } from "../models/UserCreateRequest.model";
-import { Cart } from "src/cart/entity/Cart.entity";
+import {User, Cart,Prisma} from "@prisma/client"
 
-export class UserMapper implements Mapper<UserModel, User,UserCreateRequestModel,Cart> {
+export class UserMapper implements Mapper<UserModel, User,Prisma.UserCreateInput,UserCreateRequestModel,Cart> {
     toModel(entity: User): UserModel {
         const model = new UserModel();
         model.uuid = entity.uuid;
@@ -16,13 +14,13 @@ export class UserMapper implements Mapper<UserModel, User,UserCreateRequestModel
         model.role = entity.role;
         return model;
     }
-    toEntity(model: UserCreateRequestModel): User {
-        const user = new User();
-        user.name = model.name;
-        user.email = model.email;
-        user.password = model.password;
-        user.nit_ci = model.nit_ci;
-        user.social_reason = model.social_reason;
-        return user;
+    toEntity(model: UserCreateRequestModel): Prisma.UserCreateInput {
+        return {
+            name: model.name,
+            email: model.email,
+            password: model.password,
+            nit_ci: model.nit_ci,
+            social_reason: model.social_reason
+        };
     }
 }
