@@ -14,7 +14,7 @@ export class ProductMapper implements Mapper<ProductModel,Product,Prisma.Product
         model.price = Number(entity.price);
         model.stock = entity.stock;
         model.state = entity.state;
-        model.images =entity.productImages ? entity.productImages.map(img => img.image) : [];;
+        model.images = entity.productImages.map(image => image.image);
         return model;
     }
 

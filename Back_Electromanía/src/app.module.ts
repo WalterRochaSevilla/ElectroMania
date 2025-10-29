@@ -16,6 +16,19 @@ import Configuration from './config/Configuration';
       load: [Configuration],
       envFilePath: '.env',
     }),
+    TypeOrmModule.forRootAsync({
+      useFactory: (config = Configuration) => ({
+        type: 'mysql',
+        host: config().database.host,
+        port: config().database.port,
+        username: config().database.username,
+        password: config().database.password,
+        database: config().database.name,
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        synchronize: true,
+        autoLoadEntities: true
+      }),
+    }),
     ProductModule
   ],
   controllers: [AppController],

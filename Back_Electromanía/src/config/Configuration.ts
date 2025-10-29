@@ -8,8 +8,7 @@ export default () => ({
         username: process.env.DATABASE_USERNAME,
         password: process.env.DATABASE_PASSWORD,
         type: process.env.DATABASE_TYPE,
-        name: process.env.DATABASE_NAME,
-        syncronize: process.env.DATABASE_STYNCHRONIZE
+        name: process.env.DATABASE_NAME
     },
     bcrypt:{
         saltRounds: parseInt(process.env.BCRYPT_SALT_ROUNDS || '10')
