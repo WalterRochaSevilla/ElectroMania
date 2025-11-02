@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ProductService } from '../service/product.service';
 import { ProductModule } from '../product.module';
 import { CreateProductRequestModel } from '../model/CreateProductRequest.model';
 import { RegisterProductImageRequestModel } from '../model/RegisterProductImageRequest.model';
+import { PageProductResponseModel } from '../model/PageProductResponse.model';
 
 @Controller('product')
 export class ProductController {
@@ -13,6 +14,11 @@ export class ProductController {
     @Get("all")
     getAllProducts(): Promise<ProductModule[]>{
         return this.productService.getAllProducts();
+    }
+
+    @Get("page/:page")
+    getPage(@Param("page") page: number): Promise<PageProductResponseModel>{
+        return this.productService.getPageProduct(page);
     }
 
     @Post("register")
