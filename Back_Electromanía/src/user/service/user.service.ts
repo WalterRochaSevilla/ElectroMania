@@ -23,16 +23,23 @@ export class UserService {
     return users.map((u) => this.userMapper.toModel(u));
   }
 
-  async registerUser(user: Prisma.UserCreateInput) {
+  async createUser(user: Prisma.UserCreateInput) {
     return this.prisma.user.create({ data: user });
   }
 
-  async createUser(user: UserCreateRequestModel) {
-    const hashedPassword = await this.passwordService.hashPassword(user.password);
-    user.password = hashedPassword;
-
-    const entity = this.userMapper.toEntity(user);
-    return this.registerUser(entity);
+  async registerUser(user: UserCreateRequestModel) {
+    try{
+      const hashedPassword = await this.passwordService.hashPassword(user.password);
+      user.password = hashedPassword;
+      const entity = this.userMapper.toEntity(user);
+      const result = await this.createUser(entity);
+      return this.userMapper.toRegisterUserModel(result);
+    }catch(error){
+      if(error.code === 'P2002'){
+        throw new Error('User already exists');
+      }
+      throw error;
+    }
   }
 
   async filterBy(filter: Prisma.UserWhereInput) {
