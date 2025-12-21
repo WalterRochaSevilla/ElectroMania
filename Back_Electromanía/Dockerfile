@@ -10,6 +10,8 @@ COPY pnpm-lock.yaml ./
 
 COPY package*.json ./
 
+COPY prisma ./prisma
+
 RUN pnpm install
 
 # Copia todo
