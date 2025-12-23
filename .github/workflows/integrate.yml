@@ -15,7 +15,7 @@ jobs:
       - name: Setup Docker Compose
         run: docker compose version
       - name: Create .env file for Docker Container
-        working-directory: ./Back_Electromanía
+        working-directory: ./
         run: |
           echo "DATABASE_HOST=${{ secrets.DATABASE_HOST }}" > .env
           echo "DATABASE_PORT=${{ secrets.DATABASE_PORT }}" >> .env
