@@ -8,9 +8,9 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UserService {
-  private readonly userMapper = new UserMapper();
 
   constructor(
+    private readonly userMapper: UserMapper,
     private readonly prisma: PrismaService,
     private readonly passwordService: PasswordService,
   ) {}
@@ -40,6 +40,14 @@ export class UserService {
       }
       throw error;
     }
+  }
+
+  async getUserByField(field: string, value: string) {
+    return this.prisma.user.findFirst({ where: { [field]: value } });
+  }
+
+  async userExistByField(field: string, value: string) {
+    return this.prisma.user.findFirst({ where: { [field]: value } }) !== null;
   }
 
   async filterBy(filter: Prisma.UserWhereInput) {

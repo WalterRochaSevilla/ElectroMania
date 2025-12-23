@@ -13,5 +13,9 @@ export default () => ({
     },
     bcrypt:{
         saltRounds: parseInt(process.env.BCRYPT_SALT_ROUNDS || '10')
+    },
+    jwtConstants:{
+        secret: process.env.JWT_SECRET,
+        expiresIn: process.env.JWT_EXPIRATION
     }
 })

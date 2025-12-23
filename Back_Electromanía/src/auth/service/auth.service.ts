@@ -1,17 +1,42 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/service/prisma.service';
 import { UserMapper } from 'src/user/mapper/User.mapper';
 import { UserCreateRequestModel } from 'src/user/models/UserCreateRequest.model';
 import { UserService } from 'src/user/service/user.service';
+import { UserLoginRequestModel } from '../models/user-login.model';
+import { PasswordService } from 'src/common/utils/password.service';
+import { JwtService } from '@nestjs/jwt';
+import { UserJwtPayloadModel } from '../models/user-jwt-payload.model';
+import { LoginResponseModel } from '../models/login-response.model';
 
 @Injectable()
 export class AuthService {
-    
-    private readonly userMapper = new UserMapper();
     constructor(
+        private readonly userMapper: UserMapper,
         private readonly prisma: PrismaService,
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        private readonly passwordService: PasswordService,
+        private readonly jwtService: JwtService
     ) {}
+
+    private async generateToken(user: UserJwtPayloadModel) {
+        return new LoginResponseModel(
+            this.jwtService.sign({user}),
+        );
+    }
+
+    async login(loginRequest:UserLoginRequestModel){
+        const user = await this.userService.getUserByField('email', loginRequest.email.value);
+        if(!user){
+            throw new UnauthorizedException("Invalid Credentials");
+        }
+        const isValidPassword = await this.passwordService.comparePassword(loginRequest.password, user.password);
+        if(!isValidPassword){
+            throw new UnauthorizedException("Invalid Credentials");
+        }
+        const payload = this.userMapper.toJwtPayloadModel(user);
+        return this.generateToken(payload);
+    }
 
     async registerUser(request: UserCreateRequestModel){
         try{
@@ -19,5 +44,8 @@ export class AuthService {
         }catch(error){
             return Promise.reject(error);
         }
+    }
+    async validateUserById(uuid:string){
+        return this.userService.getUserByField('uuid', uuid);
     }
 }

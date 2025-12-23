@@ -2,8 +2,13 @@ import { Mapper } from "src/common/interfaces/Mapper.interface";
 import { UserModel } from "../models/User.model";
 import { UserCreateRequestModel } from "../models/UserCreateRequest.model";
 import {User, Cart,Prisma} from "@prisma/client"
+import { UserRole } from "../enums/UserRole.enum";
 import { UserRegisterResponseModel } from "../models/UserRegisterResponse.model";
+import { UserJwtPayloadModel } from "src/auth/models/user-jwt-payload.model";
+import { Email } from "src/auth/models/value objects/email";
+import { Injectable } from "@nestjs/common";
 
+@Injectable()
 export class UserMapper implements Mapper<UserModel, User,Prisma.UserCreateInput,UserCreateRequestModel,Cart> {
     toModel(entity: User): UserModel {
         const model = new UserModel();
@@ -32,5 +37,12 @@ export class UserMapper implements Mapper<UserModel, User,Prisma.UserCreateInput
         model.nit_ci = entity.nit_ci;
         model.social_reason = entity.social_reason;
         return model;
+    }
+    toJwtPayloadModel(entity: User): UserJwtPayloadModel {
+        return {
+            uuid: entity.uuid,
+            email: entity.email,
+            role: UserRole[entity.role]
+        } as UserJwtPayloadModel;
     }
 }
