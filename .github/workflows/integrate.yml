@@ -1,0 +1,43 @@
+name: Construct-CI
+
+on:
+  push:
+    branches: [main,feat/backend/*]
+  pull_request:
+    branches: [main]
+permissions: write-all
+
+jobs:
+  ci_to_main:
+    runs-on: ubuntu-latest
+    environment: backend
+    steps:
+      - name: Setup Docker Compose
+        run: docker compose version
+      - name: Create .env file for Docker Container
+        working-directory: ./Back_Electromanía
+        run: |
+          echo "DATABASE_HOST=${{ secrets.DATABASE_HOST }}" > .env
+          echo "DATABASE_PORT=${{ secrets.DATABASE_PORT }}" >> .env
+          echo "DATABASE_USER=${{ secrets.DATABASE_USER }}" >> .env
+          echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
+          echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> .env
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "JWT_EXPIRATION=${{ secrets.JWT_EXPIRATION }}" >> .env
+          echo "BCRYPT_SALT_ROUNDS=${{ secrets.BCRYPT_SALT_ROUNDS }}" >> .env
+          echo "PORT=${{ secrets.PORT }}" >> .env
+      - name: Start Backend + DB with Docker Compose
+        working-directory: ./
+        run: docker compose -f docker-compose.yml up -d --build
+      - name: Run Migrations
+        working-directory: ./Back_Electromanía
+        run: pnpm prisma migrate dev
+      - name: Run Tests
+        working-directory: ./Back_Electromanía
+        run: |
+          docker exec -it electromania-backend pnpm run test
+      - name: Stop Backend + DB with Docker Compose
+        working-directory: ./
+        run: docker compose -f docker-compose.yml down -v 
+      
