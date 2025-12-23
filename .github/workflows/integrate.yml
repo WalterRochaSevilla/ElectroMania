@@ -47,7 +47,7 @@ jobs:
 
       - name: Run Prisma migrations
         working-directory: ./Back_Electromanía
-        run: pnpm prisma migrate deploy
+        run: docker exec electromania-backend pnpm prisma migrate deploy
 
       - name: Run Tests
         run: docker exec electromania-backend pnpm run test
