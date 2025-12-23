@@ -1,4 +1,4 @@
-import { ValueObject } from "src/common/interfaces/ValueObject";
+import { ValueObject } from "../../../common/interfaces/ValueObject";
 
 export class Email extends ValueObject<string> {
     public constructor(value: string) {

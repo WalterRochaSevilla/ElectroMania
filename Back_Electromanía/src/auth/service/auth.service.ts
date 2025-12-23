@@ -1,10 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/service/prisma.service';
-import { UserMapper } from 'src/user/mapper/User.mapper';
-import { UserCreateRequestModel } from 'src/user/models/UserCreateRequest.model';
-import { UserService } from 'src/user/service/user.service';
+import { PrismaService } from '../../prisma/service/prisma.service';
+import { UserMapper } from '../../user/mapper/User.mapper';
+import { UserCreateRequestModel } from '../../user/models/UserCreateRequest.model';
+import { UserService } from '../../user/service/user.service';
 import { UserLoginRequestModel } from '../models/user-login.model';
-import { PasswordService } from 'src/common/utils/password.service';
+import { PasswordService } from '../../common/utils/password.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserJwtPayloadModel } from '../models/user-jwt-payload.model';
 import { LoginResponseModel } from '../models/login-response.model';
@@ -18,7 +18,13 @@ export class AuthService {
         private readonly passwordService: PasswordService,
         private readonly jwtService: JwtService
     ) {}
-
+    async validateToken(token: string) {
+        try {
+            return this.jwtService.verify(token);
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    }
     private async generateToken(user: UserJwtPayloadModel) {
         return new LoginResponseModel(
             this.jwtService.sign({user}),

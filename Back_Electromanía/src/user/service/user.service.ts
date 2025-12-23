@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/service/prisma.service';
-import { PasswordService } from 'src/common/utils/password.service';
+import { PasswordService } from '../../common/utils/password.service';
 import { UserCreateRequestModel } from '../models/UserCreateRequest.model';
 import { UserMapper } from '../mapper/User.mapper';
 import { UserModel } from '../models/User.model';
