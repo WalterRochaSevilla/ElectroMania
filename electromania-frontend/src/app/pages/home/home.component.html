@@ -1,1 +1,76 @@
-<p>home works!</p>
+<div class="home-container">
+
+  <div class="pagina-catalogo-container" [class.modo-claro]="!modoOscuro">
+
+    <!-- HEADER -->
+    <header class="header-catalogo">
+      <div class="logo">
+        <img src="LogoProvisorio.png" alt="Electromanía" />
+      </div>
+
+      <nav class="menu-superior">
+        <a href="#" class="menu-item">Catálogo</a>
+        <a href="#" class="menu-item">
+          Carrito <span class="badge">0</span>
+        </a>
+      </nav>
+
+      <div class="acciones-header">
+        <button class="toggle-modo" (click)="cambiarModo()">
+          {{ modoOscuro ? '☀️' : '🌙' }}
+        </button>
+        <button class="btn-ingresar" (click)="ingresar()">Ingresar</button>
+      </div>
+    </header>
+
+    <!-- MAIN -->
+    <div class="main-catalogo">
+
+      <aside class="sidebar-categorias">
+        <h3>Categorías</h3>
+        <ul>
+          <li *ngFor="let cat of categorias">
+            <input type="checkbox" [id]="cat" (change)="filtrarCategoria(cat)" />
+            <label [for]="cat">{{ cat }}</label>
+          </li>
+        </ul>
+      </aside>
+
+      <section class="contenido-catalogo">
+        <div class="acciones-catalogo">
+          <input
+            type="text"
+            placeholder="Buscar componente..."
+            [(ngModel)]="busqueda"
+            (input)="buscarComponentes()"
+          />
+
+          <select [(ngModel)]="orden" (change)="ordenarComponentes()">
+            <option value="relevancia">Relevancia</option>
+            <option value="precioAsc">Precio: menor a mayor</option>
+            <option value="precioDesc">Precio: mayor a menor</option>
+          </select>
+        </div>
+
+        <div class="grid-productos">
+          <div class="card-producto" *ngFor="let producto of productosFiltrados">
+            <div class="imagen-producto">
+              <img src="assets/placeholder.png" alt="Producto" />
+            </div>
+
+            <div class="info-producto">
+              <h4>{{ producto.nombre || 'Nombre del producto' }}</h4>
+              <p>{{ producto.descripcion || 'Descripción breve...' }}</p>
+              <p class="precio">
+                {{ producto.precio ? producto.precio + ' Bs.' : 'Precio' }}
+              </p>
+              <button (click)="agregarAlCarrito(producto)">
+                Agregar
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
