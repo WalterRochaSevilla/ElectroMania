@@ -1,1 +1,75 @@
-<p>login works!</p>
+<div class="login-container">
+    <div class="pagina-catalogo-container" [class.modo-claro]="!modoOscuro">
+    
+    <!-- HEADER -->
+    <header class="header-catalogo">
+        <div class="logo">
+        <img src="LogoProvisorio.png" alt="Electromanía" />
+        </div>
+
+        <nav class="menu-superior">
+        <a href="#" class="menu-item">Catálogo</a>
+        <a href="#" class="menu-item">
+            Carrito <span class="badge">0</span>
+        </a>
+        </nav>
+
+        <div class="acciones-header">
+        <button class="toggle-modo" (click)="cambiarModo()"> {{ modoOscuro ? '☀️' : '🌙' }} </button>
+        <button class="btn-ingresar" (click)="ingresar()">Ingresar</button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+<div class="login-wrapper">
+      <div class="login-card">
+        <div class="login-header">
+          <h2>Bienvenido</h2>
+        </div>
+            <!-- FORMULARIO DE LOGIN -->
+            <div class="login-body">
+            <div class="campo-formulario">
+                <label for="email">Correo Electrónico</label>
+                <div class="input-contenedor">
+                <input 
+                    type="email" 
+                    id="email"
+                    [(ngModel)]="email"
+                    placeholder="admin@electromania.com"
+                />
+                </div>
+            </div>
+
+            <div class="campo-formulario">
+                <label for="password">Contraseña</label>
+                <div class="input-contenedor password-input">
+                <input 
+                    [type]="mostrarContrasena ? 'text' : 'password'"
+                    id="password"
+                    [(ngModel)]="contrasena"
+                    placeholder="········"
+                />
+                <button 
+                    type="button" 
+                    class="btn-mostrar-contrasena"
+                    (click)="alternarMostrarContrasena()"
+                >
+                    {{ mostrarContrasena ? 'Ocultar' : 'Mostrar' }}
+                </button>
+                </div>
+            </div>
+
+            <button class="btn-login" (click)="iniciarSesion()">
+                Iniciar Sesión
+            </button>
+
+            <div class="login-footer">
+                <p>¿No tienes cuenta? <a href="#" class="enlace-registro">Regístrate aquí</a></p>
+            </div>
+            </div>
+        </div>
+        </div>
+    </main>
+    </div>
+</div>
