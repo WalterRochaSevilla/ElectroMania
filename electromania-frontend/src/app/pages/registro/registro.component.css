@@ -1,0 +1,597 @@
+/* =========================
+   RESET & BASE 
+========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* =========================
+   CONTENEDOR GENERAL 
+========================= */
+.pagina-catalogo-container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0b132b, #020617);
+  color: #e5e7eb;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.pagina-catalogo-container.modo-claro {
+  background: #f9fafb;
+  color: #111827;
+}
+
+/* =========================
+   HEADER 
+========================= */
+.header-catalogo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  background: #111827;
+  border-bottom: 1px solid #1f2937;
+  flex-shrink: 0;
+}
+
+.modo-claro .header-catalogo {
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.logo img {
+  height: 36px;
+  width: auto;
+}
+
+.menu-superior {
+  display: flex;
+  gap: 26px;
+}
+
+.menu-item {
+  color: #c7d2fe;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.menu-item:hover {
+  color: #60a5fa;
+}
+
+.modo-claro .menu-item {
+  color: #374151;
+}
+
+.modo-claro .menu-item:hover {
+  color: #2563eb;
+}
+
+.badge {
+  background: #ef4444;
+  color: white;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+.acciones-header {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.toggle-modo {
+  background: #1f2937;
+  border: none;
+  color: #facc15;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+
+.toggle-modo:hover {
+  background: #374151;
+}
+
+.modo-claro .toggle-modo {
+  background: #f3f4f6;
+  color: #f59e0b;
+}
+
+.modo-claro .toggle-modo:hover {
+  background: #e5e7eb;
+}
+
+.btn-ingresar {
+  background: #facc15;
+  color: #1f2937;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-ingresar:hover {
+  background: #fde047;
+}
+
+/* =========================
+   MAIN CONTENT
+========================= */
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+/* =========================
+   REGISTRO WRAPPER
+========================= */
+.registro-wrapper {
+  width: 100%;
+  max-width: 500px; /* Más ancho que el login */
+  padding: 20px;
+}
+
+/* =========================
+   REGISTRO CARD
+========================= */
+.registro-card {
+  background: #1f2937;
+  border-radius: 16px;
+  border: 1px solid #374151;
+  width: 100%;
+  padding: 40px 36px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.modo-claro .registro-card {
+  background: #ffffff;
+  border-color: #e5e7eb;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* =========================
+   HEADER DEL REGISTRO
+========================= */
+.registro-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.registro-header h2 {
+  color: #facc15;
+  font-size: 28px;
+  margin: 0 0 10px 0;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.modo-claro .registro-header h2 {
+  color: #1f2937;
+}
+
+.subtitle {
+  color: #9ca3af;
+  font-size: 14px;
+  margin: 0;
+  font-weight: 400;
+}
+
+.modo-claro .subtitle {
+  color: #6b7280;
+}
+
+/* =========================
+   CAMPOS DEL FORMULARIO
+========================= */
+.campo-formulario {
+  margin-bottom: 20px;
+}
+
+.campo-formulario label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  color: #d1d5db;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.modo-claro .campo-formulario label {
+  color: #374151;
+}
+
+.ejemplo {
+  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.modo-claro .ejemplo {
+  color: #6b7280;
+}
+
+.hint {
+  color: #60a5fa;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.input-contenedor {
+  position: relative;
+  width: 100%;
+}
+
+.input-contenedor input {
+  width: 100%;
+  padding: 14px 16px;
+  background: #111827;
+  border: 1px solid #374151;
+  border-radius: 10px;
+  color: #e5e7eb;
+  font-size: 15px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.modo-claro .input-contenedor input {
+  background: #f9fafb;
+  border-color: #d1d5db;
+  color: #1f2937;
+}
+
+.input-contenedor input:focus {
+  outline: none;
+  border-color: #facc15;
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.1);
+}
+
+.modo-claro .input-contenedor input:focus {
+  border-color: #facc15;
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.2);
+}
+
+.input-contenedor input::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+/* =========================
+   CAMPO DE CONTRASEÑA
+========================= */
+.password-input {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.password-input input {
+  padding-right: 50px;
+}
+
+.btn-mostrar-contrasena {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-mostrar-contrasena:hover {
+  color: #facc15;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.modo-claro .btn-mostrar-contrasena:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Ajusta el padding del input para el botón más grande */
+.password-input input {
+  padding-right: 100px; /* Más espacio para el texto */
+}
+
+.btn-mostrar-contrasena {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-mostrar-contrasena2:hover {
+  color: #facc15;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.modo-claro .btn-mostrar-contrasena:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Ajusta el padding del input para el botón más grande */
+.password-input input {
+  padding-right: 100px; /* Más espacio para el texto */
+}
+
+/* =========================
+   CHECKBOX TÉRMINOS Y CONDICIONES
+========================= */
+.campo-checkbox {
+  margin: 25px 0 20px 0;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  padding-left: 35px;
+  user-select: none;
+}
+
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 24px;
+  width: 24px;
+  background-color: #111827;
+  border: 2px solid #374151;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.modo-claro .checkmark {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.checkbox-container:hover input ~ .checkmark {
+  border-color: #facc15;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+  background-color: #facc15;
+  border-color: #facc15;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.checkbox-container .checkmark:after {
+  left: 7px;
+  top: 3px;
+  width: 6px;
+  height: 10px;
+  border: solid #1f2937;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.modo-claro .checkbox-container .checkmark:after {
+  border-color: #1f2937;
+}
+
+.checkbox-text {
+  color: #d1d5db;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.modo-claro .checkbox-text {
+  color: #374151;
+}
+
+.enlace-terminos {
+  color: #60a5fa;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.enlace-terminos:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   BOTÓN REGISTRARSE
+========================= */
+.btn-registrarse {
+  width: 100%;
+  background: #facc15;
+  color: #1f2937;
+  border: none;
+  padding: 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.2s ease;
+  font-family: 'Segoe UI', sans-serif;
+  letter-spacing: 0.3px;
+}
+
+.btn-registrarse:hover:not(:disabled) {
+  background: #fde047;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(250, 204, 21, 0.3);
+}
+
+.btn-registrarse:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-registrarse:disabled {
+  background: #4b5563;
+  color: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.modo-claro .btn-registrarse:disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+}
+
+/* =========================
+   FOOTER DEL REGISTRO
+========================= */
+.registro-footer {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #374151;
+}
+
+.modo-claro .registro-footer {
+  border-top-color: #e5e7eb;
+}
+
+.enlace-volver {
+  color: #60a5fa;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s;
+}
+
+.enlace-volver:hover {
+  color: #3b82f6;
+  text-decoration: underline;
+}
+
+/* =========================
+   VALIDACIÓN
+========================= */
+.input-contenedor input.ng-invalid.ng-touched {
+  border-color: #ef4444;
+}
+
+.input-contenedor input.ng-valid.ng-touched {
+  border-color: #10b981;
+}
+
+/* =========================
+   RESPONSIVE DESIGN
+========================= */
+@media (max-width: 768px) {
+  .registro-wrapper {
+    max-width: 100%;
+    padding: 10px;
+  }
+  
+  .registro-card {
+    padding: 30px 24px;
+  }
+  
+  .registro-header h2 {
+    font-size: 24px;
+  }
+  
+  .campo-formulario label {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .ejemplo {
+    margin-top: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-catalogo {
+    padding: 12px 20px;
+  }
+  
+  .menu-superior {
+    gap: 16px;
+  }
+  
+  .main-content {
+    padding: 20px 16px;
+  }
+  
+  .registro-card {
+    padding: 24px 20px;
+  }
+  
+  .registro-header h2 {
+    font-size: 22px;
+  }
+  
+  .campo-formulario label,
+  .checkbox-text {
+    font-size: 13px;
+  }
+  
+  .input-contenedor input {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+  
+  .btn-registrarse {
+    padding: 14px;
+    font-size: 15px;
+  }
+}

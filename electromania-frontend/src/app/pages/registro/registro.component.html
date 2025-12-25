@@ -1,1 +1,170 @@
-<p>registro works!</p>
+<div class="registro-container">
+    <div class="pagina-catalogo-container" [class.modo-claro]="!modoOscuro">
+    
+    <!-- HEADER (igual que en login) -->
+    <header class="header-catalogo">
+        <div class="logo">
+        <img src="LogoProvisorio.png" alt="Electromanía" />
+        </div>
+
+        <nav class="menu-superior">
+        <a href="#" class="menu-item">Catálogo</a>
+        <a href="#" class="menu-item">
+            Carrito <span class="badge">0</span>
+        </a>
+        </nav>
+
+        <div class="acciones-header">
+        <button class="toggle-modo" (click)="cambiarModo()">
+            {{ modoOscuro ? '☀️' : '🌙' }}
+        </button>
+        <button class="btn-ingresar" (click)="volverAlLogin()">Ingresar</button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        
+        <!-- FORMULARIO DE REGISTRO -->
+        <div class="registro-wrapper">
+        <div class="registro-card">
+            <div class="registro-header">
+            <h2>Crear Cuenta</h2>
+            <p class="subtitle">Datos necesarios para facturación (Ley Boliviana)</p>
+            </div>
+
+            <div class="registro-body">
+            <!-- NIT -->
+            <div class="campo-formulario">
+                <label for="nit">
+                NIT 
+                <span class="ejemplo">Ej: 1234567</span>
+                </label>
+                <div class="input-contenedor">
+                <input 
+                    type="text" 
+                    id="nit"
+                    [(ngModel)]="nit"
+                    placeholder="Ingrese su NIT"
+                    (input)="formatearNIT()"
+                    maxlength="20"
+                />
+                </div>
+            </div>
+
+            <!-- RAZÓN SOCIAL / APELLIDO -->
+            <div class="campo-formulario">
+                <label for="razonSocial">
+                RAZÓN SOCIAL / APELLIDO 
+                <span class="ejemplo">Ej: Juan Pérez</span>
+                </label>
+                <div class="input-contenedor">
+                <input 
+                    type="text" 
+                    id="razonSocial"
+                    [(ngModel)]="razonSocial"
+                    placeholder="Ingrese razón social o apellido"
+                />
+                </div>
+            </div>
+
+            <!-- CORREO ELECTRÓNICO -->
+            <div class="campo-formulario">
+                <label for="email">
+                CORREO ELECTRÓNICO 
+                </label>
+                <div class="input-contenedor">
+                <input 
+                    type="email" 
+                    id="email"
+                    [(ngModel)]="email"
+                    placeholder="tu@email.com"
+                />
+                </div>
+            </div>
+
+            <!-- CONTRASEÑA -->
+            <div class="campo-formulario">
+                <label for="password">
+                CONTRASEÑA 
+                <span class="hint">Mínimo 6 caracteres</span>
+                </label>
+                <div class="input-contenedor password-input">
+                <input 
+                    [type]="mostrarContrasena ? 'text' : 'password'"
+                    id="password"
+                    [(ngModel)]="contrasena"
+                    placeholder="··············"
+                    minlength="6"
+                />
+                <button 
+                    type="button" 
+                    class="btn-mostrar-contrasena"
+                    (click)="alternarMostrarContrasena()"
+                >
+                    {{ mostrarContrasena ? 'Ocultar' : 'Mostrar' }}
+                </button>
+                </div>
+            </div>
+
+            <!-- REPETIR CONTRASEÑA -->
+            <div class="campo-formulario">
+                <label for="confirmPassword">
+                CONFIRMAR CONTRASEÑA 
+                </label>
+                <div class="input-contenedor password-input">
+                <input 
+                    [type]="mostrarConfirmarContrasena ? 'text' : 'password'"
+                    id="confirmPassword"
+                    [(ngModel)]="confirmarContrasena"
+                    placeholder="··············"
+                    minlength="6"
+                />
+                <button 
+                    type="button" 
+                    class="btn-mostrar-contrasena"
+                    (click)="alternarMostrarConfirmarContrasena()"
+                >
+                    {{ mostrarConfirmarContrasena ? 'Ocultar' : 'Mostrar' }}
+                </button>
+                </div>
+            </div>
+
+            <!-- TÉRMINOS Y CONDICIONES -->
+            <div class="campo-checkbox">
+                <label class="checkbox-container">
+                <input 
+                    type="checkbox" 
+                    [(ngModel)]="aceptaTerminos"
+                />
+                <span class="checkmark"></span>
+                <span class="checkbox-text">
+                    Acepto los <a href="#" class="enlace-terminos">términos y condiciones</a>
+                </span>
+                </label>
+            </div>
+
+            <!-- BOTÓN REGISTRARSE -->
+            <button 
+                class="btn-registrarse" 
+                (click)="registrar()"
+                [disabled]="!formularioValido()"
+            >
+                Registrarse
+            </button>
+
+            <!-- ENLACE VOLVER AL LOGIN -->
+            <div class="registro-footer">
+                <p>
+                <a href="#" class="enlace-volver" (click)="volverAlLogin(); $event.preventDefault()">
+                    ← Volver al Login
+                </a>
+                </p>
+            </div>
+            </div>
+        </div>
+        </div>
+        
+    </main>
+    </div>
+</div>
