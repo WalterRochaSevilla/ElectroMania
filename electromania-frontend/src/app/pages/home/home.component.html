@@ -9,8 +9,10 @@
       </div>
 
       <nav class="menu-superior">
-        <a href="#" class="menu-item">Catálogo</a>
-        <a href="#" class="menu-item">
+        <a href="#" class="menu-item" (click)="Catalogo()">Catálogo
+          <span class="linea-catalogo"></span>
+        </a>
+        <a href="#" class="menu-item" (click)="Carrito()">
           Carrito <span class="badge">0</span>
         </a>
       </nav>
@@ -46,9 +48,9 @@
           />
 
           <select [(ngModel)]="orden" (change)="ordenarComponentes()">
-            <option value="relevancia">Relevancia</option>
-            <option value="precioAsc">Precio: menor a mayor</option>
-            <option value="precioDesc">Precio: mayor a menor</option>
+            <option value="relevancia">Ordenar por: Relevancia</option>
+            <option value="precioAsc"> Ordenar por Precio: menor a mayor</option>
+            <option value="precioDesc"> Ordenar por Precio: mayor a menor</option>
           </select>
         </div>
 

@@ -6,7 +6,7 @@ import { RegistroComponent } from "./pages/registro/registro.component";
 
 @Component({
   selector: 'app-root',
-  imports: [ RegistroComponent ],
+  imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

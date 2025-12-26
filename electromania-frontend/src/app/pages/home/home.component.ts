@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -18,6 +19,11 @@ export class HomeComponent {
 
   busqueda: string = '';
   orden: string = 'relevancia';
+
+    /* =========================
+     INYECCIÓN DE DEPENDENCIAS
+  ========================= */
+  constructor(private router: Router) {}
 
   /* =========================
      CATEGORÍAS
@@ -59,7 +65,13 @@ export class HomeComponent {
   }
 
   ingresar() {
-    console.log('Botón ingresar presionado');
+    this.router.navigate(['/registro']);
+  }
+  Catalogo() {
+    this.router.navigate(['/home']);
+  }
+  Carrito() {
+    this.router.navigate(['/producto']);
   }
 
   /* =========================

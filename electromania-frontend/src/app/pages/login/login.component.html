@@ -8,9 +8,9 @@
         </div>
 
         <nav class="menu-superior">
-        <a href="#" class="menu-item">Catálogo</a>
-        <a href="#" class="menu-item">
-            Carrito <span class="badge">0</span>
+        <a href="#" class="menu-item" (click)="Catalogo()">Catálogo</a>
+        <a href="#" class="menu-item" (click)="Carrito()">
+          Carrito <span class="badge">0</span>
         </a>
         </nav>
 
@@ -65,7 +65,9 @@
             </button>
 
             <div class="login-footer">
-                <p>¿No tienes cuenta? <a href="#" class="enlace-registro">Regístrate aquí</a></p>
+                <p>¿No tienes cuenta? 
+                     <a href="#" class="enlace-registro" (click)="registro()">Regístrate aquí</a> <!-- no funciona la navegacion -->
+                </p>
             </div>
             </div>
         </div>

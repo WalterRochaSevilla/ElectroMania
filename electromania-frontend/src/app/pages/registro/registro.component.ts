@@ -46,6 +46,12 @@ export class RegistroComponent {
     this.router.navigate(['/login']);
     console.log('Volviendo al login...');
   }
+  Catalogo() {
+    this.router.navigate(['/home']);
+  }
+  Carrito() {
+    this.router.navigate(['/producto']);
+  }
 
   /* =========================
      FUNCIONALIDADES DEL FORMULARIO

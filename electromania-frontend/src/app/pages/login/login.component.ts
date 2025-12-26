@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -19,6 +22,12 @@ export class LoginComponent {
   contrasena: string = '';
   mostrarContrasena: boolean = false;
 
+   /* =========================
+     INYECCIÓN DE DEPENDENCIAS
+  ========================= */
+  constructor(private router: Router) {}
+
+
   /* =========================
      HEADER
   ========================= */
@@ -26,9 +35,19 @@ export class LoginComponent {
     this.modoOscuro = !this.modoOscuro;
   }
   ingresar() {
-    console.log('Botón ingresar presionado');
+    this.router.navigate(['/login']);
+  }
+  Catalogo() {
+    this.router.navigate(['/home']);
+  }
+  Carrito() {
+    this.router.navigate(['/producto']);
   }
   
+  registro() {
+    this.router.navigate(['/registro']); //arreglar esta navegacion
+  }
+
   mostrarLogin() {
     this.mostrarFormLogin = true;
   }
