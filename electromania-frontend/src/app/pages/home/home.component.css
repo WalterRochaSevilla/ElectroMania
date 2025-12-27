@@ -28,6 +28,7 @@
 .menu-superior {
   display: flex;
   gap: 26px;
+  position: relative;
 }
 
 .menu-item {
@@ -39,7 +40,6 @@
   padding-bottom: 8px;
 }
   
-
 .menu-item:hover {
   color: #60a5fa;
 }

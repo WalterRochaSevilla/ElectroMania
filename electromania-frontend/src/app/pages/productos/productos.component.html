@@ -1,1 +1,172 @@
-<p>productos works!</p>
+<div class="producto-container">
+    <div class="pagina-catalogo-container" [class.modo-claro]="!modoOscuro">
+    
+    <!-- HEADER -->
+    <header class="header-catalogo">
+        <div class="logo">
+        <img src="LogoProvisorio.png" alt="Electromanía" />
+        </div>
+
+        <nav class="menu-superior">
+        <a href="#" class="menu-item" routerLink="/home">
+            Catálogo
+        </a>
+        <a href="#" class="menu-item carrito-activo" routerLink="/producto">
+            Carrito <span class="badge">{{ totalItems }}</span>
+            <span class="linea-carrito"></span>
+        </a>
+        </nav>
+
+        <div class="acciones-header">
+        <button class="toggle-modo" (click)="cambiarModo()">
+            {{ modoOscuro ? '☀️' : '🌙' }}
+        </button>
+        <button class="btn-ingresar" (click)="irALogin()">Ingresar</button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        
+        <!-- CONTENIDO DEL CARRITO -->
+        <div class="carrito-wrapper">
+        <div class="carrito-container">
+            
+            <!-- TÍTULO -->
+            <div class="carrito-header">
+            <h1>Tu Carrito de Compras</h1>
+            </div>
+
+            <!-- TABLA DE PRODUCTOS -->
+            <div class="tabla-productos">
+            <!-- ENCABEZADO -->
+            <div class="fila-encabezado">
+                <div class="columna producto-col">Producto</div>
+                <div class="columna cantidad-col">Cant.</div>
+                <div class="columna precio-col">Precio</div>
+                <div class="columna acciones-col"></div>
+            </div>
+
+            <!-- PRODUCTOS -->
+            <div class="lista-productos">
+                <div class="fila-producto" *ngFor="let item of carrito; let i = index">
+                <div class="columna producto-col">
+                    <div class="info-producto">
+                    <h4>{{ item.nombre }}</h4>
+                    <p class="descripcion">{{ item.descripcion }}</p>
+                    </div>
+                </div>
+                
+                <div class="columna cantidad-col">
+                    <div class="contador-cantidad">
+                    <button class="btn-cantidad" (click)="disminuirCantidad(i)">-</button>
+                    <span class="cantidad">{{ item.cantidad }}</span>
+                    <button class="btn-cantidad" (click)="aumentarCantidad(i)">+</button>
+                    </div>
+                </div>
+                
+                <div class="columna precio-col">
+                    <span class="precio-unitario">{{ item.precio | number:'1.2-2' }} Bs.</span>
+                    <span class="precio-total">{{ (item.precio * item.cantidad) | number:'1.2-2' }} Bs.</span>
+                </div>
+                
+                <div class="columna acciones-col">
+                    <button class="btn-eliminar" (click)="eliminarProducto(i)">🗑️</button>
+                </div>
+                </div>
+
+                <!-- SI EL CARRITO ESTÁ VACÍO -->
+                <div class="carrito-vacio" *ngIf="carrito.length === 0">
+                <p>Tu carrito está vacío</p>
+                <button class="btn-ver-catalogo" (click)="irACatalogo()">
+                    Ver Catálogo
+                </button>
+                </div>
+            </div>
+            </div>
+
+            <!-- RESUMEN DEL PEDIDO -->
+            <div class="resumen-pedido" *ngIf="carrito.length > 0">
+            <h3>Resumen del Pedido</h3>
+            
+            <div class="detalle-resumen">
+                <div class="fila-resumen">
+                <span>Subtotal:</span>
+                <span>{{ subtotal | number:'1.2-2' }} Bs.</span>
+                </div>
+                <div class="fila-resumen">
+                <span>Impuestos (13%):</span>
+                <span>{{ impuestos | number:'1.2-2' }} Bs.</span>
+                </div>
+                <div class="fila-resumen total">
+                <span><strong>Total:</strong></span>
+                <span class="precio-total"><strong>{{ total | number:'1.2-2' }} Bs.</strong></span>
+                </div>
+            </div>
+
+            <!-- INFORMACIÓN DE FACTURACIÓN -->
+            <div class="facturacion-info">
+                <label class="checkbox-factura">
+                <input type="checkbox" [(ngModel)]="generarFactura" />
+                <span class="checkmark"></span>
+                <span class="texto-factura">
+                    La factura se generará a nombre de <strong>{{ nombreFactura }}</strong> 
+                    (NIT: <strong>{{ nitFactura }}</strong>).
+                </span>
+                </label>
+                
+                <!-- Campos para editar facturación si es necesario -->
+                <div class="campos-factura" *ngIf="generarFactura">
+                <div class="campo-factura">
+                    <label>Nombre/Razón Social</label>
+                    <input type="text" [(ngModel)]="nombreFactura" placeholder="Juan Pérez" />
+                </div>
+                <div class="campo-factura">
+                    <label>NIT</label>
+                    <input type="text" [(ngModel)]="nitFactura" placeholder="123-662" />
+                </div>
+                <div class="campo-factura">
+                    <label>Email para factura</label>
+                    <input type="email" [(ngModel)]="emailFactura" placeholder="juan@gmail.com" />
+                </div>
+                </div>
+            </div>
+
+            <!-- BOTÓN PAGAR -->
+            <button class="btn-pagar" (click)="procesarPago()" [disabled]="procesando">
+                {{ procesando ? 'Procesando...' : 'Pagar y Facturar' }}
+            </button>
+            </div>
+        </div>
+        </div>
+
+    </main>
+    </div>
+
+    <!-- MODAL COMPRA EXITOSA -->
+    <div class="modal-overlay" *ngIf="mostrarModalExito">
+    <div class="modal-exito">
+        <div class="modal-header">
+        <h2>Compra Exitosa</h2>
+        </div>
+        
+        <div class="modal-body">
+        <div class="icono-exito">✓</div>
+        <p class="mensaje-exito">
+            Se ha generado la factura #<strong>{{ numeroFactura }}</strong> a nombre de<br>
+            <strong>{{ nombreFactura }}.</strong>
+        </p>
+        <p class="mensaje-email">
+            Hemos enviado un correo a <strong>{{ emailFactura }}</strong> con<br>
+            el PDF adjunto.
+        </p>
+        
+        <div class="separador-modal"></div>
+        
+        <button class="btn-volver-tienda" (click)="volverATienda()">
+            Volver a la tienda
+        </button>
+        </div>
+    </div>
+    </div>
+</div>

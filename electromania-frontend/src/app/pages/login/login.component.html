@@ -8,15 +8,17 @@
         </div>
 
         <nav class="menu-superior">
-        <a href="#" class="menu-item" (click)="Catalogo()">Catálogo</a>
-        <a href="#" class="menu-item" (click)="Carrito()">
-          Carrito <span class="badge">0</span>
-        </a>
+            <a href="#" class="menu-item" routerLink="/home">Catálogo
+                <span class="linea-catalogo"></span>
+            </a>
+            <a href="#" class="menu-item" routerLink="/producto">
+                Carrito <span class="badge">0</span>
+            </a>
         </nav>
 
         <div class="acciones-header">
         <button class="toggle-modo" (click)="cambiarModo()"> {{ modoOscuro ? '☀️' : '🌙' }} </button>
-        <button class="btn-ingresar" (click)="ingresar()">Ingresar</button>
+        <button class="btn-ingresar" routerLink="/login">Ingresar</button>
         </div>
     </header>
 
@@ -66,7 +68,7 @@
 
             <div class="login-footer">
                 <p>¿No tienes cuenta? 
-                     <a href="#" class="enlace-registro" (click)="registro()">Regístrate aquí</a> <!-- no funciona la navegacion -->
+                     <a href="#" class="enlace-registro" routerLink="/registro">Regístrate aquí</a> <!-- no funciona la navegacion -->
                 </p>
             </div>
             </div>

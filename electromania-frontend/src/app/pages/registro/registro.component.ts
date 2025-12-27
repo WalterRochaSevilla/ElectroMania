@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+
 
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './registro.component.html',
   styleUrls: ['./registro.component.css']
 })
@@ -44,7 +45,6 @@ export class RegistroComponent {
   volverAlLogin() {
     // Navegar a la página de login
     this.router.navigate(['/login']);
-    console.log('Volviendo al login...');
   }
   Catalogo() {
     this.router.navigate(['/home']);
