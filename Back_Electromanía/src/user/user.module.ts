@@ -3,12 +3,14 @@ import { UserService } from './service/user.service';
 import { UserController } from './controller/user.controller';
 import { CommonModule } from 'src/common/common.module';
 import { PrismaService } from 'src/prisma/service/prisma.service';
+import { UserMapper } from './mapper/User.mapper';
 
 @Module({
     imports: [
         CommonModule
     ],
     controllers: [UserController],
-    providers: [UserService,PrismaService],
+    providers: [UserService,PrismaService,UserMapper],
+    exports: [UserService]
 })
 export class UserModule {}

@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { ProductModule } from './product/product.module';
+import { AuthModule } from './auth/auth.module';
 import Configuration from './config/Configuration';
 
 @Module({
@@ -16,7 +17,8 @@ import Configuration from './config/Configuration';
       load: [Configuration],
       envFilePath: '.env',
     }),
-    ProductModule
+    ProductModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [

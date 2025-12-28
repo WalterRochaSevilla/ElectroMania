@@ -10,7 +10,6 @@ export class PasswordService {
     }
     async hashPassword(password: string): Promise<string> {
         const rounds = this.config.get<number>('bcrypt.saltRounds');
-        console.log(rounds);
         const salt = await bcrypt.genSalt(rounds);
         return await bcrypt.hash(password, salt);
     }

@@ -1,9 +1,14 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { ProductService } from '../service/product.service';
 import { ProductModule } from '../product.module';
 import { CreateProductRequestModel } from '../model/CreateProductRequest.model';
 import { RegisterProductImageRequestModel } from '../model/RegisterProductImageRequest.model';
 import { PageProductResponseModel } from '../model/PageProductResponse.model';
+import { AuthGuard } from '../../auth/guards/auth.guard';
+import { RolesGuard } from '../../auth/guards/roles.guard';
+import { Roles } from '../../auth/decorators/roles.decorator';
+import { UserRole } from '../../user/enums/UserRole.enum';
+
 
 @Controller('product')
 export class ProductController {
@@ -21,11 +26,13 @@ export class ProductController {
         return this.productService.getPageProduct(page);
     }
 
+    @UseGuards(AuthGuard,RolesGuard)
     @Post("register")
     registerProduct(@Body()product: CreateProductRequestModel): Promise<ProductModule>{
         return this.productService.createProduct(product);
     }
-
+    @Roles(UserRole.USER)
+    @UseGuards(AuthGuard,RolesGuard)
     @Post("addImage")
     registerProductImage(@Body()productImage: RegisterProductImageRequestModel): Promise<ProductModule>{
         return this.productService.registerProductImage(productImage);
