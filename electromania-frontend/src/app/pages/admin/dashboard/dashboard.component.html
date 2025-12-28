@@ -1,1 +1,126 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+  <div class="pagina-dashboard" [class.modo-claro]="!modoOscuro">
+    <!-- HEADER -->
+    <header class="header-dashboard">
+      <div class="logo">
+        <img src="LogoProvisorio.png" alt="Electromanía" />
+      </div>
+
+      <nav class="menu-superior">
+        <a href="#" class="menu-item" routerLink="/dashboard">
+          Dashboard
+          <span class="linea-dashboard"></span>
+        </a>
+        <a href="#" class="menu-item" routerLink="/productos-admin">
+          Productos
+        </a>
+        <a href="#" class="menu-item" routerLink="/usuarios-admin">
+          Usuarios
+        </a>
+      </nav>
+
+      <div class="acciones-header">
+        <button class="toggle-modo" (click)="cambiarModo()">
+          {{ modoOscuro ? '☀️' : '🌙' }}
+        </button>
+        <button class="btn-ingresar" (click)="cerrarSesion()">Cerrar Sesión</button>
+      </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-dashboard">
+      <div class="encabezado-dashboard">
+        <h1>Dashboard Administrativo</h1>
+      </div>
+
+      <!-- MÉTRICAS -->
+      <div class="metricas-grid">
+        <div class="card-metrica">
+          <div class="icono-metrica">
+            <span>💰</span>
+          </div>
+          <div class="contenido-metrica">
+            <h3>VENTAS TOTALES</h3>
+            <p class="valor-metrica">12,450 Bs.</p>
+            <p class="variacion">+12% vs mes anterior</p>
+          </div>
+        </div>
+
+        <div class="card-metrica">
+          <div class="icono-metrica">
+            <span>⚠️</span>
+          </div>
+          <div class="contenido-metrica">
+            <h3>STOCK CRÍTICO</h3>
+            <p class="valor-metrica">3 Productos</p>
+            <p class="variacion">Necesita atención</p>
+          </div>
+        </div>
+
+        <div class="card-metrica">
+          <div class="icono-metrica">
+            <span>●</span>
+          </div>
+          <div class="contenido-metrica">
+            <h3>ESTADO SISTEMA</h3>
+            <p class="valor-metrica status-online">Online</p>
+            <p class="variacion">Todo funciona correctamente</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- GRÁFICO DE TENDENCIAS -->
+      <div class="seccion-grafico">
+        <div class="encabezado-grafico">
+          <h2>Tendencia de Ventas (Últimos 7 días)</h2>
+          <select class="selector-periodo" [(ngModel)]="periodoSeleccionado">
+            <option value="7d">Últimos 7 días</option>
+            <option value="30d">Últimos 30 días</option>
+            <option value="90d">Últimos 90 días</option>
+          </select>
+        </div>
+        
+        <div class="grafico-container">
+          <!-- Aquí iría un gráfico real (Chart.js, etc.) -->
+          <div class="grafico-placeholder">
+            <div class="ejes">
+              <div class="eje-y">
+                <span>Bs.</span>
+                <span>10,000</span>
+                <span>7,500</span>
+                <span>5,000</span>
+                <span>2,500</span>
+                <span>0</span>
+              </div>
+              <div class="barras-container">
+                <div class="barra" style="height: 70%;" [attr.data-dia]="'Lun'"></div>
+                <div class="barra" style="height: 85%;" [attr.data-dia]="'Mar'"></div>
+                <div class="barra" style="height: 60%;" [attr.data-dia]="'Mié'"></div>
+                <div class="barra" style="height: 90%;" [attr.data-dia]="'Jue'"></div>
+                <div class="barra" style="height: 75%;" [attr.data-dia]="'Vie'"></div>
+                <div class="barra" style="height: 95%;" [attr.data-dia]="'Sáb'"></div>
+                <div class="barra" style="height: 80%;" [attr.data-dia]="'Dom'"></div>
+              </div>
+            </div>
+            <div class="eje-x">
+              <span>Lun</span>
+              <span>Mar</span>
+              <span>Mié</span>
+              <span>Jue</span>
+              <span>Vie</span>
+              <span>Sáb</span>
+              <span>Dom</span>
+            </div>
+          </div>
+          
+          <div class="leyenda-grafico">
+            <div class="item-leyenda">
+              <span class="color-leyenda" style="background-color: #3b82f6;"></span>
+              <span>Ventas diarias</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
