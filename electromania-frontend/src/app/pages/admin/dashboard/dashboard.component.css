@@ -1,0 +1,348 @@
+/* =========================
+   CONTENEDOR GENERAL
+========================= */
+.pagina-dashboard {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0b132b, #020617);
+  color: #e5e7eb;
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+}
+
+/* =========================
+   HEADER
+========================= */
+.header-dashboard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  background: #111827;
+  border-bottom: 1px solid #1f2937;
+}
+
+.logo img {
+  height: 36px;
+}
+
+.menu-superior {
+  display: flex;
+  gap: 26px;
+  position: relative;
+}
+
+.menu-item {
+  color: #c7d2fe;
+  text-decoration: none;
+  font-weight: 500;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 8px;
+}
+  
+.menu-item:hover {
+  color: #60a5fa;
+}
+
+.menu-item:first-child {
+  color: #facc15;
+  font-weight: 600;
+}
+
+.linea-dashboard {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%; 
+  height: 3px;
+  background: #facc15;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(250, 204, 21, 0.3);
+}
+
+.acciones-header {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.toggle-modo {
+  background: #1f2937;
+  border: none;
+  color: #facc15;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.btn-ingresar {
+  background: #facc15;
+  color: #1f2937;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-ingresar:hover {
+  background: #fde047;
+}
+
+/* =========================
+   MODO CLARO
+========================= */
+.pagina-dashboard.modo-claro {
+  background: #f9fafb;
+  color: #111827;
+}
+
+.modo-claro .header-dashboard {
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modo-claro .menu-item {
+  color: #374151;
+}
+
+.modo-claro .linea-dashboard {
+  background: #d97706;
+}
+
+/* =========================
+   CONTENIDO PRINCIPAL
+========================= */
+.main-dashboard {
+  padding: 28px;
+}
+
+.encabezado-dashboard {
+  margin-bottom: 32px;
+}
+
+.encabezado-dashboard h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #facc15;
+  margin: 0;
+}
+
+/* =========================
+   MÉTRICAS
+========================= */
+.metricas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.card-metrica {
+  background: #111827;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border: 1px solid #1f2937;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-metrica:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.icono-metrica {
+  font-size: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 70px;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 12px;
+}
+
+.contenido-metrica h3 {
+  font-size: 14px;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 8px 0;
+}
+
+.valor-metrica {
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+}
+
+.valor-metrica.status-online {
+  color: #10b981;
+}
+
+.variacion {
+  font-size: 14px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* =========================
+   GRÁFICO
+========================= */
+.seccion-grafico {
+  background: #111827;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid #1f2937;
+}
+
+.encabezado-grafico {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.encabezado-grafico h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: #facc15;
+}
+
+.selector-periodo {
+  background: #1f2937;
+  border: 1px solid #374151;
+  color: #e5e7eb;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.grafico-container {
+  background: #0f172a;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.grafico-placeholder {
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.ejes {
+  display: flex;
+  flex: 1;
+  gap: 20px;
+}
+
+.eje-y {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 12px;
+  color: #9ca3af;
+  padding-bottom: 30px;
+  width: 40px;
+}
+
+.barras-container {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 15px;
+  padding-bottom: 30px;
+}
+
+.barra {
+  width: 40px;
+  background: linear-gradient(to top, #3b82f6, #60a5fa);
+  border-radius: 6px 6px 0 0;
+  position: relative;
+  transition: height 0.3s ease;
+}
+
+.barra:hover {
+  opacity: 0.8;
+}
+
+.barra::after {
+  content: attr(data-dia);
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.eje-x {
+  display: flex;
+  justify-content: space-around;
+  margin-left: 40px;
+  padding-top: 10px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.leyenda-grafico {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.item-leyenda {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.color-leyenda {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+/* =========================
+   MODO CLARO - DASHBOARD
+========================= */
+.modo-claro .card-metrica,
+.modo-claro .seccion-grafico {
+  background: #ffffff;
+  border-color: #e5e7eb;
+}
+
+.modo-claro .card-metrica:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.modo-claro .contenido-metrica h3 {
+  color: #6b7280;
+}
+
+.modo-claro .valor-metrica {
+  color: #111827;
+}
+
+.modo-claro .grafico-container {
+  background: #f9fafb;
+}
+
+.modo-claro .selector-periodo {
+  background: #ffffff;
+  border-color: #d1d5db;
+  color: #111827;
+}
+
+.modo-claro .eje-y,
+.modo-claro .eje-x {
+  color: #6b7280;
+}
