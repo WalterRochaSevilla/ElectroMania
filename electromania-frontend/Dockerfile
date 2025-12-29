@@ -5,16 +5,10 @@ RUN addgroup -S app && adduser -S app -G app
 
 WORKDIR /usr/src/app
 
-RUN npm install -g pnpm
-
-# Instala dependencias
-COPY pnpm-lock.yaml ./
 
 COPY package*.json ./
 
-COPY prisma ./prisma
-
-RUN pnpm install
+RUN npm install
 
 # Copia todo
 COPY . .
@@ -22,8 +16,9 @@ COPY . .
 RUN chown -R app:app /usr/src/app
 
 USER app
+
 # Expone el puerto de NestJS
-EXPOSE 3000
+EXPOSE 4200
 
 
-CMD ["pnpm","run","start:dev"]
+CMD ["npm","run","start:dev"]
