@@ -1,0 +1,529 @@
+/* =========================
+   CONTENEDOR GENERAL
+========================= */
+.pagina-usuarios {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0b132b, #020617);
+  color: #e5e7eb;
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+}
+
+/* =========================
+   HEADER
+========================= */
+.header-usuarios {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  background: #111827;
+  border-bottom: 1px solid #1f2937;
+}
+
+.logo img {
+  height: 36px;
+}
+
+.menu-superior {
+  display: flex;
+  gap: 26px;
+  position: relative;
+}
+
+.menu-item {
+  color: #c7d2fe;
+  text-decoration: none;
+  font-weight: 500;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 8px;
+}
+  
+.menu-item:hover {
+  color: #60a5fa;
+}
+
+.menu-item:nth-child(3) {
+  color: #facc15;
+  font-weight: 600;
+}
+
+.linea-usuarios {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%; 
+  height: 3px;
+  background: #facc15;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(250, 204, 21, 0.3);
+}
+
+.acciones-header {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.toggle-modo {
+  background: #1f2937;
+  border: none;
+  color: #facc15;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.btn-ingresar {
+  background: #facc15;
+  color: #1f2937;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-ingresar:hover {
+  background: #fde047;
+}
+
+/* =========================
+   MODO CLARO
+========================= */
+.pagina-usuarios.modo-claro {
+  background: #f9fafb;
+  color: #111827;
+}
+
+.modo-claro .header-usuarios {
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modo-claro .menu-item {
+  color: #374151;
+}
+
+.modo-claro .linea-usuarios {
+  background: #d97706;
+}
+
+/* =========================
+   CONTENIDO PRINCIPAL
+========================= */
+.main-usuarios {
+  padding: 28px;
+}
+
+.encabezado-seccion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.encabezado-seccion h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #facc15;
+  margin: 0;
+}
+
+.acciones-superiores {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.btn-agregar {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.btn-agregar:hover {
+  background: #34d399;
+}
+
+.buscador-usuarios {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.buscador-usuarios input {
+  background: #1f2937;
+  border: 1px solid #374151;
+  color: #e5e7eb;
+  padding: 10px 16px 10px 40px;
+  border-radius: 8px;
+  font-size: 14px;
+  width: 250px;
+}
+
+.buscador-usuarios input:focus {
+  outline: none;
+  border-color: #60a5fa;
+}
+
+.icono-buscar {
+  position: absolute;
+  left: 12px;
+  color: #9ca3af;
+}
+
+/* =========================
+   TABLA DE USUARIOS
+========================= */
+.tabla-container {
+  background: #111827;
+  border-radius: 16px;
+  border: 1px solid #1f2937;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.tabla-usuarios {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla-usuarios thead {
+  background: #1f2937;
+}
+
+.tabla-usuarios th {
+  padding: 18px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #c7d2fe;
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #374151;
+}
+
+.tabla-usuarios tbody tr {
+  border-bottom: 1px solid #1f2937;
+  transition: background-color 0.2s ease;
+}
+
+.tabla-usuarios tbody tr:hover {
+  background-color: #1f2937;
+}
+
+.tabla-usuarios td {
+  padding: 18px 16px;
+  color: #e5e7eb;
+}
+
+/* =========================
+   INFORMACIÓN DE USUARIO
+========================= */
+.info-usuario-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-usuario {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: white;
+  font-size: 16px;
+}
+
+.datos-usuario {
+  display: flex;
+  flex-direction: column;
+}
+
+.nombre-usuario {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.email-usuario {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+/* =========================
+   BADGES Y ESTADOS
+========================= */
+.badge-rol {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.rol-admin {
+  background: #8b5cf6;
+  color: white;
+}
+
+.rol-vendedor {
+  background: #3b82f6;
+  color: white;
+}
+
+.rol-cliente {
+  background: #10b981;
+  color: white;
+}
+
+.documento-usuario {
+  font-family: monospace;
+  font-weight: 500;
+  color: #c7d2fe;
+}
+
+.badge-estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.badge-estado.activo {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.badge-estado.inactivo {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.punto-estado {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.badge-estado.activo .punto-estado {
+  background: #10b981;
+}
+
+.badge-estado.inactivo .punto-estado {
+  background: #ef4444;
+}
+
+/* =========================
+   ACCIONES DE LA TABLA
+========================= */
+.acciones-cell {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-editar, .btn-eliminar, .btn-toggle, .btn-reset {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.btn-editar {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-editar:hover {
+  background: #60a5fa;
+}
+
+.btn-eliminar {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-eliminar:hover {
+  background: #f87171;
+}
+
+.btn-toggle {
+  background: #f59e0b;
+  color: white;
+}
+
+.btn-toggle:hover {
+  background: #fbbf24;
+}
+
+.btn-reset {
+  background: #8b5cf6;
+  color: white;
+}
+
+.btn-reset:hover {
+  background: #a78bfa;
+}
+
+/* =========================
+   FILTROS Y ESTADÍSTICAS
+========================= */
+.filtros-estadisticas {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: #111827;
+  border-radius: 16px;
+  border: 1px solid #1f2937;
+}
+
+.filtros-rapidos {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-filtro {
+  padding: 8px 16px;
+  background: #1f2937;
+  border: 1px solid #374151;
+  color: #9ca3af;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-filtro:hover {
+  background: #374151;
+  color: #e5e7eb;
+}
+
+.btn-filtro.activo {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.estadisticas {
+  display: flex;
+  gap: 32px;
+}
+
+.estadistica-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.estadistica-label {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-bottom: 4px;
+}
+
+.estadistica-valor {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.estadistica-valor.activos {
+  color: #10b981;
+}
+
+.estadistica-valor.inactivos {
+  color: #ef4444;
+}
+
+/* =========================
+   MODO CLARO - USUARIOS
+========================= */
+.modo-claro .tabla-container,
+.modo-claro .filtros-estadisticas {
+  background: #ffffff;
+  border-color: #e5e7eb;
+}
+
+.modo-claro .tabla-usuarios thead {
+  background: #f3f4f6;
+}
+
+.modo-claro .tabla-usuarios th {
+  color: #374151;
+  border-bottom-color: #d1d5db;
+}
+
+.modo-claro .tabla-usuarios tbody tr {
+  border-bottom-color: #e5e7eb;
+}
+
+.modo-claro .tabla-usuarios tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.modo-claro .tabla-usuarios td {
+  color: #111827;
+}
+
+.modo-claro .email-usuario {
+  color: #6b7280;
+}
+
+.modo-claro .documento-usuario {
+  color: #374151;
+}
+
+.modo-claro .buscador-usuarios input {
+  background: #ffffff;
+  border-color: #d1d5db;
+  color: #111827;
+}
+
+.modo-claro .btn-filtro {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  color: #6b7280;
+}
+
+.modo-claro .btn-filtro:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.modo-claro .btn-filtro.activo {
+  background: #3b82f6;
+  color: white;
+}
+
+.modo-claro .estadistica-label {
+  color: #6b7280;
+}
+
+.modo-claro .estadistica-valor {
+  color: #111827;
+}

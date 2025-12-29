@@ -1,0 +1,142 @@
+<div class="usuarios-admin-container">
+  <div class="pagina-usuarios" [class.modo-claro]="!modoOscuro">
+    <!-- HEADER -->
+    <header class="header-usuarios">
+      <div class="logo">
+        <img src="LogoProvisorio.png" alt="Electromanía" />
+      </div>
+
+      <nav class="menu-superior">
+        <a href="#" class="menu-item" routerLink="/dashboard">
+          Dashboard
+        </a>
+        <a href="#" class="menu-item" routerLink="/productos-admin">
+          Productos
+        </a>
+        <a href="#" class="menu-item" routerLink="/usuarios-admin">
+          Usuarios
+          <span class="linea-usuarios"></span>
+        </a>
+      </nav>
+
+      <div class="acciones-header">
+        <button class="toggle-modo" (click)="cambiarModo()">
+          {{ modoOscuro ? '☀️' : '🌙' }}
+        </button>
+        <button class="btn-ingresar" (click)="cerrarSesion()">Cerrar Sesión</button>
+      </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-usuarios">
+      <div class="encabezado-seccion">
+        <h1>Gestión de Usuarios</h1>
+        <div class="acciones-superiores">
+          <button class="btn-agregar" (click)="agregarUsuario()">
+            + Nuevo Usuario
+          </button>
+          <div class="buscador-usuarios">
+            <input 
+              type="text" 
+              placeholder="Buscar usuario..." 
+              [(ngModel)]="busqueda"
+              (input)="filtrarUsuarios()"
+            />
+            <span class="icono-buscar">🔍</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABLA DE USUARIOS -->
+      <div class="tabla-container">
+        <table class="tabla-usuarios">
+          <thead>
+            <tr>
+              <th>USUARIO</th>
+              <th>ROL</th>
+              <th>NIT/CI</th>
+              <th>ESTADO</th>
+              <th>ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let usuario of usuariosFiltrados">
+              <td>
+                <div class="info-usuario-cell">
+                  <div class="avatar-usuario">
+                    {{ obtenerIniciales(usuario.nombre) }}
+                  </div>
+                  <div class="datos-usuario">
+                    <div class="nombre-usuario">{{ usuario.nombre }}</div>
+                    <div class="email-usuario">{{ usuario.email }}</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="badge-rol" [class]="'rol-' + usuario.rol.toLowerCase()">
+                  {{ usuario.rol }}
+                </span>
+              </td>
+              <td class="documento-usuario">{{ usuario.nitCi }}</td>
+              <td>
+                <span class="badge-estado" [class.activo]="usuario.estado === 'Activo'" [class.inactivo]="usuario.estado === 'Inactivo'">
+                  <span class="punto-estado"></span>
+                  {{ usuario.estado }}
+                </span>
+              </td>
+              <td>
+                <div class="acciones-cell">
+                  <button class="btn-editar" (click)="editarUsuario(usuario)" title="Editar">
+                    ✏️
+                  </button>
+                  <button class="btn-eliminar" (click)="eliminarUsuario(usuario.id)" title="Eliminar">
+                    🗑️
+                  </button>
+                  <button class="btn-toggle" (click)="toggleEstado(usuario)" [title]="usuario.estado === 'Activo' ? 'Desactivar' : 'Activar'">
+                    {{ usuario.estado === 'Activo' ? '☉' : '○' }}
+                  </button>
+                  <button class="btn-reset" (click)="resetPassword(usuario.id)" title="Resetear Contraseña">
+                    🔄
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- FILTROS Y ESTADÍSTICAS -->
+      <div class="filtros-estadisticas">
+        <div class="filtros-rapidos">
+          <button class="btn-filtro" [class.activo]="filtroRol === 'all'" (click)="aplicarFiltroRol('all')">
+            Todos
+          </button>
+          <button class="btn-filtro" [class.activo]="filtroRol === 'Admin'" (click)="aplicarFiltroRol('Admin')">
+            Administradores
+          </button>
+          <button class="btn-filtro" [class.activo]="filtroRol === 'Vendedor'" (click)="aplicarFiltroRol('Vendedor')">
+            Vendedores
+          </button>
+          <button class="btn-filtro" [class.activo]="filtroRol === 'Cliente'" (click)="aplicarFiltroRol('Cliente')">
+            Clientes
+          </button>
+        </div>
+
+        <div class="estadisticas">
+          <div class="estadistica-item">
+            <span class="estadistica-label">Total:</span>
+            <span class="estadistica-valor">{{ usuarios.length }}</span>
+          </div>
+          <div class="estadistica-item">
+            <span class="estadistica-label">Activos:</span>
+            <span class="estadistica-valor activos">{{ contarActivos() }}</span>
+          </div>
+          <div class="estadistica-item">
+            <span class="estadistica-label">Inactivos:</span>
+            <span class="estadistica-valor inactivos">{{ contarInactivos() }}</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
