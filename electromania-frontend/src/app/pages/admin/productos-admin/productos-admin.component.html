@@ -1,1 +1,119 @@
-<p>productos-admin works!</p>
+<div class="productos-admin-container">
+  <div class="pagina-productos" [class.modo-claro]="!modoOscuro">
+    <!-- HEADER -->
+    <header class="header-productos">
+      <div class="logo">
+        <img src="LogoProvisorio.png" alt="Electromanía" />
+      </div>
+
+      <nav class="menu-superior">
+        <a href="#" class="menu-item" routerLink="/dashboard">
+          Dashboard
+        </a>
+        <a href="#" class="menu-item" routerLink="/productos-admin">
+          Productos
+          <span class="linea-productos"></span>
+        </a>
+        <a href="#" class="menu-item" routerLink="/usuarios-admin">
+          Usuarios
+        </a>
+      </nav>
+
+      <div class="acciones-header">
+        <button class="toggle-modo" (click)="cambiarModo()">
+          {{ modoOscuro ? '☀️' : '🌙' }}
+        </button>
+        <button class="btn-ingresar" (click)="cerrarSesion()">Cerrar Sesión</button>
+      </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-productos">
+      <div class="encabezado-seccion">
+        <h1>Gestión de Inventario</h1>
+        <div class="acciones-superiores">
+          <button class="btn-agregar" (click)="agregarProducto()">
+            + Agregar Producto
+          </button>
+          <button class="btn-exportar" (click)="exportarInventario()">
+            📋 Exportar
+          </button>
+        </div>
+      </div>
+
+      <!-- TABLA DE PRODUCTOS -->
+      <div class="tabla-container">
+        <table class="tabla-productos">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>PRODUCTO</th>
+              <th>PRECIO</th>
+              <th>STOCK</th>
+              <th>ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let producto of productos">
+              <td class="id-producto">{{ producto.id }}</td>
+              <td>
+                <div class="info-producto-cell">
+                  <div class="nombre-producto">{{ producto.nombre }}</div>
+                  <div class="categoria-producto">{{ producto.categoria }}</div>
+                </div>
+              </td>
+              <td class="precio-producto">{{ producto.precio }} Bs.</td>
+              <td>
+                <span class="badge-stock" [class.bajo]="producto.stock <= 5" [class.critico]="producto.stock <= 2">
+                  {{ producto.stock }}
+                  <span *ngIf="producto.stock <= 5" class="alerta-stock">(Bajo)</span>
+                </span>
+              </td>
+              <td>
+                <div class="acciones-cell">
+                  <button class="btn-editar" (click)="editarProducto(producto)">
+                    ✏️
+                  </button>
+                  <button class="btn-eliminar" (click)="eliminarProducto(producto.id)">
+                    🗑️
+                  </button>
+                  <button class="btn-activar" [class.desactivado]="!producto.activo" (click)="toggleActivo(producto)">
+                    {{ producto.activo ? '✅' : '❌' }}
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- PAGINACIÓN Y RESUMEN -->
+      <div class="footer-tabla">
+        <div class="resumen-stock">
+          <div class="resumen-item">
+            <span class="resumen-label">Total Productos:</span>
+            <span class="resumen-valor">{{ productos.length }}</span>
+          </div>
+          <div class="resumen-item">
+            <span class="resumen-label">Stock Bajo:</span>
+            <span class="resumen-valor stock-bajo">{{ stockBajoCount }}</span>
+          </div>
+          <div class="resumen-item">
+            <span class="resumen-label">Valor Total:</span>
+            <span class="resumen-valor valor-total">{{ calcularValorTotal() }} Bs.</span>
+          </div>
+        </div>
+        
+        <div class="paginacion">
+          <button class="btn-pagina" [disabled]="paginaActual === 1" (click)="cambiarPagina(paginaActual - 1)">
+            ← Anterior
+          </button>
+          <span class="info-pagina">Página {{ paginaActual }} de {{ totalPaginas }}</span>
+          <button class="btn-pagina" [disabled]="paginaActual === totalPaginas" (click)="cambiarPagina(paginaActual + 1)">
+            Siguiente →
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
