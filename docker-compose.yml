@@ -13,7 +13,6 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-      - "./Back_Electromanía:/usr/src/app"
       - "/usr/src/app/node_modules"
     command: >
       sh -c "
@@ -26,6 +25,15 @@ services:
       echo '🚀 Iniciando NestJS...';
       pnpm run start:dev;
       "
+  frontend:
+    build:
+      context: ./electromania-frontend
+      dockerfile: Dockerfile
+    container_name: electromania-frontend
+    ports:
+      - "4200:4200"
+    volumes:
+      - "/usr/src/app/node_modules"
   # db:
   #   image: mysql:8.3.0
   #   container_name: mysql-db
