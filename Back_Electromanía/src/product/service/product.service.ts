@@ -96,4 +96,27 @@ export class ProductService {
 
     return this.productMapper.toModel(updated);
   }
+
+  // Delete product by id -> first delete associated images, then delete product
+  async deleteProduct(productId: number): Promise<void> {
+    // 1. See if product exists
+    const product = await this.prisma.product.findUnique({
+      where: { product_id: productId },
+    });
+
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
+    // 2. Delete associated images
+    await this.prisma.productImage.deleteMany({
+      where: { product_id: productId },
+    });
+
+    // 3. Delete product
+    await this.prisma.product.delete({
+      where: { product_id: productId },
+    });
+  }
+
 }
