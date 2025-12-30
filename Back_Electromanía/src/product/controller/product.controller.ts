@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards, Delete } from '@nestjs/common';
 import { ProductService } from '../service/product.service';
 import { ProductModule } from '../product.module';
 import { CreateProductRequestModel } from '../model/CreateProductRequest.model';
@@ -31,6 +31,7 @@ export class ProductController {
     registerProduct(@Body()product: CreateProductRequestModel): Promise<ProductModule>{
         return this.productService.createProduct(product);
     }
+    
     @Roles(UserRole.USER)
     @UseGuards(AuthGuard,RolesGuard)
     @Post("addImage")
@@ -38,4 +39,11 @@ export class ProductController {
         return this.productService.registerProductImage(productImage);
     }
 
+    // Delete product endpoint -> To need the id of the product
+    @Delete('delete/:id')
+    async delete(@Param('id') id: string): Promise<{ message: string }> 
+    {
+        await this.productService.deleteProduct(Number(id));
+        return { message: 'Producto eliminado correctamente' }; // suggested message for terminal output
+    }
 }
