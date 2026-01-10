@@ -7,11 +7,12 @@ import { ProductosComponent } from "./pages/productos/productos.component";
 import { DashboardComponent } from "./pages/admin/dashboard/dashboard.component";
 import { ProductosAdminComponent } from "./pages/admin/productos-admin/productos-admin.component";
 import { UsuariosAdminComponent } from "./pages/admin/usuarios-admin/usuarios-admin.component";
+import { ConectionComponent } from "./pages/conection/conection.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [UsuariosAdminComponent],
+  imports: [UsuariosAdminComponent, ConectionComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
