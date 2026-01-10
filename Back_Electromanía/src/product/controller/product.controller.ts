@@ -16,6 +16,12 @@ export class ProductController {
         private readonly productService: ProductService
     ){}
 
+    @Get("Conection")
+    testConection()
+    {
+        return { status: 'ok', data : []};
+    }
+
     @Get("all")
     getAllProducts(): Promise<ProductModule[]>{
         return this.productService.getAllProducts();
