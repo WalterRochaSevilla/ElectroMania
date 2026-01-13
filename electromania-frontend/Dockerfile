@@ -1,24 +1,28 @@
-# Dockerfile.dev
-FROM node:20-alpine
-
-RUN addgroup -S app && adduser -S app -G app
+######################
+### FRONTEND DEV #####
+######################
+FROM node:20-alpine As development
 
 WORKDIR /usr/src/app
 
+RUN apk add --no-cache libc6-compat netcat-openbsd
 
+# npm global
+RUN npm install -g npm@latest
+
+# Copiamos solo manifests para cache
 COPY package*.json ./
 
-RUN npm install
+# Instalamos deps
+RUN npm ci 
 
-# Copia todo
+# Copiamos el resto del código
 COPY . .
 
-RUN chown -R app:app /usr/src/app
+# Crear cache folder (opcional)
+RUN mkdir -p /usr/src/app/.angular/cache
 
-USER app
-
-# Expone el puerto de NestJS
 EXPOSE 4200
 
-
-CMD ["npm","run","start:dev"]
+# ❌ SIN USER ❌
+# ❌ SIN CMD ❌ (compose controla hot reload)

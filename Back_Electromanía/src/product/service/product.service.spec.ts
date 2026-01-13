@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductService } from './product.service';
 import { PrismaService } from '../../prisma/service/prisma.service';
+import { CreateProductRequestModel } from '../model/CreateProductRequest.model';
 
 describe('ProductService', () => {
   let service: ProductService;
@@ -11,9 +12,57 @@ describe('ProductService', () => {
     }).compile();
 
     service = module.get<ProductService>(ProductService);
+    const prisma = module.get(PrismaService);
+    await prisma.product.deleteMany();
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+  it("Deberia obtener todos los productos", async () => {
+    const newProduct = await service.createProduct({
+      name: 'prueba',
+      description: 'prueba',
+      price: 100,
+      stock: 10
+    })
+    const products = await service.getAllProducts();
+    expect(products.length).toBeGreaterThan(0);
+  });
+  it("Deberia obtener un producto valido", async () => {
+    const newProduct = await service.createProduct({
+      name: 'prueba',
+      description: 'prueba',
+      price: 100,
+      stock: 10
+    })
+    const products = await service.getAllProducts();
+    expect(products[0].product_id).toBe(newProduct.product_id);
+  });
+  it("Deberia crear un producto", async () => {
+    const newProduct = await service.createProduct({
+      name: 'prueba',
+      description: 'prueba',
+      price: 100,
+      stock: 10
+    })
+    expect(newProduct).toBeDefined();
+  })
+  it("Deberia actualizar un producto", async () => {
+    const newProduct = await service.createProduct({
+      name: 'prueba',
+      description: 'prueba',
+      price: 100,
+      stock: 10
+    })
+    const searchProduct = await service.getFilterBy({product_id: newProduct.product_id});
+    const updateData: CreateProductRequestModel = {
+      name: 'prueba',
+      description: 'prueba',
+      price: 200,
+      stock: 8
+    }
+    const updatedProduct = await service.updateProduct(searchProduct[0].product_id, updateData);
+    expect(updatedProduct).toBeDefined();
+  })
 });

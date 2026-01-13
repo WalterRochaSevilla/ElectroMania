@@ -25,5 +25,13 @@ export class ProductMapper implements Mapper<ProductModel,Product,Prisma.Product
             price: model.price,
             stock: model.stock
         }
+    }
+    toUpdateEntity(model: Partial<CreateProductRequestModel>): Prisma.ProductUpdateInput {
+        return{
+            product_name: model.name,
+            description: model.description,
+            price: model.price,
+            stock: model.stock
+        }
     }   
 }

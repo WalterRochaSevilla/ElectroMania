@@ -36,8 +36,6 @@ export class ProductService {
     }
 
     const imageData = this.productImageMapper.toEntity(dto, product);
-
-    console.log(imageData);
     await this.prisma.productImage.create({ data: imageData });
 
     const updated = await this.prisma.product.findUnique({
@@ -90,7 +88,7 @@ export class ProductService {
   ): Promise<ProductModel> {
     const updated = await this.prisma.product.update({
       where: { product_id: productId },
-      data: dto,
+      data: this.productMapper.toUpdateEntity(dto),
       include: { productImages: true },
     });
 
