@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ProductosService } from '../../services/productos.service';
 import { Router, RouterLink } from '@angular/router';
+import environment from '../../../environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -23,7 +25,14 @@ export class HomeComponent {
     /* =========================
      INYECCIÓN DE DEPENDENCIAS
   ========================= */
-  constructor(private router: Router) {}
+  constructor(private router: Router,
+    private productosService: ProductosService
+  ) {
+    this.productosService.getProductos().subscribe(productos => {
+      console.log(productos);
+      alert(productos);
+    })
+  }
 
   /* =========================
      CATEGORÍAS
@@ -40,6 +49,7 @@ export class HomeComponent {
      PRODUCTOS (SIMULADOS)
      Luego vienen del backend
   ========================= */
+
   productos = [
     {
       nombre: 'ESP32 WiFi + Bluetooth',
@@ -68,6 +78,7 @@ export class HomeComponent {
     this.router.navigate(['/login']);
   }
   Catalogo() {
+
     this.router.navigate(['/home']);
   }
   Carrito() {

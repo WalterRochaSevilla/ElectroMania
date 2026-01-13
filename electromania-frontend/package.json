@@ -5,7 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "start:dev": "ng serve --host 0.0.0.0 --port 4200",
-    "build": "ng build",
+    "prebuild": "node generate-env.ts",
+    "build": "npm run prebuild && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:electromania-frontend": "node dist/electromania-frontend/server/server.mjs"

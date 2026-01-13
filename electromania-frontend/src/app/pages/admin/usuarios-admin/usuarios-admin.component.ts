@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { ProductosService } from '../../../services/productos.service';
 
 @Component({
   selector: 'app-usuarios-admin',
@@ -109,7 +110,14 @@ export class UsuariosAdminComponent {
   /* =========================
      INYECCIÓN DE DEPENDENCIAS
   ========================= */
-  constructor(private router: Router) {}
+  constructor(private router: Router,
+    private productosService: ProductosService
+  ) {
+    this.productosService.getProductos().subscribe(productos => {
+      console.log(productos);
+      alert(productos);
+    })
+  }
 
   /* =========================
      HEADER

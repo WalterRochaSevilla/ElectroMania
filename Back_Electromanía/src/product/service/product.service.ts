@@ -50,6 +50,7 @@ export class ProductService {
     const products = await this.prisma.product.findMany({
       include: { productImages: true },
     });
+    console.log("Productos obtenidos");
     return products.map((p) => this.productMapper.toModel(p));
   }
 
