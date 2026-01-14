@@ -3,7 +3,7 @@ import { AuthService } from '../service/auth.service';
 import { UserCreateRequestModel } from '../../user/models/UserCreateRequest.model';
 import { UserLoginRequestModel } from '../models/user-login.model';
 import { ApiFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UserModel } from 'src/user/models/User.model';
+import { UserModel } from '../../user/models/User.model';
 import { UserJwtPayloadModel } from '../models/user-jwt-payload.model';
 import { access } from 'fs';
 
