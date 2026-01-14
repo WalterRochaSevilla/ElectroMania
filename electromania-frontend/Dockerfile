@@ -1,7 +1,4 @@
-######################
-### FRONTEND DEV #####
-######################
-FROM node:20-alpine As development
+FROM node:20-alpine AS development
 
 WORKDIR /usr/src/app
 
@@ -10,19 +7,21 @@ RUN apk add --no-cache libc6-compat netcat-openbsd
 # npm global
 RUN npm install -g npm@latest
 
-# Copiamos solo manifests para cache
-COPY package*.json ./
+# ⚠️ IMPORTANTE: cambiar permisos
+RUN chown -R node:node /usr/src/app
+
+# 👇 USAR USUARIO NODE
+USER node
+
+# Copiamos solo manifests
+COPY --chown=node:node package*.json ./
 
 # Instalamos deps
-RUN npm ci 
+RUN npm ci
 
 # Copiamos el resto del código
-COPY . .
+COPY --chown=node:node . .
 
-# Crear cache folder (opcional)
 RUN mkdir -p /usr/src/app/.angular/cache
 
 EXPOSE 4200
-
-# ❌ SIN USER ❌
-# ❌ SIN CMD ❌ (compose controla hot reload)

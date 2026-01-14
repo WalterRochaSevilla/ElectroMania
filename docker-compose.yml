@@ -35,9 +35,10 @@ services:
       dockerfile: Dockerfile
       target: development
     container_name: electromania-frontend
+    env_file:
+      - .env
     volumes:
       - ./electromania-frontend:/usr/src/app
-      - /usr/src/app/node_modules
       - angular_cache:/usr/src/app/.angular/cache
     ports:
       - "4200:4200"

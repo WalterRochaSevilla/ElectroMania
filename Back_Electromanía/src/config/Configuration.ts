@@ -17,5 +17,8 @@ export default () => ({
     jwtConstants:{
         secret: process.env.JWT_SECRET,
         expiresIn: process.env.JWT_EXPIRATION
+    },
+    webSiteDomain: {
+        url: process.env.WEBSITE_DOMAIN
     }
 })
