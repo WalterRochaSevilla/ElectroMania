@@ -21,8 +21,6 @@ describe('AuthService', () => {
     }).compile();
 
     service = module.get<AuthService>(AuthService);
-    const prisma = module.get(PrismaService);
-    await prisma.user.deleteMany();
   });
 
   it('should be defined', () => {
@@ -39,14 +37,6 @@ describe('AuthService', () => {
       expect(service.registerUser(request)).toBeTruthy();
   }),
   it('Deberia iniciar sesion', () => {
-      const request: UserCreateRequestModel = {
-          name: 'prueba',
-          email: 'prueba@gmail.com',
-          password: 'password',
-          nit_ci: '123456789',
-          social_reason: 'prueba'
-      }
-      service.registerUser(request);
       const request: UserLoginRequestModel = {
           email: new Email('prueba@gmail.com'),
           password: 'password'
