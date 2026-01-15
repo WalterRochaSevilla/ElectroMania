@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 
 @Component({
@@ -33,7 +34,9 @@ export class RegistroComponent {
   /* =========================
      INYECCIÓN DE DEPENDENCIAS
   ========================= */
-  constructor(private router: Router) {}
+  constructor(private router: Router,
+    private authService: AuthService
+  ) {}
 
   /* =========================
      HEADER
@@ -113,6 +116,14 @@ export class RegistroComponent {
       fechaRegistro: new Date().toISOString()
     });
 
+    let data = {
+      email: this.email,
+      name: this.razonSocial,
+      password: this.contrasena,
+      nit_ci: this.nit,
+      social_reason: this.razonSocial
+    }
+
     // Aquí iría la lógica real de registro:
     // 1. Validar que el email no esté registrado
     // 2. Encriptar contraseña
@@ -120,6 +131,11 @@ export class RegistroComponent {
     // 4. Manejar respuesta del servidor
     
     // Simulación de registro exitoso
+
+    this.authService.registerUser(data).then((response) => {
+      console.log('Respuesta del servidor:', response);
+    })
+
     const registroExitoso = true;
     
     if (registroExitoso) {
