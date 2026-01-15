@@ -12,6 +12,7 @@ services:
         condition: service_healthy
     volumes:
       - ./Back_Electromanía:/usr/src/app
+      - ./node_modules:/usr/src/app/node_modules
       - "/usr/src/app/node_modules"
       # - dist_data:/usr/src/app/dist
     # environment:
