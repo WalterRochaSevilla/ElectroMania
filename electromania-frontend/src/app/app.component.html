@@ -1,1 +1,126 @@
-<app-usuarios-admin></app-usuarios-admin>
+<!-- ENCABEZADO FUTURISTA -->
+<header class="navbar" [class.navbar-hidden]="isScrolled">
+  <div class="nav-content">
+    
+    <!-- LOGO Y MARCA (IZQUIERDA) -->
+    <div class="brand" (click)="irA('bienvenida')">
+      <img src="/LogoProvisorio.png" alt="ElectroMania" class="main-logo">
+      <h1 class="brand-name">ELECTRO<span style="margin-left: -4px">MANIA</span></h1>
+    </div>
+
+    <!-- NAVEGACIÓN (DERECHA) -->
+    <nav class="nav-right">
+      <div class="nav-links">
+        <a (click)="irA('bienvenida')" class="nav-item">
+          <i class="fas fa-home"></i>
+          INICIO
+        </a>
+        <a (click)="irA('home')" class="nav-item">
+          <i class="fas fa-store"></i>
+          TIENDA
+        </a>
+        
+        <!-- DROPDOWN MEJORADO -->
+        <div class="dropdown" 
+             (mouseenter)="dropdownOpen = true" 
+             (mouseleave)="dropdownOpen = false">
+          <button class="drop-btn" (click)="toggleDropdown()">
+            <i class="fas fa-users"></i>
+            ÚNETE CON NOSOTROS 
+            <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i>
+          </button>
+          <div class="dropdown-content" [class.open]="dropdownOpen">
+            <a (click)="irA('login')">
+              <i class="fas fa-sign-in-alt"></i>
+              INICIAR SESIÓN
+            </a>
+            <a (click)="irA('registro')">
+              <i class="fas fa-user-plus"></i>
+              REGISTRARSE
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTÓN TEMA FUTURISTA -->
+      <div class="power-container" 
+           (click)="toggleTheme()" 
+           [class.power-on]="isDarkMode"
+           [title]="isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'">
+        <div class="power-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+            <line x1="12" y1="2" x2="12" y2="12"></line>
+          </svg>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- CONTENIDO PRINCIPAL -->
+<main class="main-wrapper">
+  <router-outlet></router-outlet>
+</main>
+
+<!-- PIE DE PÁGINA FUTURISTA -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <!-- INFORMACIÓN DE MARCA -->
+      <div class="footer-info">
+        <div class="brand" (click)="irA('bienvenida')">
+          <img src="/LogoProvisorio.png" alt="Logo ElectroMania" class="main-logo">
+          <span class="brand-name">ELECTRO<span style="margin-left: -4px">MANIA</span></span>
+        </div>
+        <p class="brand-description">
+          <strong>TECNOLOGÍA Y EXCELENCIA EN MECATRÓNICA</strong><br>
+          Excelencia en ingeniería mecatrónica y componentes de alta fidelidad. 
+          Tecnología de vanguardia para innovadores y creadores del futuro.
+        </p>
+      </div>
+
+      <!-- NAVEGACIÓN FOOTER -->
+      <div class="footer-nav">
+        <h4>SECCIONES</h4>
+        <div class="footer-links">
+          <a (click)="irA('bienvenida')">
+            <i class="fas fa-chevron-right"></i>
+            INICIO
+          </a>
+          <a (click)="irA('home')">
+            <i class="fas fa-chevron-right"></i>
+            TIENDA
+          </a>
+          <a (click)="irA('sobre-nosotros')">
+            <i class="fas fa-chevron-right"></i>
+            SOBRE NOSOTROS
+          </a>
+          <a (click)="irA('contactenos')">
+            <i class="fas fa-chevron-right"></i>
+            CONTÁCTENOS
+          </a>
+        </div>
+      </div>
+
+      <!-- REDES SOCIALES -->
+      <div class="footer-social">
+        <h4>CONÉCTATE</h4>
+        <p style="color: var(--text-secondary); margin-bottom: 25px; font-size: 0.9rem;">
+          Síguenos en nuestras redes para las últimas novedades
+        </p>
+        <div class="social-icons">
+          <a href="https://facebook.com/electromania" target="_blank" class="social-box fb" title="Facebook">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="https://instagram.com/electromania" target="_blank" class="social-box ig" title="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="https://tiktok.com/@electromania" target="_blank" class="social-box tk" title="TikTok">
+            <i class="fab fa-tiktok"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

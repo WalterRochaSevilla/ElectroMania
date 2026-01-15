@@ -1,0 +1,118 @@
+<section class="contactenos-container">
+  <!-- Fondo futurista -->
+  <div class="background-effects">
+    <div class="grid-tecnologico"></div>
+    <div class="particulas-futuristas"></div>
+  </div>
+
+  <div class="content-wrapper">
+    <!-- Header con animación -->
+    <header class="contact-header fade-in">
+      <div class="header-content">
+        <h1 class="titulo-principal">CONTÁCTENOS</h1>
+        <div class="linea-cyan"></div>
+        <p class="subtitulo">Conectando innovación con tecnología de vanguardia</p>
+      </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="contact-main">
+      <div class="contact-grid">
+        <!-- Información de contacto -->
+        <div class="contact-card glassmorphism slide-up">
+          <div class="card-header">
+            <h2 class="card-title">Información de Contacto</h2>
+            <span class="badge glow">DISPONIBLE</span>
+          </div>
+          
+          <div class="contact-info">
+            <div class="info-item">
+              <div class="icon-container pulse">
+                <span class="icon">👨‍💻</span>
+              </div>
+              <div class="info-content">
+                <h3>{{ nombre }}</h3>
+                <p class="profession">{{ titulo }}</p>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="icon-container">
+                <span class="icon">📍</span>
+              </div>
+              <div class="info-content">
+                <h3>Ubicación</h3>
+                <p>{{ localidad }}</p>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="icon-container">
+                <span class="icon">📱</span>
+              </div>
+              <div class="info-content">
+                <h3>Teléfono / WhatsApp</h3>
+                <p class="phone-number">{{ telefono }}</p>
+                <button class="btn-whatsapp" (click)="openWhatsApp()">
+                  <span class="btn-text">Contactar por WhatsApp</span>
+                  <span class="btn-icon">💬</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="icon-container">
+                <span class="icon">✉️</span>
+              </div>
+              <div class="info-content">
+                <h3>Correo Electrónico</h3>
+                <p>{{ email }}</p>
+                <button class="btn-email" (click)="sendEmail()">
+                  <span class="btn-text">Enviar Email</span>
+                  <span class="btn-icon">📧</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <div class="schedule">
+              <h4>Horario de Atención</h4>
+              <p>Lunes a Viernes: 8:00 - 18:00</p>
+              <p>Sábados: 9:00 - 13:00</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Imagen de contacto -->
+        <div class="image-card glassmorphism slide-up delayed">
+          <div class="image-container">
+            <div class="image-overlay">
+              <h2 class="image-title">ElectroMania Bolivia</h2>
+              <p class="image-description">Especialistas en tecnología y electrónica avanzada para proyectos innovadores</p>
+              
+              <div class="tech-tags">
+                <span class="tech-tag">Electrónica</span>
+                <span class="tech-tag">IoT</span>
+                <span class="tech-tag">Robótica</span>
+                <span class="tech-tag">Automatización</span>
+              </div>
+
+              <div class="contact-extra">
+                <div class="extra-info">
+                  <h4>Servicios Disponibles</h4>
+                  <ul>
+                    <li>Asesoría técnica especializada</li>
+                    <li>Desarrollo de proyectos electrónicos</li>
+                    <li>Venta de componentes electrónicos</li>
+                    <li>Capacitación y talleres</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</section>

@@ -1,3 +1,6 @@
+* {
+  box-sizing: border-box;
+}
 /* =========================
    CONTENEDOR GENERAL
 ========================= */
@@ -215,6 +218,10 @@
   overflow: hidden;
   border: 1px solid #1f2937;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  /*flex box*/
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .card-producto:hover {
@@ -237,23 +244,33 @@
 
 .info-producto {
   padding: 14px;
+  /*esta parte para que ocupe todo el producto*/
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .info-producto h4 {
   font-size: 16px;
   margin-bottom: 6px;
+  min-height: 40px; /* Espacio para 2 líneas de texto */
+  display: flex;
+  align-items: center;
 }
 
 .info-producto p {
   font-size: 14px;
   color: #9ca3af;
   margin-bottom: 10px;
+  min-height: 45px; /* Espacio reservado para la descripción */
 }
 
 .precio {
   font-size: 18px;
   font-weight: 700;
   color: #60a5fa;
+  margin-top: auto; /* EMPUJA EL PRECIO Y EL BOTÓN AL FONDO */
+  margin-bottom: 8px;
 }
 
 .info-producto button {

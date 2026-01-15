@@ -1,18 +1,17 @@
 <div class="home-container">
-
   <div class="pagina-catalogo-container" [class.modo-claro]="!modoOscuro">
 
-    <!-- HEADER -->
     <header class="header-catalogo">
       <div class="logo">
         <img src="LogoProvisorio.png" alt="Electromanía" />
       </div>
 
       <nav class="menu-superior">
-        <a href="#" class="menu-item" routerLink="/home">Catálogo
+        <a class="menu-item" routerLink="/home">
+          Catálogo
           <span class="linea-catalogo"></span>
         </a>
-        <a href="#" class="menu-item" routerLink="/producto">
+        <a class="menu-item" routerLink="/producto">
           Carrito <span class="badge">0</span>
         </a>
       </nav>
@@ -25,7 +24,6 @@
       </div>
     </header>
 
-    <!-- MAIN -->
     <div class="main-catalogo">
 
       <aside class="sidebar-categorias">
@@ -56,16 +54,27 @@
 
         <div class="grid-productos">
           <div class="card-producto" *ngFor="let producto of productosFiltrados">
-            <div class="imagen-producto">
-              <img src="assets/placeholder.png" alt="Producto" />
+            
+            <div class="imagen-producto" 
+                 [routerLink]="['/detalle-producto', producto.id]" 
+                 style="cursor: pointer;">
+              <img src="https://picsum.photos/seed/{{producto.nombre}}/200/150" 
+                   alt="Producto" 
+                   style="opacity: 1; max-height: 100%; width: 100%; object-fit: cover;" />
             </div>
 
             <div class="info-producto">
-              <h4>{{ producto.nombre || 'Nombre del producto' }}</h4>
+              <h4 [routerLink]="['/detalle-producto', producto.id]" 
+                  style="cursor: pointer; color: inherit; text-decoration: none;">
+                {{ producto.nombre || 'Nombre del producto' }}
+              </h4>
+              
               <p>{{ producto.descripcion || 'Descripción breve...' }}</p>
+              
               <p class="precio">
                 {{ producto.precio ? producto.precio + ' Bs.' : 'Precio' }}
               </p>
+              
               <button (click)="agregarAlCarrito(producto)">
                 Agregar
               </button>

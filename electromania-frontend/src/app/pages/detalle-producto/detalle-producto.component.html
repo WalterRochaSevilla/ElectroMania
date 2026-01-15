@@ -1,1 +1,72 @@
-<p>detalle-producto works!</p>
+<div class="pagina-detalle-container" [class.modo-claro]="!modoOscuro" *ngIf="producto">
+  
+  <header class="header-catalogo">
+    <div class="logo">
+      <img src="LogoProvisorio.png" alt="Electromanía" />
+    </div>
+    <nav class="menu-superior">
+      <a class="menu-item" (click)="irAHome()">Catálogo</a>
+      <a class="menu-item" (click)="irACarrito()">
+        Carrito <span class="badge">{{ totalItems }}</span>
+      </a>
+    </nav>
+    <div class="acciones-header">
+      <button class="toggle-modo" (click)="cambiarModo()">
+        {{ modoOscuro ? '☀️' : '🌙' }}
+      </button>
+      <button class="btn-ingresar" (click)="irALogin()">Ingresar</button>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="detalle-wrapper">
+      
+      <section class="seccion-principal">
+        <div class="galeria-producto">
+          <div class="contenedor-imagen-principal">
+            <img [src]="producto.imagen" [alt]="producto.nombre">
+          </div>
+        </div>
+
+        <div class="info-compra">
+          <span class="categoria-tag">{{ producto.categoria }}</span>
+          <h1>{{ producto.nombre }}</h1>
+          
+          <div class="estado-stock" [ngClass]="obtenerClaseStock()">
+            <span class="punto-estado"></span>
+            {{ mensajeStock }}
+          </div>
+
+          <p class="descripcion-corta">{{ producto.descripcionCorta }}</p>
+
+          <div class="precio-detalle">{{ producto.precio | number:'1.2-2' }} Bs.</div>
+
+          <div class="acciones-agregar">
+            <div class="selector-cantidad">
+              <button (click)="modificarCantidad(-1)">-</button>
+              <input type="number" [(ngModel)]="cantidadSeleccionada" readonly>
+              <button (click)="modificarCantidad(1)">+</button>
+            </div>
+            <button class="btn-primario" (click)="agregarAlCarrito()" [disabled]="producto.stock === 0">
+              Agregar al Carrito
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="seccion-tecnica">
+        <h3>Especificaciones Técnicas</h3>
+        <div class="grid-especificaciones">
+          <div class="especificacion-item" *ngFor="let spec of producto.especificaciones">
+            <span class="label">{{ spec.label }}:</span>
+            <span class="valor">{{ spec.valor }}</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div *ngIf="!producto" style="color: white; text-align: center; padding: 50px;">
+  <h2>Cargando producto...</h2>
+</div>

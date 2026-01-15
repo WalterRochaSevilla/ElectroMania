@@ -1,1 +1,141 @@
-/* You can add global styles to this file, and also import other style files */
+/* RESET Y FUENTES */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Montserrat:wght@900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Orbitron:wght@700;800&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+/* VARIABLES DE TEMA FUTURISTAS */
+:root {
+  /* Colores base manteniendo tu paleta */
+  --acento: #00f2ff;
+  --acento-glow: rgba(0, 242, 255, 0.4);
+  --acento-strong: #00d4ff;
+  --acento-transparent: rgba(0, 242, 255, 0.1);
+  --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.2s ease;
+  --transition-slow: all 0.6s ease;
+}
+
+/* TEMA OSCURO FUTURISTA */
+[data-theme='dark'] {
+  --bg-main: linear-gradient(135deg, #050a10 0%, #0a1520 100%);
+  --bg-card: rgba(11, 22, 34, 0.8);
+  --bg-nav: rgba(5, 10, 16, 0.92);
+  --bg-dropdown: rgba(11, 22, 34, 0.95);
+  --text-primary: #ffffff;
+  --text-secondary: #a8c7fa;
+  --text-muted: #6b8cbc;
+  --border-color: rgba(0, 242, 255, 0.2);
+  --border-hover: rgba(0, 242, 255, 0.4);
+  --shadow-light: 0 4px 20px rgba(0, 242, 255, 0.08);
+  --shadow-medium: 0 8px 30px rgba(0, 242, 255, 0.12);
+  --shadow-strong: 0 0 40px rgba(0, 242, 255, 0.2);
+  --logo-filter: drop-shadow(0 0 12px var(--acento-glow)) brightness(1.2);
+  --nav-blur: blur(25px);
+  --gradient-accent: linear-gradient(135deg, #00f2ff 0%, #0066ff 100%);
+}
+
+/* TEMA CLARO FUTURISTA */
+[data-theme='light'] {
+  --bg-main: linear-gradient(135deg, #f0f8ff 0%, #e6f7ff 100%);
+  --bg-card: rgba(255, 255, 255, 0.95);
+  --bg-nav: rgba(255, 255, 255, 0.98);
+  --bg-dropdown: rgba(255, 255, 255, 0.98);
+  --text-primary: #0a2540;
+  --text-secondary: #2c5282;
+  --text-muted: #4a5568;
+  --border-color: rgba(0, 114, 255, 0.15);
+  --border-hover: rgba(0, 114, 255, 0.3);
+  --shadow-light: 0 4px 20px rgba(0, 114, 255, 0.05);
+  --shadow-medium: 0 8px 30px rgba(0, 114, 255, 0.1);
+  --shadow-strong: 0 0 40px rgba(0, 114, 255, 0.15);
+  --logo-filter: brightness(0.85) contrast(1.2);
+  --nav-blur: blur(20px);
+  --gradient-accent: linear-gradient(135deg, #0066ff 0%, #00ccff 100%);
+}
+
+/* ESTILOS BASE */
+body {
+  background: var(--bg-main);
+  color: var(--text-primary);
+  transition: var(--transition);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* CONTENEDOR RESPONSIVO */
+.container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+/* EFECTOS ESPECIALES */
+.neon-glow {
+  filter: drop-shadow(0 0 10px var(--acento-glow));
+}
+
+.glow-text {
+  text-shadow: 0 0 10px currentColor;
+}
+
+::selection {
+  background: var(--acento);
+  color: #000;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-card);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--acento);
+}
+/* Transición suave para cambios de tema */
+body.theme-transition * {
+  transition: background-color 0.5s ease, 
+              color 0.5s ease, 
+              border-color 0.5s ease,
+              box-shadow 0.5s ease !important;
+}
+
+/* Clase para animaciones de entrada */
+body.loaded .navbar,
+body.loaded .footer {
+  animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

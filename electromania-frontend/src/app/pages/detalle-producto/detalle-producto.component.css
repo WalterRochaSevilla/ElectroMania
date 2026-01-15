@@ -1,0 +1,176 @@
+* { box-sizing: border-box; }
+
+.pagina-detalle-container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0b132b, #020617);
+  color: #e5e7eb;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* HEADER (Reutilizado y ajustado) */
+.header-catalogo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  background: #111827;
+  border-bottom: 1px solid #1f2937;
+}
+
+.logo img { height: 48px; }
+
+.menu-superior { display: flex; gap: 26px; }
+.menu-item { color: #c7d2fe; text-decoration: none; cursor: pointer; font-weight: 500; }
+.menu-item:hover { color: #60a5fa; }
+
+.badge {
+  background: #ef4444;
+  color: white;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+/* MAIN CONTENT */
+.main-content { padding: 40px 20px; display: flex; justify-content: center; }
+.detalle-wrapper { max-width: 1100px; width: 100%; }
+
+.seccion-principal {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 50px;
+}
+
+.contenedor-imagen-principal {
+  background: #111827;
+  border-radius: 20px;
+  padding: 40px;
+  display: flex;
+  justify-content: center;
+  border: 1px solid #374151;
+}
+
+.contenedor-imagen-principal img { max-width: 100%; height: auto; }
+
+/* INFO COMPRA */
+.categoria-tag { color: #60a5fa; font-size: 14px; font-weight: 600; text-transform: uppercase; }
+.info-compra h1 { font-size: 32px; margin: 10px 0; color: #facc15; }
+
+.estado-stock {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.stock-disponible { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+.stock-bajo { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+.stock-agotado { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+
+.punto-estado { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+
+.precio-detalle { font-size: 36px; font-weight: 700; color: #e5e7eb; margin: 25px 0; }
+
+.acciones-agregar { display: flex; gap: 20px; align-items: center; }
+
+.selector-cantidad {
+  display: flex;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.selector-cantidad button {
+  background: #1f2937;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.selector-cantidad input {
+  width: 50px;
+  text-align: center;
+  background: #020617;
+  border: none;
+  color: white;
+}
+
+.btn-primario {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  flex: 1;
+}
+
+/* SECCIÓN TÉCNICA */
+.seccion-tecnica {
+  background: #111827;
+  padding: 30px;
+  border-radius: 20px;
+  border: 1px solid #374151;
+}
+
+.grid-especificaciones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.especificacion-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #1f2937;
+}
+
+.especificacion-item .label { color: #9ca3af; }
+
+.recursos-links { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
+.link-recurso { color: #60a5fa; text-decoration: none; }
+
+/* FOOTER */
+.footer-electromania {
+  background: #020617;
+  border-top: 1px solid #1f2937;
+  padding: 40px 20px 20px;
+  margin-top: 60px;
+}
+
+.footer-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 40px;
+}
+
+.footer-logo { height: 40px; margin-bottom: 15px; }
+
+.footer-section h4 { color: #facc15; margin-bottom: 20px; }
+.footer-section a { display: block; color: #9ca3af; text-decoration: none; margin-bottom: 10px; cursor: pointer; }
+.footer-section a:hover { color: white; }
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 40px;
+  color: #4b5563;
+  font-size: 14px;
+}
+
+/* MODO CLARO */
+.modo-claro { background: #f9fafb; color: #111827; }
+.modo-claro .header-catalogo { background: white; }
+.modo-claro .seccion-tecnica, .modo-claro .contenedor-imagen-principal { background: white; border-color: #e5e7eb; }
+.modo-claro .especificacion-item { border-bottom-color: #f3f4f6; }
+.modo-claro .precio-detalle { color: #111827; }
