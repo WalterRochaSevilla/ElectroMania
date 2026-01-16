@@ -38,14 +38,14 @@ describe('AuthService', () => {
   }),
   it('Deberia iniciar sesion', () => {
       const request: UserLoginRequestModel = {
-          email: new Email('prueba@gmail.com'),
+          email: 'prueba@gmail.com',
           password: 'password'
       }
       expect(service.login(request)).toBeTruthy();
   })
   it('Deberia generar un token valido', () => {
       const request: UserLoginRequestModel = {
-          email: new Email('prueba@gmail.com'),
+          email: 'prueba@gmail.com',
           password: 'password'
       }
       const token = service.login(request);
