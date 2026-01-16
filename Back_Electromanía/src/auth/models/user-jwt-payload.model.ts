@@ -4,6 +4,11 @@ export class UserJwtPayloadModel{
     readonly uuid: string;
     readonly email: string;
     readonly role: UserRole;
+    constructor(uuid: string, email: string, role: UserRole) {
+        this.uuid = uuid;
+        this.email = email;
+        this.role = role;
+    }
     toObject(){
         return{
             uuid: this.uuid,

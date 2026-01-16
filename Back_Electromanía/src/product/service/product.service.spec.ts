@@ -13,6 +13,9 @@ describe('ProductService', () => {
 
     service = module.get<ProductService>(ProductService);
     const prisma = module.get(PrismaService);
+    await prisma.cartDetails.deleteMany();
+    await prisma.cart.deleteMany();
+    await prisma.productImage.deleteMany();
     await prisma.product.deleteMany();
   });
 
