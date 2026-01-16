@@ -85,20 +85,17 @@ Generadas con Spring Initializr:
         - POST /api/auth/login → Login y generación de JWT
 
     - Usuarios (ADMIN)
-        - GET /api/usuarios → Listar usuarios
-        - GET /api/usuarios/{id} → Obtener usuario
-        - DELETE /api/usuarios/{id} → Eliminar usuario
+        - *No implementado en frontend actualmente (Gestión simulada)* TODO!
 
     - Productos
-        - GET /api/productos → Listar productos
-        - GET /api/productos/{id} → Detalle de producto
-        - POST /api/productos (ADMIN) → Crear producto
-        - PUT /api/productos/{id} (ADMIN) → Actualizar producto
-        - DELETE /api/productos/{id} (ADMIN) → Eliminar producto
-        - Carrito y Facturación
-        - POST /api/carrito → Agregar producto al carrito
-        - GET /api/carrito → Ver carrito
-        - POST /api/facturas → Generar factura + enviar por correo
+        - GET /api/products/all → Listar productos (Implementado y en uso)
+        - GET /api/products/{id} → Detalle de producto (Disponible)
+        - POST /api/products/register (ADMIN) → Crear producto (Implementado y en uso)
+        - PUT /api/products/update/?id={id} (ADMIN) → Actualizar producto (Implementado y en uso)
+        - DELETE /api/products/delete/{id} (ADMIN) → Eliminar producto (Implementado y en uso)
+
+    - Carrito y Facturación
+        - *Lógica mantenida en frontend (localStorage) por el momento.* (todo por seguridad a mover!)
 
 7. Configuración de Correo
     En application.properties:
@@ -116,7 +113,18 @@ Generadas con Spring Initializr:
     - Endpoints públicos: /api/auth/** y /api/productos (GET).
     - Endpoints privados: todos los demás.
 
-9. Entregables esperados del Backend
+9. Estado Actual de Integración (Frontend)
+    - **Autenticación**: Integrada y funcional (Login/Registro con JWT).
+    - **Productos**:
+        - Listado público (`GET /products/all`).
+        - Creación (`POST /products/register`).
+        - Actualización (`PUT /products/update/?id=XXX`).
+        - Eliminación (`DELETE /products/delete/XXX`).
+    - **Servicios Frontend**:
+        - `AuthService`: Gestiona login, registro, logout y decodificación de tokens.
+        - `ProductosService`: Centraliza todas las llamadas API de productos.
+
+10. Entregables esperados del Backend
     -  API REST documentada con Swagger.
     - Scripts SQL iniciales.
     - Configuración para despliegue en servidor local o nube.
