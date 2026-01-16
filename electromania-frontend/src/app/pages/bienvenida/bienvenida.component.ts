@@ -1,28 +1,18 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
-
-interface Producto {
-  id: number;
-  nombre: string;
-  precio: number;
-  imagen: string;
-  descripcion: string;
-  categoria: string;
-  stock: number;
-  oferta: boolean;
-  descuento?: number;
-}
+import { Product } from '../../services/productos.service';
 
 @Component({
   selector: 'app-bienvenida',
   standalone: true,
-  imports: [CommonModule, ProductCardComponent],
+  imports: [ProductCardComponent],
   templateUrl: './bienvenida.component.html',
   styleUrls: ['./bienvenida.component.css']
 })
 export class BienvenidaComponent implements OnInit, AfterViewInit {
+  private router = inject(Router);
+
   @ViewChild('ofertasList', { static: true }) ofertasList!: ElementRef<HTMLDivElement>;
   @ViewChild('destacadosList', { static: true }) destacadosList!: ElementRef<HTMLDivElement>;
   @ViewChild('heroSection') heroSection!: ElementRef<HTMLElement>;
@@ -31,140 +21,120 @@ export class BienvenidaComponent implements OnInit, AfterViewInit {
   backgroundLoaded = false;
 
   // Productos Destacados
-  productosDestacados: Producto[] = [
+  productosDestacados: Product[] = [
     {
-      id: 1,
-      nombre: 'Arduino UNO R4 WiFi',
-      precio: 210.00,
-      imagen: '/arduino-uno.png',
-      descripcion: 'Microcontrolador con WiFi integrado para proyectos IoT',
-      categoria: 'Microcontroladores',
+      product_id: 1,
+      product_name: 'Arduino UNO R4 WiFi',
+      price: 210.00,
+      images: ['/arduino-uno.png'],
+      description: 'Microcontrolador con WiFi integrado para proyectos IoT',
       stock: 25,
-      oferta: false
+      state: false
     },
     {
-      id: 2,
-      nombre: 'Servomotor MG996R',
-      precio: 45.00,
-      imagen: '/servomotor.png',
-      descripcion: 'Servomotor de alta torque para robótica',
-      categoria: 'Motores',
+      product_id: 2,
+      product_name: 'Servomotor MG996R',
+      price: 45.00,
+      images: ['/servomotor.png'],
+      description: 'Servomotor de alta torque para robótica',
       stock: 50,
-      oferta: false
+      state: false
     },
     {
-      id: 3,
-      nombre: 'Sensor LiDAR TF-Luna',
-      precio: 320.00,
-      imagen: '/lidar-sensor.png',
-      descripcion: 'Sensor de distancia por láser de alta precisión',
-      categoria: 'Sensores',
+      product_id: 3,
+      product_name: 'Sensor LiDAR TF-Luna',
+      price: 320.00,
+      images: ['/lidar-sensor.png'],
+      description: 'Sensor de distancia por láser de alta precisión',
       stock: 15,
-      oferta: false
+      state: false
     },
     {
-      id: 4,
-      nombre: 'Raspberry Pi 5 8GB',
-      precio: 850.00,
-      imagen: '/raspberry-pi.png',
-      descripcion: 'Placa de desarrollo potente para proyectos avanzados',
-      categoria: 'SBC',
+      product_id: 4,
+      product_name: 'Raspberry Pi 5 8GB',
+      price: 850.00,
+      images: ['/raspberry-pi.png'],
+      description: 'Placa de desarrollo potente para proyectos avanzados',
       stock: 10,
-      oferta: false
+      state: false
     },
     {
-      id: 5,
-      nombre: 'ESP32 Development Board',
-      precio: 120.00,
-      imagen: '/esp32.png',
-      descripcion: 'Ideal para proyectos IoT y comunicaciones WiFi/Bluetooth',
-      categoria: 'IoT',
+      product_id: 5,
+      product_name: 'ESP32 Development Board',
+      price: 120.00,
+      images: ['/esp32.png'],
+      description: 'Ideal para proyectos IoT y comunicaciones WiFi/Bluetooth',
       stock: 40,
-      oferta: false
+      state: false
     },
     {
-      id: 6,
-      nombre: 'STM32 Blue Pill',
-      precio: 75.00,
-      imagen: '/stm32.png',
-      descripcion: 'Microcontrolador ARM de alto rendimiento',
-      categoria: 'Microcontroladores',
+      product_id: 6,
+      product_name: 'STM32 Blue Pill',
+      price: 75.00,
+      images: ['/stm32.png'],
+      description: 'Microcontrolador ARM de alto rendimiento',
       stock: 35,
-      oferta: false
+      state: false
     }
   ];
 
   // Productos en Oferta
-  productosOferta: Producto[] = [
+  productosOferta: Product[] = [
     {
-      id: 7,
-      nombre: 'Driver Stepper TB6600',
-      precio: 55.00,
-      imagen: '/stepper-driver.png',
-      descripcion: 'Controlador para motores paso a paso de hasta 4A',
-      categoria: 'Drivers',
+      product_id: 7,
+      product_name: 'Driver Stepper TB6600',
+      price: 55.00,
+      images: ['/stepper-driver.png'],
+      description: 'Controlador para motores paso a paso de hasta 4A',
       stock: 30,
-      oferta: true,
-      descuento: 15
+      state: true
     },
     {
-      id: 8,
-      nombre: 'Motor Nema 23',
-      precio: 145.00,
-      imagen: '/nema-motor.png',
-      descripcion: 'Motor paso a paso de alta precisión Nema 23',
-      categoria: 'Motores',
+      product_id: 8,
+      product_name: 'Motor Nema 23',
+      price: 145.00,
+      images: ['/nema-motor.png'],
+      description: 'Motor paso a paso de alta precisión Nema 23',
       stock: 20,
-      oferta: true,
-      descuento: 20
+      state: true
     },
     {
-      id: 9,
-      nombre: 'Módulo Relé 4 Canales',
-      precio: 25.00,
-      imagen: '/rele-module.png',
-      descripcion: 'Módulo de 4 relés para control de cargas eléctricas',
-      categoria: 'Módulos',
+      product_id: 9,
+      product_name: 'Módulo Relé 4 Canales',
+      price: 25.00,
+      images: ['/rele-module.png'],
+      description: 'Módulo de 4 relés para control de cargas eléctricas',
       stock: 60,
-      oferta: true,
-      descuento: 10
+      state: true
     },
     {
-      id: 10,
-      nombre: 'Kit de Cables Dupont',
-      precio: 15.00,
-      imagen: '/dupont-cables.png',
-      descripcion: 'Kit completo de cables Dupont para prototipado',
-      categoria: 'Accesorios',
+      product_id: 10,
+      product_name: 'Kit de Cables Dupont',
+      price: 15.00,
+      images: ['/dupont-cables.png'],
+      description: 'Kit completo de cables Dupont para prototipado',
       stock: 100,
-      oferta: true,
-      descuento: 25
+      state: true
     },
     {
-      id: 11,
-      nombre: 'Fuente 12V 10A',
-      precio: 65.00,
-      imagen: '/power-supply.png',
-      descripcion: 'Fuente de alimentación regulada 12V 10A',
-      categoria: 'Fuentes',
+      product_id: 11,
+      product_name: 'Fuente 12V 10A',
+      price: 65.00,
+      images: ['/power-supply.png'],
+      description: 'Fuente de alimentación regulada 12V 10A',
       stock: 25,
-      oferta: true,
-      descuento: 18
+      state: true
     },
     {
-      id: 12,
-      nombre: 'Display OLED 0.96"',
-      precio: 35.00,
-      imagen: '/oled-display.png',
-      descripcion: 'Pantalla OLED I2C de alta resolución',
-      categoria: 'Displays',
+      product_id: 12,
+      product_name: 'Display OLED 0.96"',
+      price: 35.00,
+      images: ['/oled-display.png'],
+      description: 'Pantalla OLED I2C de alta resolución',
       stock: 45,
-      oferta: true,
-      descuento: 12
+      state: true
     }
   ];
-
-  constructor(private router: Router) { }
 
   ngOnInit() {
     this.checkBackgroundImage();
@@ -220,9 +190,11 @@ export class BienvenidaComponent implements OnInit, AfterViewInit {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  verDetalles(producto: Producto) {
-    this.router.navigate(['/detalle-producto', producto.id]);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  verDetalles(producto: Product) {
+    if (producto.product_id) {
+      this.router.navigate(['/detalle-producto', producto.product_id]);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   toggleOfertas() {
@@ -318,10 +290,11 @@ export class BienvenidaComponent implements OnInit, AfterViewInit {
     img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiMwYjE2MjIiLz48cGF0aCBkPSJNMTUwIDEwMEwxMDAgMTUwTDE1MCAyMDBMMjAwIDE1MEwxNTAgMTAwWiIgZmlsbD0iIzAwZjJmZiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0Ij5Qcm9kdWN0byBObyBEaXNwb25pYmxlPC90ZXh0Pjwvc3ZnPg==';
   }
 
-  getPrecioConDescuento(producto: Producto): number {
-    if (producto.oferta && producto.descuento) {
-      return producto.precio * (1 - producto.descuento / 100);
+  getPrecioConDescuento(producto: Product): number {
+    // Assuming hardcoded 15% discount for offer products for now as 'descuento' is not in standard Interface yet or managed via 'state'
+    if (this.productosOferta.includes(producto)) {
+      return producto.price * 0.85;
     }
-    return producto.precio;
+    return producto.price;
   }
 }

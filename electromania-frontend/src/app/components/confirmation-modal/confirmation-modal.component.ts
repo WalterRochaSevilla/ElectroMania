@@ -1,0 +1,178 @@
+import { Component, inject, HostListener } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ModalService } from '../../services/modal.service';
+
+@Component({
+  selector: 'app-confirmation-modal',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    @if (modalService.isOpen()) {
+      <div class="modal-overlay" 
+           (click)="cancel()" 
+           (keyup.escape)="cancel()" 
+           tabindex="0" 
+           role="button" 
+           aria-label="Cerrar modal">
+        
+        <div class="modal-content" 
+             (click)="$event.stopPropagation()" 
+             (keyup)="null" 
+             role="dialog" 
+             aria-modal="true" 
+             tabindex="-1">
+          
+          <div class="modal-header" [ngClass]="modalService.data().type || 'info'">
+            <h3>{{ modalService.data().title }}</h3>
+            <button class="close-btn" (click)="cancel()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <p>{{ modalService.data().message }}</p>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn-cancel" (click)="cancel()">
+              {{ modalService.data().cancelText || 'Cancelar' }}
+            </button>
+            <button class="btn-confirm" 
+                    [ngClass]="modalService.data().type || 'info'"
+                    (click)="confirm()">
+              {{ modalService.data().confirmText || 'Confirmar' }}
+            </button>
+          </div>
+
+        </div>
+      </div>
+    }
+  `,
+  styles: [`
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s ease-out;
+      outline: none;
+    }
+
+    .modal-content {
+      background: var(--surface-card);
+      border: 1px solid var(--border-color);
+      border-radius: 1rem;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      animation: scaleIn 0.2s ease-out;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    /* Header Colors */
+    .modal-header.danger h3 { color: #ef4444; }
+    .modal-header.warning h3 { color: #f59e0b; }
+    .modal-header.info h3 { color: var(--primary-color); }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .close-btn svg { width: 20px; height: 20px; }
+
+    .modal-body {
+      padding: 1.5rem;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.5rem;
+      background: var(--surface-hover); 
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-cancel {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+    }
+    .btn-cancel:hover {
+      background: var(--surface-ground);
+      color: var(--text-primary);
+    }
+
+    .btn-confirm {
+      color: white;
+    }
+
+    .btn-confirm.danger { background: #ef4444; }
+    .btn-confirm.danger:hover { background: #dc2626; }
+
+    .btn-confirm.warning { background: #f59e0b; }
+    .btn-confirm.warning:hover { background: #d97706; }
+
+    .btn-confirm.info { background: var(--primary-color); }
+    .btn-confirm.info:hover { background: var(--primary-dark); }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  `]
+})
+export class ConfirmationModalComponent {
+  modalService = inject(ModalService);
+
+  confirm() {
+    this.modalService.close(true);
+  }
+
+  cancel() {
+    this.modalService.close(false);
+  }
+
+  @HostListener('document:keydown.escape')
+  onKeydownHandler() {
+    if (this.modalService.isOpen()) {
+      this.cancel();
+    }
+  }
+}

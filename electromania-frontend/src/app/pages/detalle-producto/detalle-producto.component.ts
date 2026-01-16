@@ -1,7 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastService } from '../../services/toast.service';
+
+interface ProductDetail {
+  id: number;
+  nombre: string;
+  categoria: string;
+  precio: number;
+  stock: number;
+  descripcionCorta: string;
+  imagen: string;
+  oferta?: boolean;
+  descuento?: number;
+  datasheet?: string;
+  libreria?: string;
+  especificaciones?: { label: string; valor: string }[];
+}
 
 @Component({
   selector: 'app-detalle-producto',
@@ -11,6 +27,10 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrl: './detalle-producto.component.css'
 })
 export class DetalleProductoComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private toast = inject(ToastService);
+
   modoOscuro = true;
   totalItems = 0;
   cantidadSeleccionada = 1;
@@ -18,10 +38,10 @@ export class DetalleProductoComponent implements OnInit {
   idRecibido: string | null = null;
 
   // Objeto inicializado para evitar errores de "undefined" en el HTML
-  producto: any = null;
+  producto: ProductDetail | null = null;
 
   // Lista local para simular la base de datos (Debe coincidir con la del Home)
-  private listaProductos = [
+  private listaProductos: ProductDetail[] = [
     { id: 1, nombre: 'Arduino UNO R4 WiFi', categoria: 'Microcontroladores', precio: 210, stock: 25, descripcionCorta: 'Microcontrolador con WiFi integrado.', imagen: '/arduino-uno.png' },
     { id: 2, nombre: 'Servomotor MG996R', categoria: 'Motores', precio: 45, stock: 50, descripcionCorta: 'Servomotor de alta torque.', imagen: '/servomotor.png' },
     { id: 3, nombre: 'Sensor LiDAR TF-Luna', categoria: 'Sensores', precio: 320, stock: 15, descripcionCorta: 'Sensor de distancia láser.', imagen: '/lidar-sensor.png' },
@@ -37,8 +57,6 @@ export class DetalleProductoComponent implements OnInit {
     { id: 11, nombre: 'Fuente 12V 10A', categoria: 'Fuentes', precio: 65, stock: 25, descripcionCorta: 'Fuente conmutada 12V.', imagen: '/power-supply.png', oferta: true, descuento: 18 },
     { id: 12, nombre: 'Display OLED 0.96"', categoria: 'Displays', precio: 35, stock: 45, descripcionCorta: 'Pantalla I2C SSD1306.', imagen: '/oled-display.png', oferta: true, descuento: 12 }
   ];
-
-  constructor(private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
     // Obtenemos el ID de la URL y lo convertimos a número
@@ -98,5 +116,7 @@ export class DetalleProductoComponent implements OnInit {
   irAHome() { this.router.navigate(['/home']); }
   irACarrito() { this.router.navigate(['/producto']); }
   irALogin() { this.router.navigate(['/login']); }
-  agregarAlCarrito() { alert('Agregado al carrito'); }
+  agregarAlCarrito() {
+    this.toast.success('Agregado al carrito');
+  }
 }

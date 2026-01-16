@@ -1,8 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ProductosService } from '../../../services/productos.service';
+import { AuthService } from '../../../services/auth.service';
+import { ToastService } from '../../../services/toast.service';
+import { ModalService } from '../../../services/modal.service';
+
 
 @Component({
   selector: 'app-usuarios-admin',
@@ -12,6 +16,12 @@ import { ProductosService } from '../../../services/productos.service';
   styleUrl: './usuarios-admin.component.css'
 })
 export class UsuariosAdminComponent {
+  private router = inject(Router);
+  private productosService = inject(ProductosService);
+  private authService = inject(AuthService);
+  private toast = inject(ToastService);
+  private modalService = inject(ModalService);
+
   /* =========================
      ESTADOS GENERALES
   ========================= */
@@ -108,18 +118,6 @@ export class UsuariosAdminComponent {
   usuariosFiltrados = [...this.usuarios];
 
   /* =========================
-     INYECCIÓN DE DEPENDENCIAS
-  ========================= */
-  constructor(private router: Router,
-    private productosService: ProductosService
-  ) {
-    this.productosService.getProductos().subscribe(productos => {
-      console.log(productos);
-      alert(productos);
-    })
-  }
-
-  /* =========================
      HEADER
   ========================= */
   cambiarModo() {
@@ -127,6 +125,7 @@ export class UsuariosAdminComponent {
   }
 
   cerrarSesion() {
+    this.authService.logout();
     this.router.navigate(['/login']);
   }
 
@@ -188,28 +187,41 @@ export class UsuariosAdminComponent {
     // Aquí iría la lógica para abrir modal/formulario
   }
 
-  editarUsuario(usuario: any) {
+  editarUsuario(usuario: { id: number; nombre: string }) {
     console.log('Editar usuario:', usuario);
     // Aquí iría la lógica para editar
   }
 
-  eliminarUsuario(id: number) {
-    if (confirm('¿Estás seguro de eliminar este usuario?')) {
+  async eliminarUsuario(id: number) {
+    const confirmed = await this.modalService.confirm({
+      title: 'Eliminar Usuario',
+      message: '¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.',
+      confirmText: 'Eliminar',
+      type: 'danger'
+    });
+
+    if (confirmed) {
       this.usuarios = this.usuarios.filter(u => u.id !== id);
       this.filtrarUsuarios();
-      console.log('Usuario eliminado:', id);
+      this.toast.success('Usuario eliminado');
     }
   }
 
-  toggleEstado(usuario: any) {
+  toggleEstado(usuario: { id: number; estado: string }) {
     usuario.estado = usuario.estado === 'Activo' ? 'Inactivo' : 'Activo';
-    console.log(`Usuario ${usuario.id} ${usuario.estado === 'Activo' ? 'activado' : 'desactivado'}`);
+    this.toast.info(`Usuario ${usuario.estado === 'Activo' ? 'activado' : 'desactivado'}`);
   }
 
-  resetPassword(id: number) {
-    if (confirm('¿Resetear contraseña del usuario? Se enviará un correo con nueva contraseña.')) {
-      console.log('Contraseña reseteada para usuario:', id);
-      // Aquí iría la lógica para resetear contraseña
+  async resetPassword(usuario: { nombre: string; email: string }) {
+    const confirmed = await this.modalService.confirm({
+      title: 'Resetear Contraseña',
+      message: `¿Resetear contraseña del usuario ${usuario.nombre}? Se enviará un correo con la nueva contraseña.`,
+      confirmText: 'Resetear',
+      type: 'warning'
+    });
+
+    if (confirmed) {
+      this.toast.success(`Se ha enviado un correo a ${usuario.email}`);
     }
   }
 }

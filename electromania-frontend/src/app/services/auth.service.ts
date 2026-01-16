@@ -1,47 +1,74 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import environment from '../../environments/environment';
+import { firstValueFrom } from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
 
+interface LoginResponse {
+  access_token: string;
+}
+
+interface DecodedToken {
+  role?: string;
+  roles?: string[];
+  [key: string]: unknown;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private http = inject(HttpClient);
 
-  constructor(
-    private http: HttpClient
-  ) { }
 
   async registerUser(data: unknown) {
-    console.log(data);
-    console.log(`${environment.API_DOMAIN}/auth/register`);
-    return this.http.post(`${environment.API_DOMAIN}/auth/register`, data).forEach((res: unknown) => {
-      console.log(res);
-    });
+    return firstValueFrom(this.http.post(`${environment.API_DOMAIN}/auth/register`, data));
   }
+
   async login(data: unknown) {
-    console.log(data);
-    console.log(`${environment.API_DOMAIN}/auth/login`);
-    return this.http.post<{ access_token: string, role?: string }>(`${environment.API_DOMAIN}/auth/login`, data).pipe().forEach((res) => {
-      console.log(res);
-      localStorage.setItem('token', res.access_token);
-      // Mocking role for now if not present, default to admin for dev
-      const role = res.role || 'admin';
-      localStorage.setItem('user_role', role);
-    });
+    const response = await firstValueFrom(this.http.post<LoginResponse>(`${environment.API_DOMAIN}/auth/login`, data));
+
+    if (response && response.access_token) {
+      localStorage.setItem('token', response.access_token);
+      // We no longer store 'user_role' in localStorage to avoid security risks
+    }
+    return response;
   }
 
   getRole(): string {
-    if (typeof localStorage !== 'undefined') {
-      return localStorage.getItem('user_role') || 'guest';
+    const token = this.getToken();
+    if (!token) return 'guest';
+
+    try {
+      const decoded = jwtDecode<DecodedToken>(token);
+      // Check for 'role' or 'roles' claim
+      return decoded.role || (decoded.roles && decoded.roles[0]) || 'cliente';
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return 'guest';
     }
-    return 'guest';
+  }
+
+  isAdmin(): boolean {
+    const role = this.getRole().toLowerCase();
+    return role === 'admin' || role === 'administrador';
   }
 
   logout() {
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem('token');
-      localStorage.removeItem('user_role');
+      // No need to remove user_role anymore
     }
+  }
+
+  getToken(): string | null {
+    if (typeof localStorage !== 'undefined') {
+      return localStorage.getItem('token');
+    }
+    return null;
+  }
+
+  isAuthenticated(): boolean {
+    return !!this.getToken();
   }
 }

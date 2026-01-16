@@ -1,34 +1,32 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-   /* =========================
-     ESTADOS GENERALES
-  ========================= */
+  private router = inject(Router);
+  private authService = inject(AuthService);
+  private toast = inject(ToastService);
+
+  /* =========================
+    ESTADOS GENERALES
+ ========================= */
   modoOscuro = true;
 
-    // En tu componente
+  // En tu componente
   mostrarFormLogin = false;
   email = '';
   contrasena = '';
   mostrarContrasena = false;
-
-   /* =========================
-     INYECCIÓN DE DEPENDENCIAS
-  ========================= */
-  constructor(private router: Router,
-    private authService: AuthService
-  ) {}
 
 
   /* =========================
@@ -46,9 +44,9 @@ export class LoginComponent {
   Carrito() {
     this.router.navigate(['/producto']);
   }
-  
+
   registro() {
-    this.router.navigate(['/registro']); //arreglar esta navegacion
+    this.router.navigate(['/registro']);
   }
 
   mostrarLogin() {
@@ -59,15 +57,24 @@ export class LoginComponent {
     this.mostrarContrasena = !this.mostrarContrasena;
   }
 
-  iniciarSesion() {
-    console.log('Iniciando sesión con:', {
-      email: this.email,
-      contrasena: this.contrasena
-    });
-    this.authService.login({
-      email: this.email,
-      password: this.contrasena
-    })
-    // Aquí iría la lógica real de autenticación
+  async iniciarSesion() {
+    try {
+      await this.authService.login({
+        email: this.email,
+        password: this.contrasena
+      });
+
+      const role = this.authService.getRole();
+      if (role === 'admin') {
+        this.router.navigate(['/dashboard']);
+        this.toast.success('Bienvenido Administrador');
+      } else {
+        this.router.navigate(['/home']);
+        this.toast.success('Sesión iniciada correctamente');
+      }
+    } catch (error) {
+      console.error('Login failed', error);
+      this.toast.error('Error al iniciar sesión. Verifique sus credenciales.');
+    }
   }
 }

@@ -55,9 +55,11 @@
         </button>
 
         <div class="grid-productos" #ofertasList>
-          <app-product-card *ngFor="let producto of productosOferta" [product]="producto" [isOffer]="true"
-            (cardClick)="verDetalles(producto)" (addToCart)="verDetalles(producto)" class="tarjeta-producto-wrapper">
-          </app-product-card>
+          @for (producto of productosOferta; track producto) {
+            <app-product-card [product]="producto" [isOffer]="true"
+              (cardClick)="verDetalles(producto)" (addToCart)="verDetalles(producto)" class="tarjeta-producto-wrapper">
+            </app-product-card>
+          }
         </div>
 
         <button class="flecha-nav next" (click)="scrollOfertasNext()" title="Siguiente">
@@ -82,9 +84,11 @@
       </button>
 
       <div class="wrapper-productos" #destacadosList>
-        <app-product-card *ngFor="let producto of productosDestacados" [product]="producto" [isFeatured]="true"
-          (cardClick)="verDetalles(producto)" (addToCart)="verDetalles(producto)" class="tarjeta-producto-wrapper">
-        </app-product-card>
+        @for (producto of productosDestacados; track producto) {
+          <app-product-card [product]="producto" [isFeatured]="true"
+            (cardClick)="verDetalles(producto)" (addToCart)="verDetalles(producto)" class="tarjeta-producto-wrapper">
+          </app-product-card>
+        }
       </div>
 
       <button class="nav-btn next" (click)="scrollDestacadosNext()" title="Siguiente">

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-sobre-nosotros',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './sobre-nosotros.component.html',
   styleUrls: ['./sobre-nosotros.component.css']
 })

@@ -1,164 +1,5 @@
-/*import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { ProductosService } from '../../services/productos.service';
-import { Router, RouterLink } from '@angular/router';
-import environment from '../../../environments/environment';
+import { Component, OnInit, inject } from '@angular/core';
 
-@Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
-})
-export class HomeComponent {
-
-  /* =========================
-     ESTADOS GENERALES
-  ========================= */
-/*  modoOscuro: boolean = true;
-
-  busqueda: string = '';
-  orden: string = 'relevancia';
-
-    /* =========================
-     INYECCIÓN DE DEPENDENCIAS
-  ========================= */
-/*constructor(private router: Router) {}
-
-/* =========================
-   CATEGORÍAS
-========================= */
-/* categorias: string[] = [
-   'Arduino & Microcontroladores',
-   'Sensores',
-   'Componentes Pasivos'
- ];
-
- categoriasSeleccionadas: Set<string> = new Set();
-
- /* =========================
-    PRODUCTOS (SIMULADOS)
-    Luego vienen del backend
- ========================= */
-/*productos = [
-{
-  nombre: 'ESP32 WiFi + Bluetooth',
-  descripcion: 'Microcontrolador potente para IoT',
-  precio: 55,
-  categoria: 'Arduino & Microcontroladores'
-},
-{
-  nombre: 'Módulo Bluetooth HC-05',
-  descripcion: 'Conectividad inalámbrica simple',
-  precio: 45,
-  categoria: 'Arduino & Microcontroladores'
-},
-{
-  nombre: 'Sensor Ultrasonido HC-SR04',
-  descripcion: 'Mide distancia por ultrasonido',
-  precio: 15,
-  categoria: 'Sensores'
-},
-{
-  nombre: 'Kit de Resistencias (100u)',
-  descripcion: 'Valores variados para prototipado',
-  precio: 20,
-  categoria: 'Componentes Pasivos'
-},
-{
-  nombre: 'Pantalla OLED 0.96"',
-  descripcion: 'Display monocromo I2C',
-  precio: 35,
-  categoria: 'Arduino & Microcontroladores'
-},
-{
-  nombre: 'Sensor de Humedad DHT11',
-  descripcion: 'Mide temperatura y humedad',
-  precio: 12,
-  categoria: 'Sensores'
-}
-];
-
-productosFiltrados = [...this.productos];
-
-/* =========================
-   HEADER
-========================= */
-/*cambiarModo() {
-  this.modoOscuro = !this.modoOscuro;
-}
-
-ingresar() {
-  this.router.navigate(['/login']);
-}
-Catalogo() {
-
-  this.router.navigate(['/home']);
-}
-Carrito() {
-  this.router.navigate(['/producto']);
-}
-
-/* =========================
-   FILTROS
-========================= */
-/*filtrarCategoria(categoria: string) {
-  if (this.categoriasSeleccionadas.has(categoria)) {
-    this.categoriasSeleccionadas.delete(categoria);
-  } else {
-    this.categoriasSeleccionadas.add(categoria);
-  }
-  this.aplicarFiltros();
-}
-
-buscarComponentes() {
-  this.aplicarFiltros();
-}
-
-ordenarComponentes() {
-  this.aplicarFiltros();
-}
-
-aplicarFiltros() {
-  let resultado = [...this.productos];
-
-  /* Filtro por búsqueda */
-/*if (this.busqueda.trim() !== '') {
-  resultado = resultado.filter(p =>
-    p.nombre.toLowerCase().includes(this.busqueda.toLowerCase())
-  );
-}
-
-/* Filtro por categoría */
-/*if (this.categoriasSeleccionadas.size > 0) {
-  resultado = resultado.filter(p =>
-    this.categoriasSeleccionadas.has(p.categoria)
-  );
-}
-
-/* Ordenamiento *//*
-if (this.orden === 'precioAsc') {
-  resultado.sort((a, b) => a.precio - b.precio);
-}
-
-if (this.orden === 'precioDesc') {
-  resultado.sort((a, b) => b.precio - a.precio);
-}
-
-this.productosFiltrados = resultado;
-}
-
-/* =========================
- CARRITO
-========================= *//*
-agregarAlCarrito(producto: any) {
-  console.log('Producto agregado al carrito:', producto);
-}
-}*/
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ProductosService } from '../../services/productos.service';
@@ -167,11 +8,14 @@ import { ProductCardComponent } from '../../components/product-card/product-card
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProductCardComponent],
+  imports: [FormsModule, ProductCardComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
+  router = inject(Router);
+  private productosService = inject(ProductosService);
+
 
   filtrosAvanzadosAbierto = false;
 
@@ -185,14 +29,6 @@ export class HomeComponent implements OnInit {
   modoOscuro = true;
   busqueda = '';
   orden = 'relevancia';
-
-  /* =========================
-      INYECCIÓN DE DEPENDENCIAS
-  ========================= */
-  constructor(
-    public router: Router,
-    private productosService: ProductosService
-  ) { }
 
   ngOnInit() {
     this.cargarCategorias();
@@ -248,45 +84,63 @@ export class HomeComponent implements OnInit {
   productos = [
     {
       id: 1,
-      nombre: 'ESP32 WiFi + Bluetooth',
-      descripcion: 'Microcontrolador potente para IoT',
-      precio: 55,
-      categoria: 'Arduino & Microcontroladores'
+      product_name: 'ESP32 WiFi + Bluetooth',
+      description: 'Microcontrolador potente para IoT',
+      price: 55,
+      categoria: 'Arduino & Microcontroladores',
+      images: ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1A2B3C4D5E6F7G8H9I0J1K2M3N4O5P6Q7R8&s'],
+      stock: 10,
+      state: true
     },
     {
       id: 2,
-      nombre: 'Módulo Bluetooth HC-05',
-      descripcion: 'Conectividad inalámbrica simple',
-      precio: 45,
-      categoria: 'Arduino & Microcontroladores'
+      product_name: 'Módulo Bluetooth HC-05',
+      description: 'Conectividad inalámbrica simple',
+      price: 45,
+      categoria: 'Arduino & Microcontroladores',
+      images: ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqL5yqL3tS_cDyD4D9gA4lZ8H6wF7pE0Q5wA&s'], // Placeholder reuse, best effort for mock
+      stock: 10,
+      state: true
     },
     {
       id: 3,
-      nombre: 'Sensor Ultrasonido HC-SR04',
-      descripcion: 'Mide distancia por ultrasonido',
-      precio: 15,
-      categoria: 'Sensores'
+      product_name: 'Sensor Ultrasonido HC-SR04',
+      description: 'Mide distancia por ultrasonido',
+      price: 15,
+      categoria: 'Sensores',
+      images: ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0NnC8_t6zX9gB3e5f2a1d4c7b8e9f0g1h2i3j&s'],
+      stock: 10,
+      state: true
     },
     {
       id: 4,
-      nombre: 'Kit de Resistencias (100u)',
-      descripcion: 'Valores variados para prototipado',
-      precio: 20,
-      categoria: 'Componentes Pasivos'
+      product_name: 'Kit de Resistencias (100u)',
+      description: 'Valores variados para prototipado',
+      price: 20,
+      categoria: 'Componentes Pasivos',
+      images: ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1w2e3r4t5y6u7i8o9p0a1s2d3f4g5h6j7k8l&s'],
+      stock: 10,
+      state: true
     },
     {
       id: 5,
-      nombre: 'Pantalla OLED 0.96"',
-      descripcion: 'Display monocromo I2C',
-      precio: 35,
-      categoria: 'Arduino & Microcontroladores'
+      product_name: 'Pantalla OLED 0.96"',
+      description: 'Display monocromo I2C',
+      price: 35,
+      categoria: 'Arduino & Microcontroladores',
+      images: ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1U2V3W4X5Y6Z7a8b9c0d1e2f3g4h5i6j7k8&s'],
+      stock: 10,
+      state: true
     },
     {
       id: 6,
-      nombre: 'Sensor de Humedad DHT11',
-      descripcion: 'Mide temperatura y humedad',
-      precio: 12,
-      categoria: 'Sensores'
+      product_name: 'Sensor de Humedad DHT11',
+      description: 'Mide temperatura y humedad',
+      price: 12,
+      categoria: 'Sensores',
+      images: ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0NnC8_t6zX9gB3e5f2a1d4c7b8e9f0g1h2i3j&s'], // Reuse sensor image
+      stock: 10,
+      state: true
     }
   ];
 
@@ -340,7 +194,7 @@ export class HomeComponent implements OnInit {
     /* Filtro por búsqueda */
     if (this.busqueda.trim() !== '') {
       resultado = resultado.filter(p =>
-        p.nombre.toLowerCase().includes(this.busqueda.toLowerCase())
+        p.product_name.toLowerCase().includes(this.busqueda.toLowerCase())
       );
     }
 
@@ -353,9 +207,9 @@ export class HomeComponent implements OnInit {
 
     /* Ordenamiento */
     if (this.orden === 'precioAsc') {
-      resultado.sort((a, b) => a.precio - b.precio);
+      resultado.sort((a, b) => a.price - b.price);
     } else if (this.orden === 'precioDesc') {
-      resultado.sort((a, b) => b.precio - a.precio);
+      resultado.sort((a, b) => b.price - a.price);
     }
 
     this.productosFiltrados = resultado;
@@ -364,7 +218,7 @@ export class HomeComponent implements OnInit {
   /* =========================
       CARRITO
   ========================= */
-  agregarAlCarrito(producto: any) {
+  agregarAlCarrito(producto: unknown) {
     console.log('Producto agregado al carrito:', producto);
   }
 }

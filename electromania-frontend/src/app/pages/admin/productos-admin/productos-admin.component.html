@@ -12,7 +12,7 @@
 
     <div class="content-wrapper">
       <div class="actions-bar">
-        <button class="btn-primary" (click)="agregarProducto()">
+        <button class="btn-primary" (click)="openCreateModal()">
           <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
@@ -41,7 +41,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let producto of productos">
+            @for (producto of productos; track producto) {
+            <tr>
               <td class="id-col">{{ producto.id }}</td>
               <td>
                 <div class="product-info">
@@ -56,13 +57,14 @@
                 </span>
               </td>
               <td>
-                <span class="status-indicator" [class.active]="producto.activo" (click)="toggleActivo(producto)">
+                <span class="status-indicator" [class.active]="producto.activo" (click)="toggleActivo(producto)"
+                  (keyup.enter)="toggleActivo(producto)" tabindex="0" role="button">
                   {{ producto.activo ? 'Activo' : 'Inactivo' }}
                 </span>
               </td>
               <td>
                 <div class="actions-cell">
-                  <button class="btn-icon edit" (click)="editarProducto(producto)" title="Editar">
+                  <button class="btn-icon edit" (click)="openEditModal(producto)" title="Editar">
                     <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -77,6 +79,7 @@
                 </div>
               </td>
             </tr>
+            }
           </tbody>
         </table>
       </div>
@@ -98,4 +101,9 @@
       </div>
     </div>
   </main>
+
+  <!-- PRODUCT FORM MODAL -->
+  <app-product-form-modal [isVisible]="isModalOpen" [product]="selectedProduct" (saveProduct)="handleModalSave($event)"
+    (cancelModal)="handleModalCancel()">
+  </app-product-form-modal>
 </div>

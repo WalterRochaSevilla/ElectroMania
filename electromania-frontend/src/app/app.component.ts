@@ -1,25 +1,29 @@
-import { Component, OnInit, HostListener, Renderer2 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, HostListener, Renderer2, inject } from '@angular/core';
+
 import { Router, RouterOutlet, RouterModule } from '@angular/router';
+import { ToastComponent } from './components/toast/toast.component';
+import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    CommonModule,
     RouterOutlet,
-    RouterModule
+    RouterModule,
+    ToastComponent,
+    ConfirmationModalComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+  private router = inject(Router);
+  private renderer = inject(Renderer2);
+
   isDarkMode = true;
   isScrolled = false;
   dropdownOpen = false;
   mobileMenuOpen = false;
-
-  constructor(private router: Router, private renderer: Renderer2) { }
 
   @HostListener('window:scroll', [])
   onWindowScroll() {

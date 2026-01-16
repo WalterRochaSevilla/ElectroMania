@@ -23,6 +23,8 @@ import { HomeComponent } from './pages/home/home.component';
 import { ProductosComponent } from './pages/productos/productos.component';
 import { ProductosAdminComponent } from './pages/admin/productos-admin/productos-admin.component';
 import { DashboardComponent } from './pages/admin/dashboard/dashboard.component';
+import { UsuariosAdminComponent } from './pages/admin/usuarios-admin/usuarios-admin.component';
+import { adminGuard } from './guards/admin.guard';
 import { DetalleProductoComponent } from './pages/detalle-producto/detalle-producto.component';
 import { BienvenidaComponent } from './pages/bienvenida/bienvenida.component';
 import { SobreNosotrosComponent } from './pages/sobre-nosotros/sobre-nosotros.component';
@@ -38,9 +40,10 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'registro', component: RegistroComponent },
   { path: 'producto', component: ProductosComponent },
-  { path: 'productos-admin', component: ProductosAdminComponent },
-  { path: 'dashboard', component: DashboardComponent },
-  
+  { path: 'productos-admin', component: ProductosAdminComponent, canActivate: [adminGuard] },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [adminGuard] },
+  { path: 'usuarios-admin', component: UsuariosAdminComponent, canActivate: [adminGuard] },
+
   // 3. Ruta de detalle con parámetro
   { path: 'detalle-producto/:id', component: DetalleProductoComponent },
 

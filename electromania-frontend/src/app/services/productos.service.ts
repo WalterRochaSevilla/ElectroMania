@@ -1,23 +1,51 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
+import { of, firstValueFrom } from 'rxjs';
 import environment from '../../environments/environment';
+
+export interface Product {
+  product_id?: number;
+  product_name: string;
+  description: string;
+  price: number;
+  stock: number;
+  state: boolean;
+  images: string[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class ProductosService {
+  private router = inject(Router);
+  private httpClient = inject(HttpClient);
 
-  constructor(
-    private router: Router,
-    private httpClient: HttpClient
-  ) { }
 
-  getProductos() {
-    return this.httpClient.get(`${environment.API_DOMAIN}/product/all`)
+  // Headers handled by AuthInterceptor
+
+  // === REAL API METHODS ===
+
+  async getAllProducts(): Promise<Product[]> {
+    return firstValueFrom(this.httpClient.get<Product[]>(`${environment.API_DOMAIN}/products/all`));
   }
 
-  // Simulating API call for categories
+  async createProduct(product: Partial<Product>): Promise<Product> {
+    return firstValueFrom(this.httpClient.post<Product>(`${environment.API_DOMAIN}/products/register`, product));
+  }
+
+  async updateProduct(id: number | string, product: Partial<Product>): Promise<Product> {
+    // Note: Backend uses query param ?id=ID for update
+    return firstValueFrom(this.httpClient.put<Product>(`${environment.API_DOMAIN}/products/update/?id=${id}`, product));
+  }
+
+  async deleteProduct(id: number | string): Promise<unknown> {
+    return firstValueFrom(this.httpClient.delete(`${environment.API_DOMAIN}/products/delete/${id}`));
+  }
+
+  // === MOCK / HELPER METHODS ===
+
+  // Simulating API call for categories (frontend categories)
   getCategorias() {
     const categories = [
       'Arduino & Microcontroladores',

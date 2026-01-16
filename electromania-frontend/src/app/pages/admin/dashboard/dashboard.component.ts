@@ -1,20 +1,30 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
-import { ChartConfiguration, ChartData, ChartEvent, ChartType } from 'chart.js';
+import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { ProductosService } from '../../../services/productos.service';
 import { AdminSidebarComponent } from '../../../components/admin-sidebar/admin-sidebar.component';
+
+interface LowStockProduct {
+  id: string;
+  name: string;
+  stock: number;
+  status: string;
+}
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, BaseChartDirective, AdminSidebarComponent],
+  imports: [CommonModule, FormsModule, BaseChartDirective, AdminSidebarComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
+  private router = inject(Router);
+  private productosService = inject(ProductosService);
+
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
 
   modoOscuro = true;
@@ -28,12 +38,7 @@ export class DashboardComponent implements OnInit {
     systemStatus: 'Revisando...'
   };
 
-  lowStockProducts: any[] = [];
-
-  constructor(
-    private router: Router,
-    private productosService: ProductosService
-  ) { }
+  lowStockProducts: LowStockProduct[] = [];
 
   ngOnInit() {
     this.loadDashboardData();

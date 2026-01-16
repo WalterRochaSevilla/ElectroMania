@@ -1,18 +1,23 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ToastService } from '../../services/toast.service';
 
 
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink],
   templateUrl: './registro.component.html',
   styleUrls: ['./registro.component.css']
 })
 export class RegistroComponent {
+  private router = inject(Router);
+  private authService = inject(AuthService);
+  private toast = inject(ToastService);
+
   /* =========================
      ESTADOS GENERALES
   ========================= */
@@ -27,16 +32,9 @@ export class RegistroComponent {
   contrasena = '';
   confirmarContrasena = '';
   aceptaTerminos = false;
-  
+
   mostrarContrasena = false;
   mostrarConfirmarContrasena = false;
-
-  /* =========================
-     INYECCIÓN DE DEPENDENCIAS
-  ========================= */
-  constructor(private router: Router,
-    private authService: AuthService
-  ) {}
 
   /* =========================
      HEADER
@@ -71,7 +69,7 @@ export class RegistroComponent {
   formatearNIT() {
     // Remover caracteres no numéricos
     this.nit = this.nit.replace(/\D/g, '');
-    
+
     // Limitar a 15 caracteres (típico para NIT boliviano)
     if (this.nit.length > 15) {
       this.nit = this.nit.substring(0, 15);
@@ -80,12 +78,12 @@ export class RegistroComponent {
 
   // Validar formulario
   formularioValido(): boolean {
-    return this.nit.length >= 7 && 
-           this.razonSocial.trim().length > 0 &&
-           this.validarEmail(this.email) &&
-           this.contrasena.length >= 6 &&
-           this.contrasena === this.confirmarContrasena &&
-           this.aceptaTerminos;
+    return this.nit.length >= 7 &&
+      this.razonSocial.trim().length > 0 &&
+      this.validarEmail(this.email) &&
+      this.contrasena.length >= 6 &&
+      this.contrasena === this.confirmarContrasena &&
+      this.aceptaTerminos;
   }
 
   // Validar formato de email
@@ -102,19 +100,11 @@ export class RegistroComponent {
   /* =========================
      REGISTRO
   ========================= */
-  registrar() {
+  async registrar() {
     if (!this.formularioValido()) {
-      console.error('Formulario inválido. Por favor complete todos los campos correctamente.');
+      this.toast.error('Formulario inválido. Por favor complete todos los campos correctamente.');
       return;
     }
-
-    console.log('Registrando usuario con los siguientes datos:', {
-      nit: this.nit,
-      razonSocial: this.razonSocial,
-      email: this.email,
-      aceptaTerminos: this.aceptaTerminos,
-      fechaRegistro: new Date().toISOString()
-    });
 
     const data = {
       email: this.email,
@@ -124,27 +114,13 @@ export class RegistroComponent {
       social_reason: this.razonSocial
     }
 
-    // Aquí iría la lógica real de registro:
-    // 1. Validar que el email no esté registrado
-    // 2. Encriptar contraseña
-    // 3. Enviar datos al backend
-    // 4. Manejar respuesta del servidor
-    
-    // Simulación de registro exitoso
-
-    this.authService.registerUser(data).then((response) => {
-      console.log('Respuesta del servidor:', response);
-    })
-
-    const registroExitoso = true;
-    
-    if (registroExitoso) {
-      console.log('¡Registro exitoso! Redirigiendo al login...');
-      alert('¡Registro exitoso! Ahora puedes iniciar sesión.');
+    try {
+      await this.authService.registerUser(data);
+      this.toast.success('¡Registro exitoso! Ahora puedes iniciar sesión.');
       this.volverAlLogin();
-    } else {
-      console.error('Error en el registro. Por favor intente nuevamente.');
-      alert('Error en el registro. Por favor verifique sus datos.');
+    } catch (error) {
+      console.error('Error en el registro:', error);
+      this.toast.error('Error en el registro. Por favor intente nuevamente.');
     }
   }
 
@@ -161,11 +137,11 @@ export class RegistroComponent {
   generarContrasena() {
     const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
     let contrasenaGenerada = '';
-    
+
     for (let i = 0; i < 12; i++) {
       contrasenaGenerada += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
     }
-    
+
     this.contrasena = contrasenaGenerada;
     this.confirmarContrasena = contrasenaGenerada;
     this.mostrarContrasena = true;

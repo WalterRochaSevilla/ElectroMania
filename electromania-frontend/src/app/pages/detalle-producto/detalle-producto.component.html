@@ -1,76 +1,70 @@
-<div class="pagina-detalle-container" [class.modo-claro]="!modoOscuro" *ngIf="producto">
-
-  <!-- Global Navbar is in AppComponent, no local header needed -->
-
-  <main class="main-content">
-    <div class="detalle-wrapper">
-
-      <!-- COLUMN 1: IMAGE -->
-      <div class="columna-imagen">
-        <div class="imagen-card">
-          <img [src]="producto.imagen" [alt]="producto.nombre"
-            (error)="producto.imagen = 'https://via.placeholder.com/500'">
-        </div>
-      </div>
-
-      <!-- COLUMN 2: INFO -->
-      <div class="columna-info">
-        <span class="categoria-tag">{{ producto.categoria }}</span>
-        <h1 class="titulo-producto">{{ producto.nombre }}</h1>
-
-        <div class="badges-container">
-          <span class="stock-badge" [ngClass]="obtenerClaseStock()">
-            <span class="punto-estado"></span> {{ mensajeStock }}
-          </span>
-        </div>
-
-        <p class="descripcion-producto">{{ producto.descripcionCorta }}</p>
-
-        <div class="precio-area">
-          <span class="simbolo">Bs.</span>
-          <span class="monto">{{ producto.precio | number:'1.2-2' }}</span>
-        </div>
-
-        <div class="acciones-compra">
-          <div class="selector-cantidad">
-            <button (click)="modificarCantidad(-1)" [disabled]="cantidadSeleccionada <= 1">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M5 12h14" />
-              </svg>
-            </button>
-            <span class="cantidad-valor">{{ cantidadSeleccionada }}</span>
-            <button (click)="modificarCantidad(1)" [disabled]="cantidadSeleccionada >= producto.stock">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 5v14M5 12h14" />
-              </svg>
-            </button>
+@if (producto) {
+  <div class="pagina-detalle-container" [class.modo-claro]="!modoOscuro">
+    <!-- Global Navbar is in AppComponent, no local header needed -->
+    <main class="main-content">
+      <div class="detalle-wrapper">
+        <!-- COLUMN 1: IMAGE -->
+        <div class="columna-imagen">
+          <div class="imagen-card">
+            <img [src]="producto.imagen" [alt]="producto.nombre"
+              (error)="producto.imagen = 'https://via.placeholder.com/500'">
+            </div>
           </div>
-
-          <button class="btn-agregar" (click)="agregarAlCarrito()" [disabled]="producto.stock === 0">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="9" cy="21" r="1"></circle>
-              <circle cx="20" cy="21" r="1"></circle>
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-            </svg>
-            <span>Agregar al Carrito</span>
-          </button>
-        </div>
-
-        <div class="specs-box">
-          <h3>Especificaciones</h3>
-          <div class="spec-row" *ngFor="let spec of producto.especificaciones">
-            <span class="spec-label">{{ spec.label }}</span>
-            <span class="spec-value">{{ spec.valor }}</span>
+          <!-- COLUMN 2: INFO -->
+          <div class="columna-info">
+            <span class="categoria-tag">{{ producto.categoria }}</span>
+            <h1 class="titulo-producto">{{ producto.nombre }}</h1>
+            <div class="badges-container">
+              <span class="stock-badge" [ngClass]="obtenerClaseStock()">
+                <span class="punto-estado"></span> {{ mensajeStock }}
+              </span>
+            </div>
+            <p class="descripcion-producto">{{ producto.descripcionCorta }}</p>
+            <div class="precio-area">
+              <span class="simbolo">Bs.</span>
+              <span class="monto">{{ producto.precio | number:'1.2-2' }}</span>
+            </div>
+            <div class="acciones-compra">
+              <div class="selector-cantidad">
+                <button (click)="modificarCantidad(-1)" [disabled]="cantidadSeleccionada <= 1">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14" />
+                  </svg>
+                </button>
+                <span class="cantidad-valor">{{ cantidadSeleccionada }}</span>
+                <button (click)="modificarCantidad(1)" [disabled]="cantidadSeleccionada >= producto.stock">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12h14" />
+                  </svg>
+                </button>
+              </div>
+              <button class="btn-agregar" (click)="agregarAlCarrito()" [disabled]="producto.stock === 0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="9" cy="21" r="1"></circle>
+                  <circle cx="20" cy="21" r="1"></circle>
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <span>Agregar al Carrito</span>
+              </button>
+            </div>
+            <div class="specs-box">
+              <h3>Especificaciones</h3>
+              @for (spec of producto.especificaciones; track spec) {
+                <div class="spec-row">
+                  <span class="spec-label">{{ spec.label }}</span>
+                  <span class="spec-value">{{ spec.valor }}</span>
+                </div>
+              }
+            </div>
           </div>
         </div>
-
-      </div>
-
+      </main>
     </div>
-  </main>
-</div>
+  }
 
-<div *ngIf="!producto" style="color: white; text-align: center; padding: 50px;">
-  <h2>Cargando producto...</h2>
-</div>
+  @if (!producto) {
+    <div style="color: white; text-align: center; padding: 50px;">
+      <h2>Cargando producto...</h2>
+    </div>
+  }
