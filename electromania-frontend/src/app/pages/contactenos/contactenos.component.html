@@ -1,0 +1,133 @@
+<div class="contactenos-container">
+
+  <main class="main-content">
+    <div class="contact-wrapper">
+
+      <!-- HEADER SECTION (Moved out of columns) -->
+      <div class="contact-header-block">
+        <h1 class="page-title">Contáctenos</h1>
+        <p class="page-subtitle">Conectando innovación con tecnología de vanguardia.</p>
+      </div>
+
+      <!-- MAIN GRID -->
+      <div class="contact-grid-row">
+
+        <!-- COLUMN 1: INFO CARDS -->
+        <div class="contact-info-col">
+          <div class="info-cards">
+
+            <div class="info-card">
+              <div class="icon-box">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>
+              <div>
+                <h3>{{ nombre }}</h3>
+                <p class="text-brand">{{ titulo }}</p>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <div class="icon-box">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+              </div>
+              <div>
+                <h3>Ubicación</h3>
+                <p>{{ localidad }}</p>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <div class="icon-box">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                  <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg>
+              </div>
+              <div>
+                <h3>Teléfono / WhatsApp</h3>
+                <p>{{ telefono }}</p>
+                <button class="btn-outline" (click)="openWhatsApp()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                  Contactar por WhatsApp
+                </button>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <div class="icon-box">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+              </div>
+              <div>
+                <h3>Correo Electrónico</h3>
+                <p>{{ email }}</p>
+                <button class="btn-outline" (click)="sendEmail()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                  Enviar Email
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- COLUMN 2: IMAGE & SERVICES -->
+        <div class="image-col">
+          <div class="service-card">
+            <div class="image-header">
+              <img src="contactenos.png" alt="ElectroMania Office" class="contact-img"
+                onerror="this.src='https://via.placeholder.com/800x600'">
+              <div class="overlay">
+                <h3>ElectroMania Bolivia</h3>
+              </div>
+            </div>
+
+            <div class="service-content">
+              <div class="tags-row">
+                <span class="tag">Electrónica</span>
+                <span class="tag">IoT</span>
+                <span class="tag">Robótica</span>
+              </div>
+
+              <div class="services-list">
+                <h4>Servicios Disponibles</h4>
+                <ul>
+                  <li>Asesoría técnica especializada</li>
+                  <li>Desarrollo de proyectos electrónicos</li>
+                  <li>Venta de componentes electrónicos</li>
+                  <li>Capacitación y talleres</li>
+                </ul>
+              </div>
+
+              <div class="horario-box">
+                <h4>Horario de Atención</h4>
+                <p>Lunes a Viernes: 8:00 - 18:00</p>
+                <p>Sábados: 9:00 - 13:00</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>

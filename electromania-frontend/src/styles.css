@@ -1,1 +1,125 @@
-/* You can add global styles to this file, and also import other style files */
+/* RESET Y FUENTES */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+}
+
+/* DESIGN SYSTEM: PROFESSIONAL TECH */
+:root {
+  /* Nuetral Colors (Slate) */
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+  --slate-950: #020617;
+
+  /* Primary Brand (Indigo/Blue) */
+  --primary-50: #eef2ff;
+  --primary-100: #e0e7ff;
+  --primary-500: #6366f1; /* Indigo */
+  --primary-600: #4f46e5;
+  --primary-700: #4338ca;
+
+  /* Cyan Accent (Tech highlights, reduced usage) */
+  --accent-400: #22d3ee;
+  --accent-500: #06b6d4;
+
+  /* Semantic Variables */
+  --bg-main: var(--slate-950);
+  --bg-card: var(--slate-900);
+  --bg-nav: rgba(15, 23, 42, 0.95);
+  
+  --text-primary: var(--slate-50);
+  --text-secondary: var(--slate-300);
+  --text-muted: var(--slate-500);
+
+  --border-color: var(--slate-800);
+  --border-hover: var(--slate-700);
+
+  --brand-primary: var(--primary-600);
+  --brand-hover: var(--primary-500);
+  --brand-glow: rgba(79, 70, 229, 0.4);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
+
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --nav-blur: blur(12px);
+}
+
+/* LIGHT THEME (Optional override) */
+[data-theme='light'] {
+  --bg-main: var(--slate-50);
+  --bg-card: #ffffff;
+  --bg-nav: rgba(255, 255, 255, 0.95);
+  
+  --text-primary: var(--slate-900);
+  --text-secondary: var(--slate-600);
+  --text-muted: var(--slate-400);
+
+  --border-color: var(--slate-200);
+  --border-hover: var(--slate-300);
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-glow: 0 0 15px rgba(79, 70, 229, 0.1);
+}
+
+/* UTILITIES */
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Modern Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--slate-700);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--slate-600);
+}
+
+/* Animaciones Helper */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-10px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}

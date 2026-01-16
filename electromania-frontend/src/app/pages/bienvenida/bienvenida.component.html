@@ -1,0 +1,96 @@
+<div class="page-fade">
+  <!-- HERO SECTION -->
+  <section class="hero-industrial" #heroSection>
+    <div class="hero-content">
+      <h1 class="titulo-principal">EL FUTURO EN QUE TE CONECTAS</h1>
+      <div class="sub-linea"></div>
+      <p class="hero-subtitle">ENCUENTRA LO QUE BUSCAS AQUI EN ELECTROMANIA</p>
+
+      <button class="btn-explorar" (click)="irATienda()">
+        <!-- Microchip SVG -->
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 12h2"></path>
+          <path d="M4 12h2"></path>
+          <path d="M12 18v2"></path>
+          <path d="M12 4v2"></path>
+          <rect width="12" height="12" x="6" y="6" rx="2"></rect>
+          <path d="M9 16.5v.5"></path>
+          <path d="M15 16.5v.5"></path>
+          <path d="M9 7.5v-.5"></path>
+          <path d="M15 7.5v-.5"></path>
+        </svg>
+        EXPLORAR COMPONENTES
+      </button>
+    </div>
+  </section>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="container">
+
+    <!-- SECCIÓN OFERTAS -->
+    <div class="flag-oferta-wrapper">
+      <div class="flag-diseno" (click)="toggleOfertas()" (keyup.enter)="toggleOfertas()" tabindex="0"
+        [class.active]="ofertasAbiertas" [title]="ofertasAbiertas ? 'Ocultar ofertas' : 'Mostrar ofertas'">
+        <span class="punto-pulso"></span>
+        <span class="flag-texto">
+          <!-- Tag SVG -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round"
+            style="display:inline-block; vertical-align:middle; margin-right:6px;">
+            <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"></path>
+            <path d="M7 7h.01"></path>
+          </svg>
+          PRODUCTOS EN OFERTA
+        </span>
+        <span class="flecha">
+          {{ ofertasAbiertas ? '▲' : '▼' }}
+        </span>
+      </div>
+
+      <!-- CARRUSEL OFERTAS -->
+      <div class="carrusel-oferta" [class.mostrar]="ofertasAbiertas">
+        <button class="flecha-nav prev" (click)="scrollOfertasPrev()" title="Anterior">
+          ‹
+        </button>
+
+        <div class="grid-productos" #ofertasList>
+          <app-product-card *ngFor="let producto of productosOferta" [product]="producto" [isOffer]="true"
+            (cardClick)="verDetalles(producto)" (addToCart)="verDetalles(producto)" class="tarjeta-producto-wrapper">
+          </app-product-card>
+        </div>
+
+        <button class="flecha-nav next" (click)="scrollOfertasNext()" title="Siguiente">
+          ›
+        </button>
+      </div>
+    </div>
+
+    <!-- SECCIÓN DESTACADOS -->
+    <div class="encabezado-seccion">
+      <h2 class="titulo-tech">PRODUCTOS DESTACADOS</h2>
+      <div class="linea-acento"></div>
+      <p style="color: var(--text-secondary); margin-top: 15px; font-size: 1rem;">
+        Los componentes más solicitados por nuestros clientes
+      </p>
+    </div>
+
+    <!-- CARRUSEL DESTACADOS -->
+    <div class="contenedor-slider">
+      <button class="nav-btn prev" (click)="scrollDestacadosPrev()" title="Anterior">
+        ‹
+      </button>
+
+      <div class="wrapper-productos" #destacadosList>
+        <app-product-card *ngFor="let producto of productosDestacados" [product]="producto" [isFeatured]="true"
+          (cardClick)="verDetalles(producto)" (addToCart)="verDetalles(producto)" class="tarjeta-producto-wrapper">
+        </app-product-card>
+      </div>
+
+      <button class="nav-btn next" (click)="scrollDestacadosNext()" title="Siguiente">
+        ›
+      </button>
+    </div>
+
+  </div>
+</div>

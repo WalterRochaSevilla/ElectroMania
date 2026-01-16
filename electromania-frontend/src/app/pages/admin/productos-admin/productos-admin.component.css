@@ -1,450 +1,266 @@
 /* =========================
-   CONTENEDOR GENERAL
+   LAYOUT (Matches Dashboard)
 ========================= */
-.pagina-productos {
+.admin-layout {
+  display: flex;
   min-height: 100vh;
-  background: linear-gradient(180deg, #0b132b, #020617);
-  color: #e5e7eb;
-  font-family: 'Segoe UI', sans-serif;
-  margin: 0;
+  background: var(--bg-main, #0f172a);
+  color: var(--text-primary, #e2e8f0);
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-/* =========================
-   HEADER
-========================= */
-.header-productos {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 28px;
-  background: #111827;
-  border-bottom: 1px solid #1f2937;
+.main-content {
+  flex: 1;
+  padding: 32px;
+  overflow-y: auto;
 }
 
-.logo img {
-  height: 36px;
-}
-
-.menu-superior {
-  display: flex;
-  gap: 26px;
-  position: relative;
-}
-
-.menu-item {
-  color: #c7d2fe;
-  text-decoration: none;
-  font-weight: 500;
-  position: relative;
-  display: inline-block;
-  padding-bottom: 8px;
-}
-  
-.menu-item:hover {
-  color: #60a5fa;
-}
-
-.menu-item:nth-child(2) {
-  color: #facc15;
-  font-weight: 600;
-}
-
-.linea-productos {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%; 
-  height: 3px;
-  background: #facc15;
-  border-radius: 2px;
-  box-shadow: 0 2px 4px rgba(250, 204, 21, 0.3);
-}
-
-.acciones-header {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-}
-
-.toggle-modo {
-  background: #1f2937;
-  border: none;
-  color: #facc15;
-  padding: 8px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.btn-ingresar {
-  background: #facc15;
-  color: #1f2937;
-  border: none;
-  padding: 8px 18px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.btn-ingresar:hover {
-  background: #fde047;
-}
-
-/* =========================
-   MODO CLARO
-========================= */
-.pagina-productos.modo-claro {
-  background: #f9fafb;
-  color: #111827;
-}
-
-.modo-claro .header-productos {
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.modo-claro .menu-item {
-  color: #374151;
-}
-
-.modo-claro .linea-productos {
-  background: #d97706;
-}
-
-/* =========================
-   CONTENIDO PRINCIPAL
-========================= */
-.main-productos {
-  padding: 28px;
-}
-
-.encabezado-seccion {
+.top-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 32px;
 }
 
-.encabezado-seccion h1 {
-  font-size: 28px;
-  font-weight: 700;
-  color: #facc15;
-  margin: 0;
-}
-
-.acciones-superiores {
+.header-actions {
   display: flex;
   gap: 16px;
+  align-items: center;
 }
 
-.btn-agregar {
-  background: #10b981;
+.search-input {
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  width: 250px;
+}
+
+.theme-toggle {
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.actions-bar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.btn-primary {
+  background: var(--brand-primary, #6366f1);
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 8px;
   font-weight: 600;
-  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.btn-agregar:hover {
-  background: #34d399;
+.btn-primary:hover {
+  background: #4f46e5;
 }
 
-.btn-exportar {
-  background: #3b82f6;
-  color: white;
-  border: none;
+.btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #e2e8f0;
   padding: 10px 20px;
   border-radius: 8px;
   font-weight: 600;
-  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
+  cursor: pointer;
 }
 
-.btn-exportar:hover {
-  background: #60a5fa;
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 /* =========================
-   TABLA DE PRODUCTOS
+   TABLE STYLES
 ========================= */
-.tabla-container {
-  background: #111827;
+.table-card {
+  background: #1e293b;
   border-radius: 16px;
-  border: 1px solid #1f2937;
+  border: 1px solid rgba(255, 255, 255, 0.05);
   overflow: hidden;
   margin-bottom: 24px;
 }
 
-.tabla-productos {
+.admin-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.tabla-productos thead {
-  background: #1f2937;
-}
-
-.tabla-productos th {
-  padding: 18px 16px;
+.admin-table th {
   text-align: left;
+  padding: 16px;
+  background: #0f172a;
+  color: #94a3b8;
   font-weight: 600;
-  color: #c7d2fe;
+  font-size: 0.85rem;
   text-transform: uppercase;
-  font-size: 14px;
   letter-spacing: 0.5px;
-  border-bottom: 2px solid #374151;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.tabla-productos tbody tr {
-  border-bottom: 1px solid #1f2937;
-  transition: background-color 0.2s ease;
+.admin-table td {
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  vertical-align: middle;
 }
 
-.tabla-productos tbody tr:hover {
-  background-color: #1f2937;
+.admin-table tr:last-child td {
+  border-bottom: none;
 }
 
-.tabla-productos td {
-  padding: 18px 16px;
-  color: #e5e7eb;
+.admin-table tr:hover {
+  background: rgba(255, 255, 255, 0.02);
 }
 
-.id-producto {
-  color: #60a5fa;
-  font-weight: 600;
+.id-col {
+  color: #6366f1;
   font-family: monospace;
+  font-weight: 600;
 }
 
-.info-producto-cell {
+.product-info {
   display: flex;
   flex-direction: column;
 }
 
-.nombre-producto {
+.product-name {
   font-weight: 600;
-  margin-bottom: 4px;
+  color: #f1f5f9;
 }
 
-.categoria-producto {
-  font-size: 13px;
-  color: #9ca3af;
+.product-category {
+  font-size: 0.8rem;
+  color: #94a3b8;
 }
 
-.precio-producto {
-  font-weight: 700;
-  color: #facc15;
-}
-
-/* =========================
-   BADGE DE STOCK
-========================= */
-.badge-stock {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 6px 12px;
-  background: #10b981;
-  color: white;
+/* STATUS & BADGES */
+.stock-badge {
+  padding: 4px 10px;
   border-radius: 20px;
+  font-size: 0.85rem;
+  background: rgba(34, 197, 94, 0.1);
+  /* Green default */
+  color: #22c55e;
   font-weight: 600;
-  font-size: 14px;
 }
 
-.badge-stock.bajo {
-  background: #f59e0b;
+.stock-badge.low {
+  background: rgba(234, 179, 8, 0.1);
+  color: #eab308;
 }
 
-.badge-stock.critico {
-  background: #ef4444;
+.stock-badge.critical {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
 }
 
-.alerta-stock {
-  font-size: 12px;
-  opacity: 0.9;
+.status-indicator {
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ef4444;
+  /* Inactive default */
 }
 
-/* =========================
-   ACCIONES DE LA TABLA
-========================= */
-.acciones-cell {
+.status-indicator.active {
+  color: #22c55e;
+}
+
+/* ACTIONS */
+.actions-cell {
   display: flex;
   gap: 8px;
 }
 
-.btn-editar, .btn-eliminar, .btn-activar {
-  width: 36px;
-  height: 36px;
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   border: none;
-  border-radius: 6px;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  transition: all 0.2s ease;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.btn-editar {
-  background: #3b82f6;
+.btn-icon.edit {
+  background: rgba(99, 102, 241, 0.1);
+  color: #6366f1;
+}
+
+.btn-icon.edit:hover {
+  background: #6366f1;
   color: white;
 }
 
-.btn-editar:hover {
-  background: #60a5fa;
+.btn-icon.delete {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
 }
 
-.btn-eliminar {
+.btn-icon.delete:hover {
   background: #ef4444;
   color: white;
 }
 
-.btn-eliminar:hover {
-  background: #f87171;
-}
-
-.btn-activar {
-  background: #10b981;
-  color: white;
-}
-
-.btn-activar.desactivado {
-  background: #6b7280;
-}
-
-.btn-activar:hover {
-  opacity: 0.9;
-}
-
-/* =========================
-   FOOTER DE LA TABLA
-========================= */
-.footer-tabla {
+/* FOOTER */
+.table-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
-  background: #111827;
+  background: #1e293b;
+  padding: 16px 24px;
   border-radius: 16px;
-  border: 1px solid #1f2937;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.resumen-stock {
+.summary {
   display: flex;
-  gap: 32px;
+  gap: 24px;
+  font-size: 0.9rem;
+  color: #94a3b8;
 }
 
-.resumen-item {
-  display: flex;
-  flex-direction: column;
+.text-success {
+  color: #22c55e;
 }
 
-.resumen-label {
-  font-size: 14px;
-  color: #9ca3af;
-  margin-bottom: 4px;
-}
-
-.resumen-valor {
-  font-size: 20px;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.resumen-valor.stock-bajo {
-  color: #f59e0b;
-}
-
-.resumen-valor.valor-total {
-  color: #10b981;
-}
-
-/* =========================
-   PAGINACIÓN
-========================= */
-.paginacion {
+.pagination {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
-.btn-pagina {
-  background: #1f2937;
-  color: #e5e7eb;
-  border: 1px solid #374151;
-  padding: 8px 16px;
-  border-radius: 8px;
+.btn-page {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  padding: 6px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  font-weight: 500;
 }
 
-.btn-pagina:hover:not(:disabled) {
-  background: #374151;
-}
-
-.btn-pagina:disabled {
+.btn-page:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-.info-pagina {
-  color: #9ca3af;
-  font-size: 14px;
-}
-
-/* =========================
-   MODO CLARO - PRODUCTOS
-========================= */
-.modo-claro .tabla-container,
-.modo-claro .footer-tabla {
-  background: #ffffff;
-  border-color: #e5e7eb;
-}
-
-.modo-claro .tabla-productos thead {
-  background: #f3f4f6;
-}
-
-.modo-claro .tabla-productos th {
-  color: #374151;
-  border-bottom-color: #d1d5db;
-}
-
-.modo-claro .tabla-productos tbody tr {
-  border-bottom-color: #e5e7eb;
-}
-
-.modo-claro .tabla-productos tbody tr:hover {
-  background-color: #f9fafb;
-}
-
-.modo-claro .tabla-productos td {
-  color: #111827;
-}
-
-.modo-claro .categoria-producto {
-  color: #6b7280;
-}
-
-.modo-claro .resumen-label {
-  color: #6b7280;
-}
-
-.modo-claro .resumen-valor {
-  color: #111827;
-}
-
-.modo-claro .btn-pagina {
-  background: #f3f4f6;
-  border-color: #d1d5db;
-  color: #374151;
-}
-
-.modo-claro .btn-pagina:hover:not(:disabled) {
-  background: #e5e7eb;
 }

@@ -1,172 +1,169 @@
 <div class="producto-container">
     <div class="pagina-catalogo-container" [class.modo-claro]="!modoOscuro">
-    
-    <!-- HEADER -->
-    <header class="header-catalogo">
-        <div class="logo">
-        <img src="LogoProvisorio.png" alt="Electromanía" />
-        </div>
 
-        <nav class="menu-superior">
-        <a href="#" class="menu-item" routerLink="/home">
-            Catálogo
-        </a>
-        <a href="#" class="menu-item carrito-activo" routerLink="/producto">
-            Carrito <span class="badge">{{ totalItems }}</span>
-            <span class="linea-carrito"></span>
-        </a>
-        </nav>
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
 
-        <div class="acciones-header">
-        <button class="toggle-modo" (click)="cambiarModo()">
-            {{ modoOscuro ? '☀️' : '🌙' }}
-        </button>
-        <button class="btn-ingresar" (click)="irALogin()">Ingresar</button>
-        </div>
-    </header>
+            <!-- CONTENIDO DEL CARRITO -->
+            <div class="carrito-wrapper">
 
-    <!-- MAIN CONTENT -->
-    <main class="main-content">
-        
-        <!-- CONTENIDO DEL CARRITO -->
-        <div class="carrito-wrapper">
-        <div class="carrito-container">
-            
-            <!-- TÍTULO -->
-            <div class="carrito-header">
-            <h1>Tu Carrito de Compras</h1>
-            </div>
+                <h1 class="page-title">Tu Carrito de Compras</h1>
 
-            <!-- TABLA DE PRODUCTOS -->
-            <div class="tabla-productos">
-            <!-- ENCABEZADO -->
-            <div class="fila-encabezado">
-                <div class="columna producto-col">Producto</div>
-                <div class="columna cantidad-col">Cant.</div>
-                <div class="columna precio-col">Precio</div>
-                <div class="columna acciones-col"></div>
-            </div>
+                <div class="carrito-layout">
 
-            <!-- PRODUCTOS -->
-            <div class="lista-productos">
-                <div class="fila-producto" *ngFor="let item of carrito; let i = index">
-                <div class="columna producto-col">
-                    <div class="info-producto">
-                    <h4>{{ item.nombre }}</h4>
-                    <p class="descripcion">{{ item.descripcion }}</p>
+                    <!-- LEFT COLUMN: PRODUCTS LIST -->
+                    <div class="carrito-items-section">
+
+                        <div class="lista-productos" *ngIf="carrito.length > 0; else emptyCart">
+                            <div class="fila-producto" *ngFor="let item of carrito; let i = index">
+                                <div class="columna producto-col">
+                                    <div class="info-producto">
+                                        <h4>{{ item.nombre }}</h4>
+                                        <p class="descripcion">{{ item.descripcion }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="columna cantidad-col">
+                                    <div class="contador-cantidad">
+                                        <button class="btn-cantidad" (click)="disminuirCantidad(i)">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                            </svg>
+                                        </button>
+                                        <span class="cantidad">{{ item.cantidad }}</span>
+                                        <button class="btn-cantidad" (click)="aumentarCantidad(i)">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="columna precio-col">
+                                    <span class="precio-total">{{ (item.precio * item.cantidad) | number:'1.2-2' }}
+                                        Bs.</span>
+                                    <span class="precio-unitario">{{ item.precio | number:'1.2-2' }} Bs. c/u</span>
+                                </div>
+
+                                <div class="columna acciones-col">
+                                    <button class="btn-eliminar" (click)="eliminarProducto(i)">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                            <path
+                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ng-template #emptyCart>
+                            <div class="carrito-vacio">
+                                <div class="icon-empty">
+                                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="9" cy="21" r="1"></circle>
+                                        <circle cx="20" cy="21" r="1"></circle>
+                                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <h3>Tu carrito está vacío</h3>
+                                <p>¡Explora nuestro catálogo y encuentra los mejores componentes!</p>
+                                <button class="btn-ver-catalogo" (click)="irACatalogo()">
+                                    Ver Catálogo
+                                </button>
+                            </div>
+                        </ng-template>
                     </div>
-                </div>
-                
-                <div class="columna cantidad-col">
-                    <div class="contador-cantidad">
-                    <button class="btn-cantidad" (click)="disminuirCantidad(i)">-</button>
-                    <span class="cantidad">{{ item.cantidad }}</span>
-                    <button class="btn-cantidad" (click)="aumentarCantidad(i)">+</button>
+
+                    <!-- RIGHT COLUMN: SUMMARY -->
+                    <div class="carrito-resumen-section" *ngIf="carrito.length > 0">
+                        <div class="resumen-card">
+                            <h3>Resumen del Pedido</h3>
+
+                            <div class="detalle-resumen">
+                                <div class="fila-resumen">
+                                    <span>Subtotal</span>
+                                    <span>{{ subtotal | number:'1.2-2' }} Bs.</span>
+                                </div>
+                                <div class="fila-resumen">
+                                    <span>Impuestos (13%)</span>
+                                    <span>{{ impuestos | number:'1.2-2' }} Bs.</span>
+                                </div>
+                                <div class="fila-resumen total">
+                                    <span>Total</span>
+                                    <span class="monto-total">{{ total | number:'1.2-2' }} Bs.</span>
+                                </div>
+                            </div>
+
+                            <!-- BILLING INFO -->
+                            <div class="facturacion-info">
+                                <label class="checkbox-factura">
+                                    <input type="checkbox" [(ngModel)]="generarFactura" />
+                                    <span class="texto-factura">Generar Factura con NIT</span>
+                                </label>
+
+                                <div class="campos-factura" *ngIf="generarFactura">
+                                    <div class="form-group">
+                                        <label for="factura-nombre">Razón Social</label>
+                                        <input id="factura-nombre" type="text" [(ngModel)]="nombreFactura"
+                                            placeholder="Nombre completo" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="factura-nit">NIT / CI</label>
+                                        <input id="factura-nit" type="text" [(ngModel)]="nitFactura"
+                                            placeholder="Número de documento" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="factura-email">Email</label>
+                                        <input id="factura-email" type="email" [(ngModel)]="emailFactura"
+                                            placeholder="correo@ejemplo.com" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="btn-pagar" (click)="procesarPago()" [disabled]="procesando">
+                                {{ procesando ? 'Procesando...' : 'Pagar y Finalizar' }}
+                            </button>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="columna precio-col">
-                    <span class="precio-unitario">{{ item.precio | number:'1.2-2' }} Bs.</span>
-                    <span class="precio-total">{{ (item.precio * item.cantidad) | number:'1.2-2' }} Bs.</span>
-                </div>
-                
-                <div class="columna acciones-col">
-                    <button class="btn-eliminar" (click)="eliminarProducto(i)">🗑️</button>
-                </div>
-                </div>
 
-                <!-- SI EL CARRITO ESTÁ VACÍO -->
-                <div class="carrito-vacio" *ngIf="carrito.length === 0">
-                <p>Tu carrito está vacío</p>
-                <button class="btn-ver-catalogo" (click)="irACatalogo()">
-                    Ver Catálogo
-                </button>
                 </div>
             </div>
-            </div>
-
-            <!-- RESUMEN DEL PEDIDO -->
-            <div class="resumen-pedido" *ngIf="carrito.length > 0">
-            <h3>Resumen del Pedido</h3>
-            
-            <div class="detalle-resumen">
-                <div class="fila-resumen">
-                <span>Subtotal:</span>
-                <span>{{ subtotal | number:'1.2-2' }} Bs.</span>
-                </div>
-                <div class="fila-resumen">
-                <span>Impuestos (13%):</span>
-                <span>{{ impuestos | number:'1.2-2' }} Bs.</span>
-                </div>
-                <div class="fila-resumen total">
-                <span><strong>Total:</strong></span>
-                <span class="precio-total"><strong>{{ total | number:'1.2-2' }} Bs.</strong></span>
-                </div>
-            </div>
-
-            <!-- INFORMACIÓN DE FACTURACIÓN -->
-            <div class="facturacion-info">
-                <label class="checkbox-factura">
-                <input type="checkbox" [(ngModel)]="generarFactura" />
-                <span class="checkmark"></span>
-                <span class="texto-factura">
-                    La factura se generará a nombre de <strong>{{ nombreFactura }}</strong> 
-                    (NIT: <strong>{{ nitFactura }}</strong>).
-                </span>
-                </label>
-                
-                <!-- Campos para editar facturación si es necesario -->
-                <div class="campos-factura" *ngIf="generarFactura">
-                <div class="campo-factura">
-                    <label>Nombre/Razón Social</label>
-                    <input type="text" [(ngModel)]="nombreFactura" placeholder="Juan Pérez" />
-                </div>
-                <div class="campo-factura">
-                    <label>NIT</label>
-                    <input type="text" [(ngModel)]="nitFactura" placeholder="123-662" />
-                </div>
-                <div class="campo-factura">
-                    <label>Email para factura</label>
-                    <input type="email" [(ngModel)]="emailFactura" placeholder="juan@gmail.com" />
-                </div>
-                </div>
-            </div>
-
-            <!-- BOTÓN PAGAR -->
-            <button class="btn-pagar" (click)="procesarPago()" [disabled]="procesando">
-                {{ procesando ? 'Procesando...' : 'Pagar y Facturar' }}
-            </button>
-            </div>
-        </div>
-        </div>
-
-    </main>
+        </main>
     </div>
 
     <!-- MODAL COMPRA EXITOSA -->
     <div class="modal-overlay" *ngIf="mostrarModalExito">
-    <div class="modal-exito">
-        <div class="modal-header">
-        <h2>Compra Exitosa</h2>
+        <div class="modal-exito">
+            <div class="modal-icon-wrapper">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+            </div>
+
+            <h2>¡Compra Exitosa!</h2>
+
+            <p class="mensaje-exito">
+                Se ha generado la orden correctamente.<br>
+                <span *ngIf="generarFactura">Factura #<strong>{{ numeroFactura }}</strong> a nombre de <strong>{{
+                        nombreFactura }}</strong>.</span>
+            </p>
+
+            <button class="btn-volver-tienda" (click)="volverATienda()">
+                Volver a la tienda
+            </button>
         </div>
-        
-        <div class="modal-body">
-        <div class="icono-exito">✓</div>
-        <p class="mensaje-exito">
-            Se ha generado la factura #<strong>{{ numeroFactura }}</strong> a nombre de<br>
-            <strong>{{ nombreFactura }}.</strong>
-        </p>
-        <p class="mensaje-email">
-            Hemos enviado un correo a <strong>{{ emailFactura }}</strong> con<br>
-            el PDF adjunto.
-        </p>
-        
-        <div class="separador-modal"></div>
-        
-        <button class="btn-volver-tienda" (click)="volverATienda()">
-            Volver a la tienda
-        </button>
-        </div>
-    </div>
     </div>
 </div>

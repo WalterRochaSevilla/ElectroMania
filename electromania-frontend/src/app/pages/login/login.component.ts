@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -14,18 +15,20 @@ export class LoginComponent {
    /* =========================
      ESTADOS GENERALES
   ========================= */
-  modoOscuro: boolean = true;
+  modoOscuro = true;
 
     // En tu componente
-  mostrarFormLogin: boolean = false;
-  email: string = '';
-  contrasena: string = '';
-  mostrarContrasena: boolean = false;
+  mostrarFormLogin = false;
+  email = '';
+  contrasena = '';
+  mostrarContrasena = false;
 
    /* =========================
      INYECCIÓN DE DEPENDENCIAS
   ========================= */
-  constructor(private router: Router) {}
+  constructor(private router: Router,
+    private authService: AuthService
+  ) {}
 
 
   /* =========================
@@ -61,6 +64,10 @@ export class LoginComponent {
       email: this.email,
       contrasena: this.contrasena
     });
+    this.authService.login({
+      email: this.email,
+      password: this.contrasena
+    })
     // Aquí iría la lógica real de autenticación
   }
 }
