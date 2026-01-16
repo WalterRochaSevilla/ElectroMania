@@ -86,5 +86,10 @@ export class AuthController {
   @Post('login')
   async login(@Body() request: UserLoginRequestModel) {
     return this.authService.login(request);
+    
+  }
+  @Post('register-admin')
+  async registerAdminUser(@Body() request: UserCreateRequestModel) {
+    return this.authService.registerAdminUser(request);
   }
 }

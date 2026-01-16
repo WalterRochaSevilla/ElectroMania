@@ -32,7 +32,7 @@ export class AuthService {
     }
 
     async login(loginRequest:UserLoginRequestModel){
-        const user = await this.userService.getUserByField('email', loginRequest.email.value);
+        const user = await this.userService.getUserByField('email', loginRequest.email);
         if(!user){
             throw new UnauthorizedException("Invalid Credentials");
         }
@@ -53,5 +53,16 @@ export class AuthService {
     }
     async validateUserById(uuid:string){
         return this.userService.getUserByField('uuid', uuid);
+    }
+    async getUserFromToken(token: string){
+        return this.jwtService.decode(token).user;
+    }
+
+    async registerAdminUser(request: UserCreateRequestModel){
+        try{
+            return this.userService.registerAdminUser(request);
+        }catch(error){
+            return Promise.reject(error);
+        }
     }
 }

@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ProductModule } from './product/product.module';
 import { AuthModule } from './auth/auth.module';
 import Configuration from './config/Configuration';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import Configuration from './config/Configuration';
       envFilePath: '.env',
     }),
     ProductModule,
-    AuthModule
+    AuthModule,
+    CartModule
   ],
   controllers: [AppController],
   providers: [

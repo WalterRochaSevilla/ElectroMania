@@ -3,6 +3,15 @@ import { CreateProductRequestModel } from "../model/CreateProductRequest.model";
 import { Mapper } from "src/common/interfaces/Mapper.interface";
 
 import { $Enums, Prisma, Product, ProductImage} from "@prisma/client"
+import { CartProductModel } from '../../cart/models/CardProduct.model';
+
+
+type ProductWithImages = Prisma.ProductGetPayload<{
+  include: {
+    productImages: true;
+  };
+}>;
+
 
 export class ProductMapper implements Mapper<ProductModel,Product,Prisma.ProductCreateInput,CreateProductRequestModel,ProductImage> {
 
@@ -33,5 +42,13 @@ export class ProductMapper implements Mapper<ProductModel,Product,Prisma.Product
             price: model.price,
             stock: model.stock
         }
-    }   
+    }
+    toCartProduct(entity: ProductWithImages): CartProductModel {
+        const model = new CartProductModel();
+        model.product_id = entity.product_id;
+        model.product_name = entity.product_name;
+        model.price = Number(entity.price);
+        model.images = entity.productImages ? entity.productImages.map(img => img.image) : [];
+        return model;
+    }
 }
