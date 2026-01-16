@@ -17,8 +17,9 @@ export class AppComponent implements OnInit {
   isDarkMode = true;
   isScrolled = false;
   dropdownOpen = false;
+  mobileMenuOpen = false;
 
-  constructor(private router: Router, private renderer: Renderer2) {}
+  constructor(private router: Router, private renderer: Renderer2) { }
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
@@ -37,15 +38,15 @@ export class AppComponent implements OnInit {
     // Verificar tema del sistema
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const savedTheme = localStorage.getItem('theme');
-    
+
     if (savedTheme) {
       this.isDarkMode = savedTheme === 'dark';
     } else {
       this.isDarkMode = prefersDark;
     }
-    
+
     this.applyTheme(this.isDarkMode ? 'dark' : 'light');
-    
+
     // Añadir clase inicial para animaciones
     this.renderer.addClass(document.body, 'loaded');
   }
@@ -54,7 +55,7 @@ export class AppComponent implements OnInit {
     this.isDarkMode = !this.isDarkMode;
     const theme = this.isDarkMode ? 'dark' : 'light';
     this.applyTheme(theme);
-    
+
     // Efecto de transición suave
     this.renderer.addClass(document.body, 'theme-transition');
     setTimeout(() => {
@@ -65,7 +66,7 @@ export class AppComponent implements OnInit {
   private applyTheme(theme: string) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
-    
+
     // Actualizar meta tag para theme-color
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
@@ -77,8 +78,19 @@ export class AppComponent implements OnInit {
     this.dropdownOpen = !this.dropdownOpen;
   }
 
+  toggleMobileMenu() {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+    if (this.mobileMenuOpen) {
+      this.renderer.addClass(document.body, 'no-scroll');
+    } else {
+      this.renderer.removeClass(document.body, 'no-scroll');
+    }
+  }
+
   irA(ruta: string) {
     this.dropdownOpen = false;
+    this.mobileMenuOpen = false;
+    this.renderer.removeClass(document.body, 'no-scroll');
     this.router.navigate([`/${ruta}`]);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }

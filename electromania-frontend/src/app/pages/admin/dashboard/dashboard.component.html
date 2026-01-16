@@ -1,126 +1,128 @@
-<div class="dashboard-container">
-  <div class="pagina-dashboard" [class.modo-claro]="!modoOscuro">
-    <!-- HEADER -->
-    <header class="header-dashboard">
-      <div class="logo">
-        <img src="LogoProvisorio.png" alt="Electromanía" />
-      </div>
+<div class="dashboard-container" [class.modo-claro]="!modoOscuro">
+  <app-admin-sidebar></app-admin-sidebar>
 
-      <nav class="menu-superior">
-        <a href="#" class="menu-item" routerLink="/dashboard">
-          Dashboard
-          <span class="linea-dashboard"></span>
-        </a>
-        <a href="#" class="menu-item" routerLink="/productos-admin">
-          Productos
-        </a>
-        <a href="#" class="menu-item" routerLink="/usuarios-admin">
-          Usuarios
-        </a>
-      </nav>
-
-      <div class="acciones-header">
-        <button class="toggle-modo" (click)="cambiarModo()">
-          {{ modoOscuro ? '☀️' : '🌙' }}
-        </button>
-        <button class="btn-ingresar" (click)="cerrarSesion()">Cerrar Sesión</button>
-      </div>
+  <div class="main-content">
+    <header class="top-bar">
+      <h2>Dashboard Administrativo</h2>
     </header>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="main-dashboard">
-      <div class="encabezado-dashboard">
-        <h1>Dashboard Administrativo</h1>
-      </div>
+    <div class="dashboard-grid">
 
-      <!-- MÉTRICAS -->
-      <div class="metricas-grid">
-        <div class="card-metrica">
-          <div class="icono-metrica">
-            <span>💰</span>
+      <!-- STATS CARDS -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon revenue">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
-          <div class="contenido-metrica">
-            <h3>VENTAS TOTALES</h3>
-            <p class="valor-metrica">12,450 Bs.</p>
-            <p class="variacion">+12% vs mes anterior</p>
-          </div>
-        </div>
-
-        <div class="card-metrica">
-          <div class="icono-metrica">
-            <span>⚠️</span>
-          </div>
-          <div class="contenido-metrica">
-            <h3>STOCK CRÍTICO</h3>
-            <p class="valor-metrica">3 Productos</p>
-            <p class="variacion">Necesita atención</p>
-          </div>
-        </div>
-
-        <div class="card-metrica">
-          <div class="icono-metrica">
-            <span>●</span>
-          </div>
-          <div class="contenido-metrica">
-            <h3>ESTADO SISTEMA</h3>
-            <p class="valor-metrica status-online">Online</p>
-            <p class="variacion">Todo funciona correctamente</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- GRÁFICO DE TENDENCIAS -->
-      <div class="seccion-grafico">
-        <div class="encabezado-grafico">
-          <h2>Tendencia de Ventas (Últimos 7 días)</h2>
-          <select class="selector-periodo" [(ngModel)]="periodoSeleccionado">
-            <option value="7d">Últimos 7 días</option>
-            <option value="30d">Últimos 30 días</option>
-            <option value="90d">Últimos 90 días</option>
-          </select>
-        </div>
-        
-        <div class="grafico-container">
-          <!-- Aquí iría un gráfico real (Chart.js, etc.) -->
-          <div class="grafico-placeholder">
-            <div class="ejes">
-              <div class="eje-y">
-                <span>Bs.</span>
-                <span>10,000</span>
-                <span>7,500</span>
-                <span>5,000</span>
-                <span>2,500</span>
-                <span>0</span>
-              </div>
-              <div class="barras-container">
-                <div class="barra" style="height: 70%;" [attr.data-dia]="'Lun'"></div>
-                <div class="barra" style="height: 85%;" [attr.data-dia]="'Mar'"></div>
-                <div class="barra" style="height: 60%;" [attr.data-dia]="'Mié'"></div>
-                <div class="barra" style="height: 90%;" [attr.data-dia]="'Jue'"></div>
-                <div class="barra" style="height: 75%;" [attr.data-dia]="'Vie'"></div>
-                <div class="barra" style="height: 95%;" [attr.data-dia]="'Sáb'"></div>
-                <div class="barra" style="height: 80%;" [attr.data-dia]="'Dom'"></div>
-              </div>
-            </div>
-            <div class="eje-x">
-              <span>Lun</span>
-              <span>Mar</span>
-              <span>Mié</span>
-              <span>Jue</span>
-              <span>Vie</span>
-              <span>Sáb</span>
-              <span>Dom</span>
-            </div>
-          </div>
-          
-          <div class="leyenda-grafico">
-            <div class="item-leyenda">
-              <span class="color-leyenda" style="background-color: #3b82f6;"></span>
-              <span>Ventas diarias</span>
+          <div class="stat-info">
+            <h3>Ingresos Totales</h3>
+            <div class="value">Bs. {{ stats.totalRevenue | number:'1.2-2' }}</div>
+            <div class="trend positive">
+              <span>▲ {{ stats.revenueChange }}%</span> vs mes anterior
             </div>
           </div>
         </div>
+
+        <div class="stat-card">
+          <div class="stat-icon warning">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <div class="stat-info">
+            <h3>Stock Crítico</h3>
+            <div class="value">{{ stats.lowStockCount }} Productos</div>
+            <div class="trend negative">Requiere atención</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon system">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <div class="stat-info">
+            <h3>Sistema</h3>
+            <div class="value text-success">{{ stats.systemStatus }}</div>
+            <div class="trend">Versión 1.0.0</div>
+          </div>
+        </div>
       </div>
-    </main>
+
+      <!-- CHARTS ROW -->
+      <div class="charts-row">
+        <!-- REVENUE CHART -->
+        <div class="chart-card large">
+          <div class="card-header">
+            <h3>Tendencia de Ventas</h3>
+            <select class="period-select" [(ngModel)]="periodoSeleccionado" (change)="updateRevenueChart()">
+              <option value="7d">7 Días</option>
+              <option value="30d">30 Días</option>
+              <option value="90d">90 Días</option>
+            </select>
+          </div>
+          <div class="chart-wrapper">
+            <canvas baseChart [data]="lineChartData" [options]="lineChartOptions" [type]="lineChartType">
+            </canvas>
+          </div>
+        </div>
+
+        <!-- TOP SELLING CHART -->
+        <div class="chart-card">
+          <div class="card-header">
+            <h3>Más Vendidos</h3>
+          </div>
+          <div class="chart-wrapper">
+            <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType">
+            </canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOW STOCK TABLE -->
+      <div class="table-section">
+        <h3 class="flex items-center gap-2">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-red-500">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          Alerta de Stock / Vencidos
+        </h3>
+        <div class="table-responsive">
+          <table class="dashboard-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Producto</th>
+                <th>Stock Actual</th>
+                <th>Estado</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let prod of lowStockProducts">
+                <td class="id-col">{{ prod.id }}</td>
+                <td>{{ prod.name }}</td>
+                <td class="font-bold">{{ prod.stock }}</td>
+                <td>
+                  <span class="status-badge" [class.critical]="prod.stock === 0" [class.warning]="prod.stock > 0">
+                    {{ prod.status }}
+                  </span>
+                </td>
+                <td>
+                  <button class="btn-action">Reabastecer</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>

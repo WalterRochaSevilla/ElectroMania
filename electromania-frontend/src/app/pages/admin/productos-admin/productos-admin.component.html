@@ -1,84 +1,78 @@
-<div class="productos-admin-container">
-  <div class="pagina-productos" [class.modo-claro]="!modoOscuro">
-    <!-- HEADER -->
-    <header class="header-productos">
-      <div class="logo">
-        <img src="LogoProvisorio.png" alt="Electromanía" />
-      </div>
+<div class="admin-layout" [class.modo-claro]="!modoOscuro">
+  <app-admin-sidebar></app-admin-sidebar>
 
-      <nav class="menu-superior">
-        <a href="#" class="menu-item" routerLink="/dashboard">
-          Dashboard
-        </a>
-        <a href="#" class="menu-item" routerLink="/productos-admin">
-          Productos
-          <span class="linea-productos"></span>
-        </a>
-        <a href="#" class="menu-item" routerLink="/usuarios-admin">
-          Usuarios
-        </a>
-      </nav>
-
-      <div class="acciones-header">
-        <button class="toggle-modo" (click)="cambiarModo()">
-          {{ modoOscuro ? '☀️' : '🌙' }}
-        </button>
-        <button class="btn-ingresar" (click)="cerrarSesion()">Cerrar Sesión</button>
+  <main class="main-content">
+    <header class="top-bar">
+      <h2>Gestión de Inventario</h2>
+      <div class="header-actions">
+        <!-- Search placeholder -->
+        <input type="text" placeholder="Buscar producto..." class="search-input">
       </div>
     </header>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="main-productos">
-      <div class="encabezado-seccion">
-        <h1>Gestión de Inventario</h1>
-        <div class="acciones-superiores">
-          <button class="btn-agregar" (click)="agregarProducto()">
-            + Agregar Producto
-          </button>
-          <button class="btn-exportar" (click)="exportarInventario()">
-            📋 Exportar
-          </button>
-        </div>
+    <div class="content-wrapper">
+      <div class="actions-bar">
+        <button class="btn-primary" (click)="agregarProducto()">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          Nuevo Producto
+        </button>
+        <button class="btn-secondary" (click)="exportarInventario()">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Exportar
+        </button>
       </div>
 
       <!-- TABLA DE PRODUCTOS -->
-      <div class="tabla-container">
-        <table class="tabla-productos">
+      <div class="table-card">
+        <table class="admin-table">
           <thead>
             <tr>
               <th>ID</th>
-              <th>PRODUCTO</th>
-              <th>PRECIO</th>
-              <th>STOCK</th>
-              <th>ACCIONES</th>
+              <th>Producto</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Estado</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let producto of productos">
-              <td class="id-producto">{{ producto.id }}</td>
+              <td class="id-col">{{ producto.id }}</td>
               <td>
-                <div class="info-producto-cell">
-                  <div class="nombre-producto">{{ producto.nombre }}</div>
-                  <div class="categoria-producto">{{ producto.categoria }}</div>
+                <div class="product-info">
+                  <span class="product-name">{{ producto.nombre }}</span>
+                  <span class="product-category">{{ producto.categoria }}</span>
                 </div>
               </td>
-              <td class="precio-producto">{{ producto.precio }} Bs.</td>
+              <td class="font-bold">{{ producto.precio }} Bs.</td>
               <td>
-                <span class="badge-stock" [class.bajo]="producto.stock <= 5" [class.critico]="producto.stock <= 2">
+                <span class="stock-badge" [class.low]="producto.stock <= 5" [class.critical]="producto.stock <= 2">
                   {{ producto.stock }}
-                  <span *ngIf="producto.stock <= 5" class="alerta-stock">(Bajo)</span>
                 </span>
               </td>
               <td>
-                <div class="acciones-cell">
-                  <button class="btn-editar" (click)="editarProducto(producto)">
-                    ✏️
+                <span class="status-indicator" [class.active]="producto.activo" (click)="toggleActivo(producto)">
+                  {{ producto.activo ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <button class="btn-icon edit" (click)="editarProducto(producto)" title="Editar">
+                    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
                   </button>
-                  <button class="btn-eliminar" (click)="eliminarProducto(producto.id)">
-                    🗑️
-                  </button>
-                  <button class="btn-activar" [class.desactivado]="!producto.activo" (click)="toggleActivo(producto)">
-                    {{ producto.activo ? '✅' : '❌' }}
+                  <button class="btn-icon delete" (click)="eliminarProducto(producto.id)" title="Eliminar">
+                    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
                   </button>
                 </div>
               </td>
@@ -87,33 +81,21 @@
         </table>
       </div>
 
-      <!-- PAGINACIÓN Y RESUMEN -->
-      <div class="footer-tabla">
-        <div class="resumen-stock">
-          <div class="resumen-item">
-            <span class="resumen-label">Total Productos:</span>
-            <span class="resumen-valor">{{ productos.length }}</span>
-          </div>
-          <div class="resumen-item">
-            <span class="resumen-label">Stock Bajo:</span>
-            <span class="resumen-valor stock-bajo">{{ stockBajoCount }}</span>
-          </div>
-          <div class="resumen-item">
-            <span class="resumen-label">Valor Total:</span>
-            <span class="resumen-valor valor-total">{{ calcularValorTotal() }} Bs.</span>
-          </div>
+      <!-- FOOTER -->
+      <div class="table-footer">
+        <div class="summary">
+          <span>Total: <strong>{{ productos.length }}</strong></span>
+          <span>Valor: <strong class="text-success">{{ calcularValorTotal() }} Bs.</strong></span>
         </div>
-        
-        <div class="paginacion">
-          <button class="btn-pagina" [disabled]="paginaActual === 1" (click)="cambiarPagina(paginaActual - 1)">
-            ← Anterior
-          </button>
-          <span class="info-pagina">Página {{ paginaActual }} de {{ totalPaginas }}</span>
-          <button class="btn-pagina" [disabled]="paginaActual === totalPaginas" (click)="cambiarPagina(paginaActual + 1)">
-            Siguiente →
-          </button>
+
+        <div class="pagination">
+          <button class="btn-page" [disabled]="paginaActual === 1"
+            (click)="cambiarPagina(paginaActual - 1)">Ant</button>
+          <span>{{ paginaActual }} / {{ totalPaginas }}</span>
+          <button class="btn-page" [disabled]="paginaActual === totalPaginas"
+            (click)="cambiarPagina(paginaActual + 1)">Sig</button>
         </div>
       </div>
-    </main>
-  </div>
+    </div>
+  </main>
 </div>

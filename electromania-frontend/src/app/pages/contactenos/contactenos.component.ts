@@ -9,11 +9,11 @@ import { CommonModule } from '@angular/common'; // Importante para directivas b�
   styleUrls: ['./contactenos.component.css']
 })
 export class ContactenosComponent {
-  nombre: string = 'Ramiro Nogales';
-  titulo: string = 'Ingeniero en Sistemas Electrónicos';
-  telefono: string = '77436609';
-  localidad: string = 'COCHABAMBA - BOLIVIA';
-  email: string = 'contacto@electromania.bo';
+  nombre = 'Ramiro Nogales';
+  titulo = 'Ingeniero en Sistemas Electrónicos';
+  telefono = '77436609';
+  localidad = 'COCHABAMBA - BOLIVIA';
+  email = 'contacto@electromania.bo';
 
   openWhatsApp() {
     const numeroCompleto = `+591${this.telefono}`;

@@ -15,9 +15,9 @@ export class UsuariosAdminComponent {
   /* =========================
      ESTADOS GENERALES
   ========================= */
-  modoOscuro: boolean = true;
-  busqueda: string = '';
-  filtroRol: string = 'all';
+  modoOscuro = true;
+  busqueda = '';
+  filtroRol = 'all';
 
   /* =========================
      USUARIOS DE EJEMPLO

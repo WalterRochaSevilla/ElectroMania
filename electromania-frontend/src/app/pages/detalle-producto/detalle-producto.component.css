@@ -1,176 +1,285 @@
-* { box-sizing: border-box; }
-
+/* PAGE CONTAINER */
 .pagina-detalle-container {
-  min-height: 100vh;
-  background: linear-gradient(180deg, #0b132b, #020617);
-  color: #e5e7eb;
-  font-family: 'Segoe UI', sans-serif;
+  min-height: calc(100vh - 72px);
+  /* Adjust for global navbar */
+  background: var(--bg-main);
+  color: var(--text-primary);
+  padding: 40px 24px;
 }
 
-/* HEADER (Reutilizado y ajustado) */
-.header-catalogo {
+/* MAIN LAYOUT */
+.main-content {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 28px;
-  background: #111827;
-  border-bottom: 1px solid #1f2937;
+  justify-content: center;
 }
 
-.logo img { height: 48px; }
-
-.menu-superior { display: flex; gap: 26px; }
-.menu-item { color: #c7d2fe; text-decoration: none; cursor: pointer; font-weight: 500; }
-.menu-item:hover { color: #60a5fa; }
-
-.badge {
-  background: #ef4444;
-  color: white;
-  padding: 2px 7px;
-  border-radius: 999px;
-  font-size: 12px;
-}
-
-/* MAIN CONTENT */
-.main-content { padding: 40px 20px; display: flex; justify-content: center; }
-.detalle-wrapper { max-width: 1100px; width: 100%; }
-
-.seccion-principal {
+.detalle-wrapper {
+  max-width: 1200px;
+  width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  margin-bottom: 50px;
+  gap: 60px;
+  align-items: start;
 }
 
-.contenedor-imagen-principal {
-  background: #111827;
+/* COLUMN 1: IMAGE */
+.columna-imagen {
+  position: sticky;
+  top: 100px;
+  /* Sticky effect when scrolling */
+}
+
+.imagen-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 20px;
   padding: 40px;
   display: flex;
   justify-content: center;
-  border: 1px solid #374151;
+  align-items: center;
+  box-shadow: var(--shadow-lg);
+  aspect-ratio: 1 / 1;
+  /* Square */
 }
 
-.contenedor-imagen-principal img { max-width: 100%; height: auto; }
+.imagen-card img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
 
-/* INFO COMPRA */
-.categoria-tag { color: #60a5fa; font-size: 14px; font-weight: 600; text-transform: uppercase; }
-.info-compra h1 { font-size: 32px; margin: 10px 0; color: #facc15; }
+.imagen-card:hover img {
+  transform: scale(1.05);
+}
 
-.estado-stock {
+[data-theme='light'] .imagen-card {
+  background: white;
+  /* Clean white bg for product images */
+}
+
+/* COLUMN 2: INFO */
+.columna-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.categoria-tag {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+
+.titulo-producto {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(2rem, 3vw, 2.75rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+/* BADGES */
+.badges-container {
+  margin-bottom: 24px;
+}
+
+.stock-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 20px;
+  background: rgba(16, 185, 129, 0.15);
+  /* Green tint */
+  color: #10b981;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
-.stock-disponible { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-.stock-bajo { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
-.stock-agotado { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+.stock-badge.stock-bajo {
+  background: rgba(245, 158, 11, 0.15);
+  /* Orange tint */
+  color: #f59e0b;
+}
 
-.punto-estado { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.stock-badge.stock-agotado {
+  background: rgba(239, 68, 68, 0.15);
+  /* Red tint */
+  color: #ef4444;
+}
 
-.precio-detalle { font-size: 36px; font-weight: 700; color: #e5e7eb; margin: 25px 0; }
+.punto-estado {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
 
-.acciones-agregar { display: flex; gap: 20px; align-items: center; }
+/* DESCRIPTION */
+.descripcion-producto {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+
+/* PRICE */
+.precio-area {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  margin-bottom: 40px;
+}
+
+.simbolo {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+.monto {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+/* ACTIONS */
+.acciones-compra {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 60px;
+  height: 56px;
+  /* Uniform height */
+}
 
 .selector-cantidad {
   display: flex;
-  border: 1px solid #374151;
-  border-radius: 8px;
-  overflow: hidden;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 4px;
 }
 
 .selector-cantidad button {
-  background: #1f2937;
-  color: white;
+  width: 40px;
+  height: 100%;
+  background: transparent;
   border: none;
-  padding: 10px 15px;
+  color: var(--text-primary);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
 }
 
-.selector-cantidad input {
-  width: 50px;
+.selector-cantidad button:hover:not(:disabled) {
+  color: var(--brand-primary);
+}
+
+.selector-cantidad button:disabled {
+  color: var(--text-muted);
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cantidad-valor {
+  width: 40px;
   text-align: center;
-  background: #020617;
-  border: none;
-  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text-primary);
 }
 
-.btn-primario {
-  background: #2563eb;
-  color: white;
-  border: none;
-  padding: 12px 30px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
+.btn-agregar {
   flex: 1;
+  background: var(--brand-primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-glow);
 }
 
-/* SECCIÓN TÉCNICA */
-.seccion-tecnica {
-  background: #111827;
+.btn-agregar:hover:not(:disabled) {
+  background: var(--brand-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+}
+
+.btn-agregar:disabled {
+  background: var(--slate-700);
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+/* SPECS BOX */
+.specs-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
   padding: 30px;
-  border-radius: 20px;
-  border: 1px solid #374151;
 }
 
-.grid-especificaciones {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  margin-top: 20px;
+.specs-box h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 15px;
 }
 
-.especificacion-item {
+.spec-row {
   display: flex;
   justify-content: space-between;
-  padding: 10px;
-  border-bottom: 1px solid #1f2937;
+  padding: 12px 0;
+  font-size: 0.95rem;
+  border-bottom: 1px solid var(--slate-800);
 }
 
-.especificacion-item .label { color: #9ca3af; }
-
-.recursos-links { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
-.link-recurso { color: #60a5fa; text-decoration: none; }
-
-/* FOOTER */
-.footer-electromania {
-  background: #020617;
-  border-top: 1px solid #1f2937;
-  padding: 40px 20px 20px;
-  margin-top: 60px;
+[data-theme='light'] .spec-row {
+  border-bottom-color: var(--slate-200);
 }
 
-.footer-content {
-  max-width: 1100px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: 40px;
+.spec-row:last-child {
+  border-bottom: none;
 }
 
-.footer-logo { height: 40px; margin-bottom: 15px; }
-
-.footer-section h4 { color: #facc15; margin-bottom: 20px; }
-.footer-section a { display: block; color: #9ca3af; text-decoration: none; margin-bottom: 10px; cursor: pointer; }
-.footer-section a:hover { color: white; }
-
-.footer-bottom {
-  text-align: center;
-  padding-top: 40px;
-  color: #4b5563;
-  font-size: 14px;
+.spec-label {
+  color: var(--text-muted);
 }
 
-/* MODO CLARO */
-.modo-claro { background: #f9fafb; color: #111827; }
-.modo-claro .header-catalogo { background: white; }
-.modo-claro .seccion-tecnica, .modo-claro .contenedor-imagen-principal { background: white; border-color: #e5e7eb; }
-.modo-claro .especificacion-item { border-bottom-color: #f3f4f6; }
-.modo-claro .precio-detalle { color: #111827; }
+.spec-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .detalle-wrapper {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .columna-imagen {
+    position: static;
+  }
+}

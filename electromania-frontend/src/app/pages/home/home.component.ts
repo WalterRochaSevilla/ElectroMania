@@ -25,174 +25,221 @@ export class HomeComponent {
     /* =========================
      INYECCIÓN DE DEPENDENCIAS
   ========================= */
-  /*constructor(private router: Router) {}
+/*constructor(private router: Router) {}
 
-  /* =========================
-     CATEGORÍAS
-  ========================= */
- /* categorias: string[] = [
-    'Arduino & Microcontroladores',
-    'Sensores',
-    'Componentes Pasivos'
-  ];
+/* =========================
+   CATEGORÍAS
+========================= */
+/* categorias: string[] = [
+   'Arduino & Microcontroladores',
+   'Sensores',
+   'Componentes Pasivos'
+ ];
 
-  categoriasSeleccionadas: Set<string> = new Set();
+ categoriasSeleccionadas: Set<string> = new Set();
 
-  /* =========================
-     PRODUCTOS (SIMULADOS)
-     Luego vienen del backend
-  ========================= */
-  /*productos = [
-  {
-    nombre: 'ESP32 WiFi + Bluetooth',
-    descripcion: 'Microcontrolador potente para IoT',
-    precio: 55,
-    categoria: 'Arduino & Microcontroladores'
-  },
-  {
-    nombre: 'Módulo Bluetooth HC-05',
-    descripcion: 'Conectividad inalámbrica simple',
-    precio: 45,
-    categoria: 'Arduino & Microcontroladores'
-  },
-  {
-    nombre: 'Sensor Ultrasonido HC-SR04',
-    descripcion: 'Mide distancia por ultrasonido',
-    precio: 15,
-    categoria: 'Sensores'
-  },
-  {
-    nombre: 'Kit de Resistencias (100u)',
-    descripcion: 'Valores variados para prototipado',
-    precio: 20,
-    categoria: 'Componentes Pasivos'
-  },
-  {
-    nombre: 'Pantalla OLED 0.96"',
-    descripcion: 'Display monocromo I2C',
-    precio: 35,
-    categoria: 'Arduino & Microcontroladores'
-  },
-  {
-    nombre: 'Sensor de Humedad DHT11',
-    descripcion: 'Mide temperatura y humedad',
-    precio: 12,
-    categoria: 'Sensores'
-  }
+ /* =========================
+    PRODUCTOS (SIMULADOS)
+    Luego vienen del backend
+ ========================= */
+/*productos = [
+{
+  nombre: 'ESP32 WiFi + Bluetooth',
+  descripcion: 'Microcontrolador potente para IoT',
+  precio: 55,
+  categoria: 'Arduino & Microcontroladores'
+},
+{
+  nombre: 'Módulo Bluetooth HC-05',
+  descripcion: 'Conectividad inalámbrica simple',
+  precio: 45,
+  categoria: 'Arduino & Microcontroladores'
+},
+{
+  nombre: 'Sensor Ultrasonido HC-SR04',
+  descripcion: 'Mide distancia por ultrasonido',
+  precio: 15,
+  categoria: 'Sensores'
+},
+{
+  nombre: 'Kit de Resistencias (100u)',
+  descripcion: 'Valores variados para prototipado',
+  precio: 20,
+  categoria: 'Componentes Pasivos'
+},
+{
+  nombre: 'Pantalla OLED 0.96"',
+  descripcion: 'Display monocromo I2C',
+  precio: 35,
+  categoria: 'Arduino & Microcontroladores'
+},
+{
+  nombre: 'Sensor de Humedad DHT11',
+  descripcion: 'Mide temperatura y humedad',
+  precio: 12,
+  categoria: 'Sensores'
+}
 ];
 
-  productosFiltrados = [...this.productos];
+productosFiltrados = [...this.productos];
 
-  /* =========================
-     HEADER
-  ========================= */
-  /*cambiarModo() {
-    this.modoOscuro = !this.modoOscuro;
+/* =========================
+   HEADER
+========================= */
+/*cambiarModo() {
+  this.modoOscuro = !this.modoOscuro;
+}
+
+ingresar() {
+  this.router.navigate(['/login']);
+}
+Catalogo() {
+
+  this.router.navigate(['/home']);
+}
+Carrito() {
+  this.router.navigate(['/producto']);
+}
+
+/* =========================
+   FILTROS
+========================= */
+/*filtrarCategoria(categoria: string) {
+  if (this.categoriasSeleccionadas.has(categoria)) {
+    this.categoriasSeleccionadas.delete(categoria);
+  } else {
+    this.categoriasSeleccionadas.add(categoria);
   }
+  this.aplicarFiltros();
+}
 
-  ingresar() {
-    this.router.navigate(['/login']);
-  }
-  Catalogo() {
+buscarComponentes() {
+  this.aplicarFiltros();
+}
 
-    this.router.navigate(['/home']);
-  }
-  Carrito() {
-    this.router.navigate(['/producto']);
-  }
+ordenarComponentes() {
+  this.aplicarFiltros();
+}
 
-  /* =========================
-     FILTROS
-  ========================= */
-  /*filtrarCategoria(categoria: string) {
-    if (this.categoriasSeleccionadas.has(categoria)) {
-      this.categoriasSeleccionadas.delete(categoria);
-    } else {
-      this.categoriasSeleccionadas.add(categoria);
-    }
-    this.aplicarFiltros();
-  }
+aplicarFiltros() {
+  let resultado = [...this.productos];
 
-  buscarComponentes() {
-    this.aplicarFiltros();
-  }
+  /* Filtro por búsqueda */
+/*if (this.busqueda.trim() !== '') {
+  resultado = resultado.filter(p =>
+    p.nombre.toLowerCase().includes(this.busqueda.toLowerCase())
+  );
+}
 
-  ordenarComponentes() {
-    this.aplicarFiltros();
-  }
+/* Filtro por categoría */
+/*if (this.categoriasSeleccionadas.size > 0) {
+  resultado = resultado.filter(p =>
+    this.categoriasSeleccionadas.has(p.categoria)
+  );
+}
 
-  aplicarFiltros() {
-    let resultado = [...this.productos];
+/* Ordenamiento *//*
+if (this.orden === 'precioAsc') {
+  resultado.sort((a, b) => a.precio - b.precio);
+}
 
-    /* Filtro por búsqueda */
-    /*if (this.busqueda.trim() !== '') {
-      resultado = resultado.filter(p =>
-        p.nombre.toLowerCase().includes(this.busqueda.toLowerCase())
-      );
-    }
+if (this.orden === 'precioDesc') {
+  resultado.sort((a, b) => b.precio - a.precio);
+}
 
-    /* Filtro por categoría */
-    /*if (this.categoriasSeleccionadas.size > 0) {
-      resultado = resultado.filter(p =>
-        this.categoriasSeleccionadas.has(p.categoria)
-      );
-    }
+this.productosFiltrados = resultado;
+}
 
-    /* Ordenamiento *//*
-    if (this.orden === 'precioAsc') {
-      resultado.sort((a, b) => a.precio - b.precio);
-    }
-
-    if (this.orden === 'precioDesc') {
-      resultado.sort((a, b) => b.precio - a.precio);
-    }
-
-    this.productosFiltrados = resultado;
-  }
-
-  /* =========================
-     CARRITO
-  ========================= *//*
-  agregarAlCarrito(producto: any) {
-    console.log('Producto agregado al carrito:', producto);
-  }
+/* =========================
+ CARRITO
+========================= *//*
+agregarAlCarrito(producto: any) {
+  console.log('Producto agregado al carrito:', producto);
+}
 }*/
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
+import { ProductosService } from '../../services/productos.service';
+import { ProductCardComponent } from '../../components/product-card/product-card.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, ProductCardComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
+
+  filtrosAvanzadosAbierto = false;
+
+  toggleFiltrosAvanzados() {
+    this.filtrosAvanzadosAbierto = !this.filtrosAvanzadosAbierto;
+  }
 
   /* =========================
       ESTADOS GENERALES
   ========================= */
-  modoOscuro: boolean = true;
-  busqueda: string = '';
-  orden: string = 'relevancia';
+  modoOscuro = true;
+  busqueda = '';
+  orden = 'relevancia';
 
   /* =========================
       INYECCIÓN DE DEPENDENCIAS
   ========================= */
-  constructor(private router: Router) {}
+  constructor(
+    public router: Router,
+    private productosService: ProductosService
+  ) { }
+
+  ngOnInit() {
+    this.cargarCategorias();
+    this.cargarFiltrosGuardados();
+  }
 
   /* =========================
-      CATEGORÍAS
+      PERSISTENCIA Y CATEGORÍAS
   ========================= */
-  categorias: string[] = [
-    'Arduino & Microcontroladores',
-    'Sensores',
-    'Componentes Pasivos'
-  ];
+  categorias: string[] = [];
 
-  categoriasSeleccionadas: Set<string> = new Set();
+  cargarFiltrosGuardados() {
+    const filtros = localStorage.getItem('electromania_filtros');
+    if (filtros) {
+      const data = JSON.parse(filtros);
+      this.busqueda = data.busqueda || '';
+      this.orden = data.orden || 'relevancia';
+      if (data.categorias) {
+        this.categoriasSeleccionadas = new Set(data.categorias);
+      }
+    }
+  }
+
+  guardarFiltros() {
+    const data = {
+      busqueda: this.busqueda,
+      orden: this.orden,
+      categorias: Array.from(this.categoriasSeleccionadas)
+    };
+    localStorage.setItem('electromania_filtros', JSON.stringify(data));
+  }
+
+  cargarCategorias() {
+    this.productosService.getCategorias().subscribe({
+      next: (data) => {
+        this.categorias = data;
+        // Re-aplicar filtros una vez cargadas las categorías
+        this.aplicarFiltros();
+      },
+      error: (err) => {
+        console.error('Error al cargar categorías', err);
+        // Fallback or empty
+      }
+    });
+  }
+
+  categoriasSeleccionadas = new Set<string>();
 
   /* =========================
       PRODUCTOS (SIMULADOS)
@@ -273,14 +320,17 @@ export class HomeComponent {
     } else {
       this.categoriasSeleccionadas.add(categoria);
     }
+    this.guardarFiltros();
     this.aplicarFiltros();
   }
 
   buscarComponentes() {
+    this.guardarFiltros();
     this.aplicarFiltros();
   }
 
   ordenarComponentes() {
+    this.guardarFiltros();
     this.aplicarFiltros();
   }
 

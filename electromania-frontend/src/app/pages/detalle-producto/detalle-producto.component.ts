@@ -11,10 +11,10 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrl: './detalle-producto.component.css'
 })
 export class DetalleProductoComponent implements OnInit {
-  modoOscuro: boolean = true;
-  totalItems: number = 0;
-  cantidadSeleccionada: number = 1;
-  mensajeStock: string = '';
+  modoOscuro = true;
+  totalItems = 0;
+  cantidadSeleccionada = 1;
+  mensajeStock = '';
   idRecibido: string | null = null;
 
   // Objeto inicializado para evitar errores de "undefined" en el HTML
@@ -22,15 +22,23 @@ export class DetalleProductoComponent implements OnInit {
 
   // Lista local para simular la base de datos (Debe coincidir con la del Home)
   private listaProductos = [
-    { id: 1, nombre: 'ESP32 WiFi + Bluetooth', categoria: 'Arduino & Microcontroladores', precio: 55, stock: 15, descripcionCorta: 'Microcontrolador potente para IoT.', imagen: 'https://picsum.photos/seed/ESP32/400/400' },
-    { id: 2, nombre: 'Módulo Bluetooth HC-05', categoria: 'Arduino & Microcontroladores', precio: 45, stock: 8, descripcionCorta: 'Conectividad inalámbrica simple.', imagen: 'https://picsum.photos/seed/HC05/400/400' },
-    { id: 3, nombre: 'Sensor Ultrasonido HC-SR04', categoria: 'Sensores', precio: 15, stock: 20, descripcionCorta: 'Mide distancia por ultrasonido.', imagen: 'https://picsum.photos/seed/SR04/400/400' },
-    { id: 4, nombre: 'Kit de Resistencias (100u)', categoria: 'Componentes Pasivos', precio: 20, stock: 50, descripcionCorta: 'Valores variados para prototipado.', imagen: 'https://picsum.photos/seed/Resistencias/400/400' },
-    { id: 5, nombre: 'Pantalla OLED 0.96"', categoria: 'Arduino & Microcontroladores', precio: 35, stock: 0, descripcionCorta: 'Display monocromo I2C.', imagen: 'https://picsum.photos/seed/OLED/400/400' },
-    { id: 6, nombre: 'Sensor de Humedad DHT11', categoria: 'Sensores', precio: 12, stock: 12, descripcionCorta: 'Mide temperatura y humedad.', imagen: 'https://picsum.photos/seed/DHT11/400/400' }
+    { id: 1, nombre: 'Arduino UNO R4 WiFi', categoria: 'Microcontroladores', precio: 210, stock: 25, descripcionCorta: 'Microcontrolador con WiFi integrado.', imagen: '/arduino-uno.png' },
+    { id: 2, nombre: 'Servomotor MG996R', categoria: 'Motores', precio: 45, stock: 50, descripcionCorta: 'Servomotor de alta torque.', imagen: '/servomotor.png' },
+    { id: 3, nombre: 'Sensor LiDAR TF-Luna', categoria: 'Sensores', precio: 320, stock: 15, descripcionCorta: 'Sensor de distancia láser.', imagen: '/lidar-sensor.png' },
+    { id: 4, nombre: 'Raspberry Pi 5 8GB', categoria: 'SBC', precio: 850, stock: 10, descripcionCorta: 'Potente ordenador de placa única.', imagen: '/raspberry-pi.png' },
+    { id: 5, nombre: 'ESP32 Development Board', categoria: 'IoT', precio: 120, stock: 40, descripcionCorta: 'Ideal para proyectos IoT.', imagen: '/esp32.png' },
+    { id: 6, nombre: 'STM32 Blue Pill', categoria: 'Microcontroladores', precio: 75, stock: 35, descripcionCorta: 'ARM Cortex-M3 a bajo costo.', imagen: '/stm32.png' },
+
+    // Ofertas (IDs 7-12)
+    { id: 7, nombre: 'Driver Stepper TB6600', categoria: 'Drivers', precio: 55, stock: 30, descripcionCorta: 'Controlador de motor paso a paso.', imagen: '/stepper-driver.png', oferta: true, descuento: 15 },
+    { id: 8, nombre: 'Motor Nema 23', categoria: 'Motores', precio: 145, stock: 20, descripcionCorta: 'Motor paso a paso Nema 23.', imagen: '/nema-motor.png', oferta: true, descuento: 20 },
+    { id: 9, nombre: 'Módulo Relé 4 Canales', categoria: 'Módulos', precio: 25, stock: 60, descripcionCorta: 'Control de cargas AC/DC.', imagen: '/rele-module.png', oferta: true, descuento: 10 },
+    { id: 10, nombre: 'Kit de Cables Dupont', categoria: 'Accesorios', precio: 15, stock: 100, descripcionCorta: 'Cables para prototipado.', imagen: '/dupont-cables.png', oferta: true, descuento: 25 },
+    { id: 11, nombre: 'Fuente 12V 10A', categoria: 'Fuentes', precio: 65, stock: 25, descripcionCorta: 'Fuente conmutada 12V.', imagen: '/power-supply.png', oferta: true, descuento: 18 },
+    { id: 12, nombre: 'Display OLED 0.96"', categoria: 'Displays', precio: 35, stock: 45, descripcionCorta: 'Pantalla I2C SSD1306.', imagen: '/oled-display.png', oferta: true, descuento: 12 }
   ];
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
     // Obtenemos el ID de la URL y lo convertimos a número

@@ -1,353 +1,124 @@
-/* SOBRE NOSOTROS - ESTILO FUTURISTA TECNOLÓGICO */
+/* PAGE CONTAINER */
 .nosotros-page {
-  padding-top: 100px;
-  animation: fadeIn 0.8s ease;
-  min-height: 100vh;
+  min-height: calc(100vh - 72px);
   background: var(--bg-main);
+  color: var(--text-primary);
+  padding: 60px 24px;
 }
 
-/* HERO SECTION */
-.hero-simple {
-  padding: 120px 0 80px;
+.about-container {
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* HEADER */
+.about-header {
   text-align: center;
-  background: 
-    /* Grid tecnológico */
-    linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px),
-    /* Partículas futuristas */
-    radial-gradient(circle at 20% 50%, rgba(0, 242, 255, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(0, 242, 255, 0.06) 0%, transparent 50%);
-  background-size: 50px 50px, 50px 50px, auto, auto;
-  border-bottom: 1px solid var(--border-color);
-  position: relative;
-  overflow: hidden;
+  margin-bottom: 80px;
 }
 
-.hero-simple::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, 
-    transparent 0%, 
-    var(--acento-transparent) 50%, 
-    transparent 100%);
-  opacity: 0.1;
-  pointer-events: none;
-}
-
-.hero-simple h1 {
-  font-family: 'Orbitron', sans-serif;
-  font-size: clamp(2.8rem, 8vw, 5rem);
+.about-header h1 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 3rem;
   font-weight: 800;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  margin: 0 0 20px;
-  background: var(--gradient-accent);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 30px var(--acento-glow);
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  line-height: 1.1;
 }
 
-.separador {
-  width: 200px;
-  height: 3px;
-  background: var(--gradient-accent);
-  margin: 25px auto 30px;
-  animation: lineExpand 1s ease-out 0.5s forwards;
-  opacity: 0;
-}
-
-.tagline {
+.subtitle {
+  font-size: 1.25rem;
   color: var(--text-secondary);
-  font-family: 'Orbitron', sans-serif;
-  letter-spacing: 4px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  margin-top: 30px;
-  position: relative;
-  display: inline-block;
+  font-weight: 500;
 }
 
-.tagline::before,
-.tagline::after {
-  content: '◆';
-  color: var(--acento);
-  margin: 0 15px;
-  font-size: 0.8rem;
-  animation: pulse 2s infinite;
+/* CARDS Grid */
+.about-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
 }
 
-/* BLOQUES DE CONTENIDO */
-.bloque-contenido {
-  padding: 100px 0;
-  position: relative;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.bloque-contenido:nth-child(even) {
-  background: rgba(5, 10, 16, 0.4);
-}
-
-.grid-layout {
+.about-card {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 80px;
+  gap: 60px;
   align-items: center;
-}
-
-.grid-layout.reverse {
-  direction: rtl;
-}
-
-.grid-layout.reverse > * {
-  direction: ltr;
-}
-
-.col-texto h2 {
-  font-family: 'Orbitron', sans-serif;
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 30px;
-  color: var(--text-primary);
-}
-
-.col-texto h2 .text-acento {
-  background: var(--gradient-accent);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.col-texto h2::after {
-  content: '';
-  display: block;
-  width: 80px;
-  height: 2px;
-  background: var(--gradient-accent);
-  margin-top: 15px;
-}
-
-.col-texto p {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  line-height: 1.8;
-  color: var(--text-secondary);
-  margin-bottom: 25px;
-  font-size: 1.1rem;
-  position: relative;
-  padding-left: 20px;
-  border-left: 2px solid var(--border-color);
-}
-
-.col-texto strong {
-  color: var(--acento);
-  font-weight: 600;
-}
-
-/* MARCO TECNOLÓGICO CON IMAGEN - IMAGEN QUE OCUPA TODO */
-.marco-tech {
-  height: 350px;
-  border: 2px solid var(--border-color);
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 40px;
   overflow: hidden;
-  background: rgba(5, 10, 16, 0.85);
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-  padding: 0;
 }
 
-.marco-tech::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: var(--gradient-accent);
-  border-radius: 18px;
-  z-index: -1;
-  opacity: 0.3;
-  animation: glow 2s infinite alternate;
+[data-theme='light'] .about-card {
+  background: white;
 }
 
-.marco-tech:hover {
-  border-color: var(--acento);
-  box-shadow: 0 0 50px var(--acento-glow);
-  transform: translateY(-5px);
+.about-card.reverse {
+  direction: rtl;
+  /* Flip visual order */
 }
 
-.imagen-contenido {
+.about-card.reverse>* {
+  direction: ltr;
+  /* Reset text direction */
+}
+
+/* CARD CONTENT */
+.card-content h2 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+}
+
+.card-content p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  font-size: 1rem;
+  margin-bottom: 16px;
+}
+
+.card-content strong {
+  color: var(--brand-primary);
+  font-weight: 700;
+}
+
+/* CARD IMAGE */
+.card-image {
+  height: 300px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.card-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 16px;
+  transition: transform 0.5s ease;
 }
 
-/* ANIMACIONES */
-@keyframes fadeIn {
-  from { 
-    opacity: 0; 
-    transform: translateY(20px); 
-  }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
-  }
-}
-
-@keyframes lineExpand {
-  from { 
-    width: 0; 
-    opacity: 0; 
-  }
-  to { 
-    width: 200px; 
-    opacity: 1; 
-  }
-}
-
-@keyframes pulse {
-  0%, 100% { 
-    transform: scale(1); 
-    opacity: 1; 
-  }
-  50% { 
-    transform: scale(1.1); 
-    opacity: 0.8; 
-  }
-}
-
-@keyframes glow {
-  from { 
-    opacity: 0.7; 
-  }
-  to { 
-    opacity: 1; 
-  }
+.about-card:hover .card-image img {
+  transform: scale(1.05);
 }
 
 /* RESPONSIVE */
-@media (max-width: 992px) {
-  .grid-layout {
+@media (max-width: 900px) {
+  .about-card {
     grid-template-columns: 1fr;
-    gap: 50px;
+    gap: 30px;
+    padding: 30px;
   }
-  
-  .grid-layout.reverse {
+
+  .about-card.reverse {
     direction: ltr;
   }
-  
-  .marco-tech {
-    height: 280px;
+
+  .card-image {
+    height: 250px;
   }
-  
-  .hero-simple {
-    padding: 100px 0 60px;
-  }
-}
-
-@media (max-width: 768px) {
-  .nosotros-page {
-    padding-top: 80px;
-  }
-  
-  .hero-simple h1 {
-    font-size: clamp(2rem, 6vw, 3.5rem);
-  }
-}
-/* ESTILO PARA TODAS LAS NEGRITAS (STRONG) - MISMO COLOR QUE "MISIÓN" */
-.col-texto strong {
-  background: var(--gradient-accent);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: 700;
-}
-
-/* Modo claro para las negritas */
-[data-theme='light'] .col-texto strong {
-  background: linear-gradient(90deg, #0066ff 0%, #00aaff 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Aplicar también a cualquier strong fuera de .col-texto dentro de .nosotros-page */
-.nosotros-page strong:not(.col-texto strong) {
-  background: var(--gradient-accent);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: 700;
-}
-
-[data-theme='light'] .nosotros-page strong:not(.col-texto strong) {
-  background: linear-gradient(90deg, #0066ff 0%, #00aaff 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-/* ESTILOS ESPECÍFICOS PARA MODO CLARO */
-[data-theme='light'] .hero-simple h1 {
-  background: linear-gradient(90deg, #0066ff 0%, #00aaff 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 30px rgba(0, 102, 255, 0.4);
-}
-
-[data-theme='light'] .hero-simple {
-  background: 
-    linear-gradient(rgba(0, 102, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 102, 255, 0.03) 1px, transparent 1px),
-    radial-gradient(circle at 20% 50%, rgba(0, 102, 255, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(0, 102, 255, 0.06) 0%, transparent 50%);
-  background-size: 50px 50px, 50px 50px, auto, auto;
-}
-
-[data-theme='light'] .col-texto h2 {
-  color: #0b1622;
-}
-
-[data-theme='light'] .col-texto h2 .text-acento {
-  background: linear-gradient(90deg, #0066ff 0%, #00aaff 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-[data-theme='light'] .col-texto p {
-  color: #1a2a3a;
-}
-
-[data-theme='light'] .col-texto strong {
-  color: #0066ff;
-}
-
-[data-theme='light'] .bloque-contenido:nth-child(even) {
-  background: rgba(0, 102, 255, 0.05);
-}
-
-[data-theme='light'] .marco-tech {
-  background: rgba(255, 255, 255, 0.85);
-  border-color: rgba(0, 102, 255, 0.3);
-}
-
-[data-theme='light'] .marco-tech::before {
-  background: linear-gradient(90deg, #0066ff 0%, #00aaff 100%);
-}
-
-[data-theme='light'] .marco-tech:hover {
-  border-color: #0066ff;
-  box-shadow: 0 0 50px rgba(0, 102, 255, 0.4);
 }

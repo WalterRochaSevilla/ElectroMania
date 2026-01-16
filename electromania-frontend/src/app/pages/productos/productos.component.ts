@@ -24,31 +24,31 @@ export class ProductosComponent implements OnInit {
   /* =========================
      ESTADOS GENERALES
   ========================= */
-  modoOscuro: boolean = true;
+  modoOscuro = true;
   
   /* =========================
      CARRITO DE COMPRAS
   ========================= */
   carrito: CarritoItem[] = [];
-  totalItems: number = 0;
-  subtotal: number = 0;
-  impuestos: number = 0;
-  total: number = 0;
+  totalItems = 0;
+  subtotal = 0;
+  impuestos = 0;
+  total = 0;
   
   /* =========================
      FACTURACIÓN
   ========================= */
-  generarFactura: boolean = true;
-  nombreFactura: string = 'Juan Pérez';
-  nitFactura: string = '123-662';
-  emailFactura: string = 'juan@gmail.com';
+  generarFactura = true;
+  nombreFactura = 'Juan Pérez';
+  nitFactura = '123-662';
+  emailFactura = 'juan@gmail.com';
   
   /* =========================
      PROCESAMIENTO
   ========================= */
-  procesando: boolean = false;
-  mostrarModalExito: boolean = false;
-  numeroFactura: string = 'FAC-00123';
+  procesando = false;
+  mostrarModalExito = false;
+  numeroFactura = 'FAC-00123';
   
   /* =========================
      INYECCIÓN DE DEPENDENCIAS

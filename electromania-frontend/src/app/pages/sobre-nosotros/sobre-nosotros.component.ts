@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -8,11 +8,5 @@ import { CommonModule } from '@angular/common';
   templateUrl: './sobre-nosotros.component.html',
   styleUrls: ['./sobre-nosotros.component.css']
 })
-export class SobreNosotrosComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
-    // Si necesitas cargar datos externos
-  }
+export class SobreNosotrosComponent {
 }

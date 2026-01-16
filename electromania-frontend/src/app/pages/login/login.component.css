@@ -1,206 +1,62 @@
-/* =========================
-   RESET & BASE
-========================= */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* =========================
-   CONTENEDOR GENERAL
-========================= */
-.pagina-catalogo-container {
-  min-height: 100vh;
-  background: linear-gradient(180deg, #0b132b, #020617);
-  color: #e5e7eb;
-  font-family: 'Segoe UI', sans-serif;
-  display: flex;
-  flex-direction: column;
-}
-
-.pagina-catalogo-container.modo-claro {
-  background: #f9fafb;
-  color: #111827;
-}
-
-/* =========================
-   HEADER
-========================= */
-.header-catalogo {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 28px;
-  background: #111827;
-  border-bottom: 1px solid #1f2937;
-  flex-shrink: 0; /* Evita que se encoja */
-}
-
-.modo-claro .header-catalogo {
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.logo img {
-  height: 36px;
-  width: auto;
-}
-
-.menu-superior {
-  display: flex;
-  gap: 26px;
-}
-
-.menu-item {
-  color: #c7d2fe;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 14px;
-  transition: color 0.2s;
-}
-
-.menu-item:hover {
-  color: #60a5fa;
-}
-
-.modo-claro .menu-item {
-  color: #374151;
-}
-
-.modo-claro .menu-item:hover {
-  color: #2563eb;
-}
-
-.badge {
-  background: #ef4444;
-  color: white;
-  padding: 2px 7px;
-  border-radius: 999px;
-  font-size: 12px;
-  margin-left: 4px;
-}
-
-.acciones-header {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-}
-
-.toggle-modo {
-  background: #1f2937;
-  border: none;
-  color: #facc15;
-  padding: 8px;
-  border-radius: 50%;
-  cursor: pointer;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  transition: background 0.2s;
-}
-
-.toggle-modo:hover {
-  background: #374151;
-}
-
-.modo-claro .toggle-modo {
-  background: #f3f4f6;
-  color: #f59e0b;
-}
-
-.modo-claro .toggle-modo:hover {
-  background: #e5e7eb;
-}
-
-.btn-ingresar {
-  background: #facc15;
-  color: #1f2937;
-  border: none;
-  padding: 8px 18px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-/* =========================
-   MAIN CONTENT (CONTENEDOR PRINCIPAL)
-========================= */
-.main-content {
-  flex: 1; /* Ocupa el espacio restante */
+/* PAGE CONTAINER */
+.login-container {
+  min-height: calc(100vh - 72px);
+  /* Adjust for global navbar */
+  background: var(--bg-main);
+  color: var(--text-primary);
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 40px 20px;
 }
 
-/* =========================
-   LOGIN WRAPPER (CONTENEDOR DEL LOGIN)
-========================= */
+/* LOGIN WRAPPER */
 .login-wrapper {
   width: 100%;
-  max-width: 440px;
-  padding: 20px;
+  max-width: 420px;
 }
 
-/* =========================
-   LOGIN CARD (TARJETA DEL LOGIN)
-========================= */
+/* LOGIN CARD */
 .login-card {
-  background: #1f2937;
-  border-radius: 16px;
-  border: 1px solid #374151;
-  width: 100%;
-  padding: 40px 36px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
 }
 
-.modo-claro .login-card {
-  background: #ffffff;
-  border-color: #e5e7eb;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+[data-theme='light'] .login-card {
+  background: white;
 }
 
-/* =========================
-   HEADER DEL LOGIN
-========================= */
+/* HEADER */
 .login-header {
   text-align: center;
   margin-bottom: 32px;
 }
 
 .login-header h2 {
-  color: #facc15;
-  font-size: 28px;
-  margin: 0;
-  font-weight: 700;
-  letter-spacing: -0.5px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--text-primary);
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin-bottom: 8px;
 }
 
-.modo-claro .login-header h2 {
-  color: #1f2937;
-}
-
-/* =========================
-   CAMPOS DEL FORMULARIO
-========================= */
+/* FORM FIELDS */
 .campo-formulario {
   margin-bottom: 24px;
 }
 
 .campo-formulario label {
   display: block;
-  margin-bottom: 10px;
-  color: #d1d5db;
-  font-weight: 500;
-  font-size: 14px;
-}
-
-.modo-claro .campo-formulario label {
-  color: #374151;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .input-contenedor {
@@ -210,204 +66,107 @@
 
 .input-contenedor input {
   width: 100%;
-  padding: 14px 16px;
-  background: #111827;
-  border: 1px solid #374151;
-  border-radius: 10px;
-  color: #e5e7eb;
-  font-size: 15px;
+  padding: 12px 16px;
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 1rem;
   transition: all 0.2s ease;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', sans-serif;
-}
-
-.modo-claro .input-contenedor input {
-  background: #f9fafb;
-  border-color: #d1d5db;
-  color: #1f2937;
 }
 
 .input-contenedor input:focus {
   outline: none;
-  border-color: #facc15;
-  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.1);
-}
-
-.modo-claro .input-contenedor input:focus {
-  border-color: #facc15;
-  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.2);
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
 }
 
 .input-contenedor input::placeholder {
-  color: #9ca3af;
-  font-weight: 400;
+  color: var(--text-muted);
 }
 
-/* =========================
-   CAMPO DE CONTRASEÑA
-========================= */
-.password-input {
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
+/* PASSWORD INPUT */
 .password-input input {
-  padding-right: 50px;
+  padding-right: 80px;
 }
 
 .btn-mostrar-contrasena {
   position: absolute;
   right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   background: transparent;
   border: none;
-  color: #9ca3af;
+  color: var(--text-muted);
   cursor: pointer;
-  font-size: 14px;
-  padding: 8px 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  border-radius: 6px;
-  transition: all 0.2s;
-  white-space: nowrap;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: color 0.2s;
 }
 
 .btn-mostrar-contrasena:hover {
-  color: #facc15;
-  background: rgba(255, 255, 255, 0.05);
+  color: var(--brand-primary);
 }
 
-.modo-claro .btn-mostrar-contrasena:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-/* Ajusta el padding del input para el botón más grande */
-.password-input input {
-  padding-right: 100px; /* Más espacio para el texto */
-}
-
-/* =========================
-   BOTÓN DE INICIAR SESIÓN
-========================= */
+/* LOGIN BUTTON */
 .btn-login {
   width: 100%;
-  background: #facc15;
-  color: #1f2937;
+  background: var(--brand-primary);
+  color: white;
   border: none;
-  padding: 16px;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 16px;
+  padding: 14px;
+  border-radius: 12px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
   cursor: pointer;
   margin-top: 8px;
   transition: all 0.2s ease;
-  font-family: 'Segoe UI', sans-serif;
-  letter-spacing: 0.3px;
+  box-shadow: var(--shadow-glow);
 }
 
 .btn-login:hover {
-  background: #fde047;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(250, 204, 21, 0.3);
+  background: var(--brand-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
 }
 
-.btn-login:active {
-  transform: translateY(0);
-}
-
-/* =========================
-   FOOTER DEL LOGIN
-========================= */
+/* FOOTER */
 .login-footer {
   text-align: center;
-  margin-top: 28px;
+  margin-top: 32px;
   padding-top: 24px;
-  border-top: 1px solid #374151;
-  color: #9ca3af;
-  font-size: 14px;
-}
-
-.modo-claro .login-footer {
-  border-top-color: #e5e7eb;
-  color: #6b7280;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
 }
 
 .enlace-registro {
-  color: #60a5fa;
+  color: var(--brand-primary);
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
   margin-left: 4px;
   transition: color 0.2s;
 }
 
 .enlace-registro:hover {
-  color: #3b82f6;
+  color: var(--brand-hover);
   text-decoration: underline;
 }
 
-/* =========================
-   RESPONSIVE DESIGN
-========================= */
-@media (max-width: 640px) {
-  .header-catalogo {
-    padding: 12px 20px;
-  }
-  
-  .menu-superior {
-    gap: 20px;
-  }
-  
-  .main-content {
-    padding: 30px 16px;
-  }
-  
-  .login-wrapper {
-    padding: 10px;
-  }
-  
-  .login-card {
-    padding: 32px 24px;
-  }
-  
-  .login-header h2 {
-    font-size: 24px;
-  }
-  
-  .input-contenedor input {
-    padding: 12px 14px;
-    font-size: 14px;
-  }
-  
-  .btn-login {
-    padding: 14px;
-    font-size: 15px;
-  }
-}
-
+/* RESPONSIVE */
 @media (max-width: 480px) {
-  .logo img {
-    height: 30px;
+  .login-container {
+    padding: 20px 16px;
   }
-  
-  .menu-superior {
-    gap: 16px;
-  }
-  
-  .menu-item {
-    font-size: 13px;
-  }
-  
+
   .login-card {
-    padding: 24px 20px;
+    padding: 24px;
+    border-radius: 16px;
   }
-  
+
   .login-header h2 {
-    font-size: 22px;
-  }
-  
-  .campo-formulario label {
-    font-size: 13px;
+    font-size: 1.5rem;
   }
 }

@@ -16,20 +16,20 @@ export class RegistroComponent {
   /* =========================
      ESTADOS GENERALES
   ========================= */
-  modoOscuro: boolean = true;
+  modoOscuro = true;
 
   /* =========================
      DATOS DEL FORMULARIO
   ========================= */
-  nit: string = '';
-  razonSocial: string = '';
-  email: string = '';
-  contrasena: string = '';
-  confirmarContrasena: string = '';
-  aceptaTerminos: boolean = false;
+  nit = '';
+  razonSocial = '';
+  email = '';
+  contrasena = '';
+  confirmarContrasena = '';
+  aceptaTerminos = false;
   
-  mostrarContrasena: boolean = false;
-  mostrarConfirmarContrasena: boolean = false;
+  mostrarContrasena = false;
+  mostrarConfirmarContrasena = false;
 
   /* =========================
      INYECCIÓN DE DEPENDENCIAS
@@ -116,7 +116,7 @@ export class RegistroComponent {
       fechaRegistro: new Date().toISOString()
     });
 
-    let data = {
+    const data = {
       email: this.email,
       name: this.razonSocial,
       password: this.contrasena,

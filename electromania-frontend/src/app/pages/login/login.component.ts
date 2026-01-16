@@ -15,13 +15,13 @@ export class LoginComponent {
    /* =========================
      ESTADOS GENERALES
   ========================= */
-  modoOscuro: boolean = true;
+  modoOscuro = true;
 
     // En tu componente
-  mostrarFormLogin: boolean = false;
-  email: string = '';
-  contrasena: string = '';
-  mostrarContrasena: boolean = false;
+  mostrarFormLogin = false;
+  email = '';
+  contrasena = '';
+  mostrarContrasena = false;
 
    /* =========================
      INYECCIÓN DE DEPENDENCIAS

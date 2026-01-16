@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { ProductCardComponent } from '../../components/product-card/product-card.component';
 
 interface Producto {
   id: number;
@@ -17,18 +18,18 @@ interface Producto {
 @Component({
   selector: 'app-bienvenida',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ProductCardComponent],
   templateUrl: './bienvenida.component.html',
   styleUrls: ['./bienvenida.component.css']
 })
-export class BienvenidaComponent implements OnInit {
+export class BienvenidaComponent implements OnInit, AfterViewInit {
   @ViewChild('ofertasList', { static: true }) ofertasList!: ElementRef<HTMLDivElement>;
   @ViewChild('destacadosList', { static: true }) destacadosList!: ElementRef<HTMLDivElement>;
   @ViewChild('heroSection') heroSection!: ElementRef<HTMLElement>;
 
   ofertasAbiertas = false;
   backgroundLoaded = false;
-  
+
   // Productos Destacados
   productosDestacados: Producto[] = [
     {
@@ -163,7 +164,7 @@ export class BienvenidaComponent implements OnInit {
     }
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   ngOnInit() {
     this.checkBackgroundImage();
@@ -181,42 +182,37 @@ export class BienvenidaComponent implements OnInit {
   checkBackgroundImage() {
     const imgUrl = '/bienvenidafondo.png';
     const img = new Image();
-    
+
+    // Si ya cargó antes, no hacemos nada (evita parpadeo al volver)
+    if (this.backgroundLoaded && this.heroSection?.nativeElement) {
+      this.applyBackground(this.heroSection.nativeElement, imgUrl);
+      return;
+    }
+
     img.onload = () => {
-      console.log('✅ Imagen de fondo cargada correctamente:', imgUrl);
       this.backgroundLoaded = true;
       if (this.heroSection?.nativeElement) {
+        this.applyBackground(this.heroSection.nativeElement, imgUrl);
         this.heroSection.nativeElement.classList.remove('fallback-bg');
       }
-      
-      setTimeout(() => {
-        if (this.heroSection?.nativeElement) {
-          const heroElement = this.heroSection.nativeElement;
-          heroElement.style.backgroundImage = `url('${imgUrl}')`;
-          heroElement.style.backgroundPosition = 'center';
-          heroElement.style.backgroundSize = 'cover';
-          heroElement.style.backgroundRepeat = 'no-repeat';
-        }
-      }, 100);
     };
-    
+
     img.onerror = () => {
       console.error('❌ No se pudo cargar la imagen de fondo:', imgUrl);
-      console.log('📍 Verificando ruta de la imagen. Asegúrate que esté en: public/bienvenidafondo.png');
       this.backgroundLoaded = false;
       if (this.heroSection?.nativeElement) {
         this.heroSection.nativeElement.classList.add('fallback-bg');
       }
     };
-    
+
     img.src = imgUrl;
-    
-    setTimeout(() => {
-      if (!this.backgroundLoaded && this.heroSection?.nativeElement) {
-        console.warn('⚠️ Timeout de carga de imagen de fondo');
-        this.heroSection.nativeElement.classList.add('fallback-bg');
-      }
-    }, 3000);
+  }
+
+  applyBackground(element: HTMLElement, url: string) {
+    element.style.backgroundImage = `url('${url}')`;
+    element.style.backgroundPosition = 'center';
+    element.style.backgroundSize = 'cover';
+    element.style.backgroundRepeat = 'no-repeat';
   }
 
   irATienda() {
@@ -225,13 +221,8 @@ export class BienvenidaComponent implements OnInit {
   }
 
   verDetalles(producto: Producto) {
-    console.log('Ver detalles del producto:', producto);
-    
-    const mensaje = producto.oferta 
-      ? `🎉 ¡OFERTA ESPECIAL! ${producto.nombre}\nPrecio original: Bs. ${producto.precio}\nDescuento: ${producto.descuento}%\nPrecio final: Bs. ${this.getPrecioConDescuento(producto).toFixed(2)}`
-      : `🔍 ${producto.nombre}\nPrecio: Bs. ${producto.precio}\n${producto.descripcion}`;
-    
-    alert(mensaje);
+    this.router.navigate(['/detalle-producto', producto.id]);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   toggleOfertas() {
@@ -256,9 +247,9 @@ export class BienvenidaComponent implements OnInit {
 
   private scrollCarrusel(element: HTMLDivElement, direction: number) {
     if (!element) return;
-    
+
     const scrollAmount = 340;
-    
+
     element.scrollBy({
       left: scrollAmount * direction,
       behavior: 'smooth'

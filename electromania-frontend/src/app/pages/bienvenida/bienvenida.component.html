@@ -5,74 +5,61 @@
       <h1 class="titulo-principal">EL FUTURO EN QUE TE CONECTAS</h1>
       <div class="sub-linea"></div>
       <p class="hero-subtitle">ENCUENTRA LO QUE BUSCAS AQUI EN ELECTROMANIA</p>
+
       <button class="btn-explorar" (click)="irATienda()">
-        <i class="fas fa-microchip" style="margin-right: 10px;"></i>
+        <!-- Microchip SVG -->
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 12h2"></path>
+          <path d="M4 12h2"></path>
+          <path d="M12 18v2"></path>
+          <path d="M12 4v2"></path>
+          <rect width="12" height="12" x="6" y="6" rx="2"></rect>
+          <path d="M9 16.5v.5"></path>
+          <path d="M15 16.5v.5"></path>
+          <path d="M9 7.5v-.5"></path>
+          <path d="M15 7.5v-.5"></path>
+        </svg>
         EXPLORAR COMPONENTES
       </button>
-      
-      <!-- Indicador si la imagen no carga -->
-      <div *ngIf="!backgroundLoaded" style="margin-top: 15px; color: var(--acento); font-size: 0.85rem;">
-        <i class="fas fa-info-circle" style="margin-right: 5px;"></i>
-        Cargando imagen de fondo...
-      </div>
     </div>
   </section>
 
   <!-- CONTENIDO PRINCIPAL -->
   <div class="container">
-    
+
     <!-- SECCIÓN OFERTAS -->
     <div class="flag-oferta-wrapper">
-      <div class="flag-diseno" 
-           (click)="toggleOfertas()" 
-           [class.active]="ofertasAbiertas"
-           [title]="ofertasAbiertas ? 'Ocultar ofertas' : 'Mostrar ofertas'">
+      <div class="flag-diseno" (click)="toggleOfertas()" (keyup.enter)="toggleOfertas()" tabindex="0"
+        [class.active]="ofertasAbiertas" [title]="ofertasAbiertas ? 'Ocultar ofertas' : 'Mostrar ofertas'">
         <span class="punto-pulso"></span>
         <span class="flag-texto">
-          <i class="fas fa-tag" style="margin-right: 10px;"></i>
+          <!-- Tag SVG -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round"
+            style="display:inline-block; vertical-align:middle; margin-right:6px;">
+            <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"></path>
+            <path d="M7 7h.01"></path>
+          </svg>
           PRODUCTOS EN OFERTA
         </span>
         <span class="flecha">
           {{ ofertasAbiertas ? '▲' : '▼' }}
         </span>
       </div>
-      
+
       <!-- CARRUSEL OFERTAS -->
       <div class="carrusel-oferta" [class.mostrar]="ofertasAbiertas">
         <button class="flecha-nav prev" (click)="scrollOfertasPrev()" title="Anterior">
           ‹
         </button>
-        
+
         <div class="grid-productos" #ofertasList>
-          <div class="tarjeta-producto" *ngFor="let producto of productosOferta">
-            <div class="badge-producto badge-oferta">
-              <i class="fas fa-bolt" style="margin-right: 5px;"></i>
-              OFERTA ESPECIAL
-            </div>
-            <img class="imagen-producto" 
-                 [src]="producto.imagen" 
-                 [alt]="producto.nombre"
-                 (error)="setDefaultImage($event)"
-                 loading="lazy">
-            <h4 class="titulo-producto">{{ producto.nombre }}</h4>
-            <p class="descripcion-producto">
-              {{ producto.descripcion }}
-            </p>
-            <div class="precio-container">
-              <span class="precio-original">
-                Bs. {{ producto.precio | number:'1.2-2' }}
-              </span>
-              <span class="precio-descuento">
-                Bs. {{ getPrecioConDescuento(producto) | number:'1.2-2' }}
-              </span>
-            </div>
-            <button class="btn-accion" (click)="verDetalles(producto)">
-              <i class="fas fa-shopping-cart" style="margin-right: 8px;"></i>
-              COMPRAR AHORA
-            </button>
-          </div>
+          <app-product-card *ngFor="let producto of productosOferta" [product]="producto" [isOffer]="true"
+            (cardClick)="verDetalles(producto)" (addToCart)="verDetalles(producto)" class="tarjeta-producto-wrapper">
+          </app-product-card>
         </div>
-        
+
         <button class="flecha-nav next" (click)="scrollOfertasNext()" title="Siguiente">
           ›
         </button>
@@ -93,30 +80,13 @@
       <button class="nav-btn prev" (click)="scrollDestacadosPrev()" title="Anterior">
         ‹
       </button>
-      
+
       <div class="wrapper-productos" #destacadosList>
-        <div class="tarjeta-producto" *ngFor="let producto of productosDestacados">
-          <div class="badge-producto badge-destacado">
-            <i class="fas fa-star" style="margin-right: 5px;"></i>
-            DESTACADO
-          </div>
-          <img class="imagen-producto"
-               [src]="producto.imagen" 
-               [alt]="producto.nombre"
-               (error)="setDefaultImage($event)"
-               loading="lazy">
-          <h4 class="titulo-producto">{{ producto.nombre }}</h4>
-          <p class="descripcion-producto">
-            {{ producto.descripcion }}
-          </p>
-          <div class="precio-destacado">Bs. {{ producto.precio | number:'1.2-2' }}</div>
-          <button class="btn-destacado" (click)="verDetalles(producto)">
-            <i class="fas fa-eye" style="margin-right: 8px;"></i>
-            VER DETALLES
-          </button>
-        </div>
+        <app-product-card *ngFor="let producto of productosDestacados" [product]="producto" [isFeatured]="true"
+          (cardClick)="verDetalles(producto)" (addToCart)="verDetalles(producto)" class="tarjeta-producto-wrapper">
+        </app-product-card>
       </div>
-      
+
       <button class="nav-btn next" (click)="scrollDestacadosNext()" title="Siguiente">
         ›
       </button>

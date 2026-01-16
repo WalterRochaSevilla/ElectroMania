@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { AdminSidebarComponent } from '../../../components/admin-sidebar/admin-sidebar.component';
 
 @Component({
   selector: 'app-productos-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, AdminSidebarComponent],
   templateUrl: './productos-admin.component.html',
   styleUrl: './productos-admin.component.css'
 })
@@ -14,9 +15,9 @@ export class ProductosAdminComponent {
   /* =========================
      ESTADOS GENERALES
   ========================= */
-  modoOscuro: boolean = true;
-  paginaActual: number = 1;
-  productosPorPagina: number = 10;
+  modoOscuro = true;
+  paginaActual = 1;
+  productosPorPagina = 10;
 
   /* =========================
      PRODUCTOS DE EJEMPLO
@@ -43,7 +44,7 @@ export class ProductosAdminComponent {
   /* =========================
      INYECCIÓN DE DEPENDENCIAS
   ========================= */
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   /* =========================
      CALCULADOS
