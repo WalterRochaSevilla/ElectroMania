@@ -1,5 +1,5 @@
 <div class="usuarios-admin-container">
-  <div class="pagina-usuarios" [class.modo-claro]="!modoOscuro">
+  <div class="pagina-usuarios">
     <!-- HEADER -->
     <header class="header-usuarios">
       <div class="logo">
@@ -20,9 +20,6 @@
       </nav>
 
       <div class="acciones-header">
-        <button class="toggle-modo" (click)="cambiarModo()">
-          {{ modoOscuro ? '☀️' : '🌙' }}
-        </button>
         <button class="btn-ingresar" (click)="cerrarSesion()">Cerrar Sesión</button>
       </div>
     </header>
@@ -138,4 +135,11 @@
       </div>
     </main>
   </div>
+
+  <app-user-form-modal
+    [isVisible]="isModalOpen"
+    [user]="selectedUser"
+    (saveUser)="handleModalSave($event)"
+    (cancelModal)="handleModalCancel()">
+  </app-user-form-modal>
 </div>

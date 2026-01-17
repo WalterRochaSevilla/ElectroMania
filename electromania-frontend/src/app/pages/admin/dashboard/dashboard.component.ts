@@ -27,10 +27,8 @@ export class DashboardComponent implements OnInit {
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
 
-  modoOscuro = true;
   periodoSeleccionado: '7d' | '30d' | '90d' = '7d';
 
-  // Stats
   stats = {
     totalRevenue: 0,
     revenueChange: 0,
@@ -40,41 +38,28 @@ export class DashboardComponent implements OnInit {
 
   lowStockProducts: LowStockProduct[] = [];
 
-  ngOnInit() {
-    this.loadDashboardData();
+  async ngOnInit() {
+    await this.loadDashboardData();
   }
 
-  loadDashboardData() {
-    // 1. Load KPI Stats
-    this.productosService.getDashboardStats().subscribe(data => {
-      this.stats = data;
-    });
+  async loadDashboardData() {
+    this.stats = await this.productosService.getDashboardStats();
+    await this.updateRevenueChart();
 
-    // 2. Load Revenue Chart
-    this.updateRevenueChart();
+    const topProducts = await this.productosService.getTopSellingProducts();
+    this.barChartData.labels = topProducts.map(p => p.name);
+    this.barChartData.datasets[0].data = topProducts.map(p => p.sold);
+    this.chart?.update();
 
-    // 3. Load Top Selling
-    this.productosService.getTopSellingProducts().subscribe(products => {
-      this.barChartData.labels = products.map(p => p.name);
-      this.barChartData.datasets[0].data = products.map(p => p.sold);
-      this.chart?.update();
-    });
-
-    // 4. Load Low Stock Table
-    this.productosService.getLowStockProducts().subscribe(products => {
-      this.lowStockProducts = products;
-    });
+    this.lowStockProducts = await this.productosService.getLowStockProducts();
   }
 
-  /* =========================
-     CHART 1: REVENUE (LINE)
-  ========================= */
   public lineChartData: ChartConfiguration['data'] = {
     datasets: [
       {
         data: [],
         label: 'Ventas (Bs.)',
-        backgroundColor: 'rgba(99, 102, 241, 0.2)', // Indigo 500 with opacity
+        backgroundColor: 'rgba(99, 102, 241, 0.2)',
         borderColor: '#6366f1',
         pointBackgroundColor: '#fff',
         pointBorderColor: '#6366f1',
@@ -117,17 +102,13 @@ export class DashboardComponent implements OnInit {
 
   public lineChartType: ChartType = 'line';
 
-  updateRevenueChart() {
-    this.productosService.getRevenueStats(this.periodoSeleccionado).subscribe(res => {
-      this.lineChartData.labels = res.labels;
-      this.lineChartData.datasets[0].data = res.data;
-      this.chart?.update();
-    });
+  async updateRevenueChart() {
+    const res = await this.productosService.getRevenueStats(this.periodoSeleccionado);
+    this.lineChartData.labels = res.labels;
+    this.lineChartData.datasets[0].data = res.data;
+    this.chart?.update();
   }
 
-  /* =========================
-     CHART 2: TOP SELLING (BAR)
-  ========================= */
   public barChartData: ChartData<'bar'> = {
     labels: [],
     datasets: [
@@ -135,7 +116,7 @@ export class DashboardComponent implements OnInit {
         data: [],
         label: 'Unidades Vendidas',
         backgroundColor: [
-          '#6366f1', // Indigo
+          '#6366f1',
           '#818cf8',
           '#a5b4fc',
           '#c7d2fe'
@@ -147,7 +128,7 @@ export class DashboardComponent implements OnInit {
 
   public barChartOptions: ChartConfiguration['options'] = {
     responsive: true,
-    indexAxis: 'y', // Horizontal bar
+    indexAxis: 'y',
     maintainAspectRatio: false,
     scales: {
       x: {
@@ -165,13 +146,6 @@ export class DashboardComponent implements OnInit {
   };
 
   public barChartType: ChartType = 'bar';
-
-  /* =========================
-     ACTIONS
-  ========================= */
-  cambiarModo() {
-    this.modoOscuro = !this.modoOscuro;
-  }
 
   cerrarSesion() {
     this.router.navigate(['/login']);

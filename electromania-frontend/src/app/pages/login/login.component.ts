@@ -1,14 +1,15 @@
 import { Component, inject } from '@angular/core';
-
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
+import { LoginRequest } from '../../models';
+import { PasswordInputComponent } from '../../components/password-input/password-input.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, PasswordInputComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -17,33 +18,9 @@ export class LoginComponent {
   private authService = inject(AuthService);
   private toast = inject(ToastService);
 
-  /* =========================
-    ESTADOS GENERALES
- ========================= */
-  modoOscuro = true;
-
-  // En tu componente
   mostrarFormLogin = false;
   email = '';
   contrasena = '';
-  mostrarContrasena = false;
-
-
-  /* =========================
-     HEADER
-  ========================= */
-  cambiarModo() {
-    this.modoOscuro = !this.modoOscuro;
-  }
-  ingresar() {
-    this.router.navigate(['/login']);
-  }
-  Catalogo() {
-    this.router.navigate(['/home']);
-  }
-  Carrito() {
-    this.router.navigate(['/producto']);
-  }
 
   registro() {
     this.router.navigate(['/registro']);
@@ -53,16 +30,14 @@ export class LoginComponent {
     this.mostrarFormLogin = true;
   }
 
-  alternarMostrarContrasena() {
-    this.mostrarContrasena = !this.mostrarContrasena;
-  }
-
   async iniciarSesion() {
+    const credentials: LoginRequest = {
+      email: this.email,
+      password: this.contrasena
+    };
+
     try {
-      await this.authService.login({
-        email: this.email,
-        password: this.contrasena
-      });
+      await this.authService.login(credentials);
 
       const role = this.authService.getRole();
       if (role === 'admin') {
@@ -72,8 +47,7 @@ export class LoginComponent {
         this.router.navigate(['/home']);
         this.toast.success('Sesión iniciada correctamente');
       }
-    } catch (error) {
-      console.error('Login failed', error);
+    } catch {
       this.toast.error('Error al iniciar sesión. Verifique sus credenciales.');
     }
   }

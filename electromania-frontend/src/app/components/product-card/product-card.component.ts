@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Product } from '../../services/productos.service';
+import { ProductCard } from '../../models';
 
 @Component({
     selector: 'app-product-card',
@@ -11,12 +11,12 @@ import { Product } from '../../services/productos.service';
 })
 export class ProductCardComponent {
 
-    @Input() product!: Product;
+    @Input() product!: ProductCard;
     @Input() isOffer = false;
     @Input() isFeatured = false;
 
-    @Output() addToCart = new EventEmitter<Product>();
-    @Output() cardClick = new EventEmitter<Product>();
+    @Output() addToCart = new EventEmitter<ProductCard>();
+    @Output() cardClick = new EventEmitter<ProductCard>();
 
     onAddToCart(event: Event) {
         event.stopPropagation(); // Prevent card click

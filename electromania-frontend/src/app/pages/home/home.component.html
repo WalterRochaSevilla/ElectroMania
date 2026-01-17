@@ -1,5 +1,5 @@
 <div class="home-container">
-  <div class="pagina-catalogo-container" [class.modo-claro]="!modoOscuro">
+  <div class="pagina-catalogo-container">
 
     <!-- SEARCH & FILTER HEADER (Pinterest Style) -->
     <section class="search-header-wrapper">
@@ -105,7 +105,7 @@
         <div class="grid-productos">
           @for (producto of productosFiltrados; track producto) {
             <app-product-card [product]="producto"
-              (cardClick)="router.navigate(['/detalle-producto', producto.id])" (addToCart)="agregarAlCarrito($event)">
+              (cardClick)="router.navigate(['/detalle-producto', producto.product_id])" (addToCart)="agregarAlCarrito($event)">
             </app-product-card>
           }
         </div>

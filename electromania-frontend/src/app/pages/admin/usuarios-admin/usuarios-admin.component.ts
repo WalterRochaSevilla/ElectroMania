@@ -1,127 +1,69 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { ProductosService } from '../../../services/productos.service';
 import { AuthService } from '../../../services/auth.service';
 import { ToastService } from '../../../services/toast.service';
 import { ModalService } from '../../../services/modal.service';
-
+import { UserService } from '../../../services/user.service';
+import { UserDisplay, User } from '../../../models';
+import { UserFormModalComponent, UserFormData } from '../../../components/user-form-modal/user-form-modal.component';
 
 @Component({
   selector: 'app-usuarios-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, UserFormModalComponent],
   templateUrl: './usuarios-admin.component.html',
   styleUrl: './usuarios-admin.component.css'
 })
-export class UsuariosAdminComponent {
+export class UsuariosAdminComponent implements OnInit {
   private router = inject(Router);
-  private productosService = inject(ProductosService);
   private authService = inject(AuthService);
   private toast = inject(ToastService);
   private modalService = inject(ModalService);
+  private userService = inject(UserService);
 
-  /* =========================
-     ESTADOS GENERALES
-  ========================= */
-  modoOscuro = true;
   busqueda = '';
   filtroRol = 'all';
+  loading = false;
 
-  /* =========================
-     USUARIOS DE EJEMPLO
-  ========================= */
-  usuarios = [
-    {
-      id: 1,
-      nombre: 'Juan Pérez',
-      email: 'juan.perez@email.com',
-      rol: 'Admin',
-      nitCi: '1234567',
-      estado: 'Activo'
-    },
-    {
-      id: 2,
-      nombre: 'María García',
-      email: 'maria.garcia@email.com',
-      rol: 'Vendedor',
-      nitCi: '7654321',
-      estado: 'Activo'
-    },
-    {
-      id: 3,
-      nombre: 'Carlos Rodríguez',
-      email: 'carlos.rodriguez@email.com',
-      rol: 'Cliente',
-      nitCi: '9876543',
-      estado: 'Inactivo'
-    },
-    {
-      id: 4,
-      nombre: 'Ana Martínez',
-      email: 'ana.martinez@email.com',
-      rol: 'Vendedor',
-      nitCi: '2345678',
-      estado: 'Activo'
-    },
-    {
-      id: 5,
-      nombre: 'Luis Fernández',
-      email: 'luis.fernandez@email.com',
-      rol: 'Admin',
-      nitCi: '8765432',
-      estado: 'Activo'
-    },
-    {
-      id: 6,
-      nombre: 'Sofía López',
-      email: 'sofia.lopez@email.com',
-      rol: 'Cliente',
-      nitCi: '3456789',
-      estado: 'Inactivo'
-    },
-    {
-      id: 7,
-      nombre: 'Pedro Sánchez',
-      email: 'pedro.sanchez@email.com',
-      rol: 'Vendedor',
-      nitCi: '6543210',
-      estado: 'Activo'
-    },
-    {
-      id: 8,
-      nombre: 'Laura Gómez',
-      email: 'laura.gomez@email.com',
-      rol: 'Cliente',
-      nitCi: '4321098',
-      estado: 'Activo'
-    },
-    {
-      id: 9,
-      nombre: 'Diego Ramírez',
-      email: 'diego.ramirez@email.com',
-      rol: 'Admin',
-      nitCi: '2109876',
-      estado: 'Inactivo'
-    },
-    {
-      id: 10,
-      nombre: 'Elena Torres',
-      email: 'elena.torres@email.com',
-      rol: 'Vendedor',
-      nitCi: '8901234',
-      estado: 'Activo'
+  isModalOpen = false;
+  selectedUser: UserFormData | null = null;
+  isEditing = false;
+
+  usuarios: UserDisplay[] = [];
+  usuariosFiltrados: UserDisplay[] = [];
+  private rawUsers: User[] = [];
+
+  async ngOnInit() {
+    await this.cargarUsuarios();
+  }
+
+  async cargarUsuarios() {
+    this.loading = true;
+    try {
+      const users = await this.userService.getAllUsers();
+      this.rawUsers = users;
+      this.usuarios = this.mapUsersToDisplay(users);
+      this.usuariosFiltrados = [...this.usuarios];
+    } catch {
+      this.toast.error('Error al cargar usuarios');
+      this.usuarios = [];
+      this.usuariosFiltrados = [];
+    } finally {
+      this.loading = false;
     }
-  ];
+  }
 
-  usuariosFiltrados = [...this.usuarios];
-
-  /* =========================
-     HEADER
-  ========================= */
-  cambiarModo() {
-    this.modoOscuro = !this.modoOscuro;
+  private mapUsersToDisplay(users: User[]): UserDisplay[] {
+    return users.map((u, index) => ({
+      id: index + 1,
+      nombre: u.name,
+      email: u.email,
+      rol: u.role === 'ADMIN' ? 'Admin' : 'Cliente',
+      nitCi: u.nit_ci,
+      estado: 'Activo'
+    }));
   }
 
   cerrarSesion() {
@@ -129,13 +71,9 @@ export class UsuariosAdminComponent {
     this.router.navigate(['/login']);
   }
 
-  /* =========================
-     FILTRADO Y BÚSQUEDA
-  ========================= */
   filtrarUsuarios() {
     let resultado = [...this.usuarios];
 
-    // Filtro por búsqueda
     if (this.busqueda.trim() !== '') {
       const busquedaLower = this.busqueda.toLowerCase();
       resultado = resultado.filter(usuario =>
@@ -146,7 +84,6 @@ export class UsuariosAdminComponent {
       );
     }
 
-    // Filtro por rol
     if (this.filtroRol !== 'all') {
       resultado = resultado.filter(usuario => usuario.rol === this.filtroRol);
     }
@@ -159,9 +96,6 @@ export class UsuariosAdminComponent {
     this.filtrarUsuarios();
   }
 
-  /* =========================
-     FUNCIONES DE USUARIOS
-  ========================= */
   obtenerIniciales(nombre: string): string {
     return nombre
       .split(' ')
@@ -179,17 +113,55 @@ export class UsuariosAdminComponent {
     return this.usuarios.filter(u => u.estado === 'Inactivo').length;
   }
 
-  /* =========================
-     ACCIONES CRUD
-  ========================= */
   agregarUsuario() {
-    console.log('Agregar nuevo usuario');
-    // Aquí iría la lógica para abrir modal/formulario
+    this.selectedUser = null;
+    this.isEditing = false;
+    this.isModalOpen = true;
   }
 
-  editarUsuario(usuario: { id: number; nombre: string }) {
-    console.log('Editar usuario:', usuario);
-    // Aquí iría la lógica para editar
+  editarUsuario(usuario: UserDisplay) {
+    this.selectedUser = {
+      uuid: this.findUuidByEmail(usuario.email),
+      nombre: usuario.nombre,
+      email: usuario.email,
+      password: '',
+      nitCi: usuario.nitCi,
+      socialReason: '',
+      rol: usuario.rol as 'Admin' | 'Cliente'
+    };
+    this.isEditing = true;
+    this.isModalOpen = true;
+  }
+
+  private findUuidByEmail(email: string): string | undefined {
+    return this.rawUsers.find(u => u.email === email)?.uuid;
+  }
+
+  handleModalCancel() {
+    this.isModalOpen = false;
+    this.selectedUser = null;
+  }
+
+  async handleModalSave(data: UserFormData) {
+    this.isModalOpen = false;
+
+    if (this.isEditing) {
+      this.toast.info('La edición de usuarios no está disponible en el backend');
+    } else {
+      try {
+        await this.userService.createUser({
+          name: data.nombre,
+          email: data.email,
+          password: data.password,
+          nit_ci: data.nitCi,
+          social_reason: data.socialReason
+        });
+        this.toast.success('Usuario creado exitosamente');
+        await this.cargarUsuarios();
+      } catch {
+        this.toast.error('Error al crear el usuario');
+      }
+    }
   }
 
   async eliminarUsuario(id: number) {
@@ -207,12 +179,12 @@ export class UsuariosAdminComponent {
     }
   }
 
-  toggleEstado(usuario: { id: number; estado: string }) {
+  toggleEstado(usuario: UserDisplay) {
     usuario.estado = usuario.estado === 'Activo' ? 'Inactivo' : 'Activo';
     this.toast.info(`Usuario ${usuario.estado === 'Activo' ? 'activado' : 'desactivado'}`);
   }
 
-  async resetPassword(usuario: { nombre: string; email: string }) {
+  async resetPassword(usuario: UserDisplay) {
     const confirmed = await this.modalService.confirm({
       title: 'Resetear Contraseña',
       message: `¿Resetear contraseña del usuario ${usuario.nombre}? Se enviará un correo con la nueva contraseña.`,

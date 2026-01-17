@@ -32,7 +32,7 @@ import { ToastService } from '../../services/toast.service';
   styles: [`
     .toast-container {
       position: fixed;
-      top: 2rem;
+      bottom: 2rem;
       right: 2rem;
       z-index: 9999;
       display: flex;
@@ -60,8 +60,8 @@ import { ToastService } from '../../services/toast.service';
     }
 
     @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
+      from { transform: translateX(100%) translateY(20px); opacity: 0; }
+      to { transform: translateX(0) translateY(0); opacity: 1; }
     }
 
     .toast-icon {

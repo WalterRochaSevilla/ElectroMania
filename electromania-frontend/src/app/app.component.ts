@@ -1,8 +1,8 @@
-import { Component, OnInit, HostListener, Renderer2, inject } from '@angular/core';
-
+import { Component, HostListener, Renderer2, inject, OnInit } from '@angular/core';
 import { Router, RouterOutlet, RouterModule } from '@angular/router';
 import { ToastComponent } from './components/toast/toast.component';
 import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -19,8 +19,10 @@ import { ConfirmationModalComponent } from './components/confirmation-modal/conf
 export class AppComponent implements OnInit {
   private router = inject(Router);
   private renderer = inject(Renderer2);
+  private themeService = inject(ThemeService);
 
-  isDarkMode = true;
+  readonly isDarkMode = this.themeService.isDark;
+
   isScrolled = false;
   dropdownOpen = false;
   mobileMenuOpen = false;
@@ -39,43 +41,16 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Verificar tema del sistema
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const savedTheme = localStorage.getItem('theme');
-
-    if (savedTheme) {
-      this.isDarkMode = savedTheme === 'dark';
-    } else {
-      this.isDarkMode = prefersDark;
-    }
-
-    this.applyTheme(this.isDarkMode ? 'dark' : 'light');
-
-    // Añadir clase inicial para animaciones
     this.renderer.addClass(document.body, 'loaded');
   }
 
   toggleTheme() {
-    this.isDarkMode = !this.isDarkMode;
-    const theme = this.isDarkMode ? 'dark' : 'light';
-    this.applyTheme(theme);
+    this.themeService.toggle();
 
-    // Efecto de transición suave
     this.renderer.addClass(document.body, 'theme-transition');
     setTimeout(() => {
       this.renderer.removeClass(document.body, 'theme-transition');
     }, 500);
-  }
-
-  private applyTheme(theme: string) {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-
-    // Actualizar meta tag para theme-color
-    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-    if (metaThemeColor) {
-      metaThemeColor.setAttribute('content', theme === 'dark' ? '#050a10' : '#f0f8ff');
-    }
   }
 
   toggleDropdown() {

@@ -1,0 +1,53 @@
+export type ProductState = 'AVAILABLE' | 'UNAVAILABLE' | 'OUT_OF_STOCK';
+
+export interface Product {
+  product_id?: number;
+  product_name: string;
+  description: string;
+  price: number;
+  stock: number;
+  state: ProductState;
+  images: string[];
+}
+
+export interface CreateProductRequest {
+  product_name: string;
+  description: string;
+  price: number;
+  stock: number;
+}
+
+export interface UpdateProductRequest {
+  product_name?: string;
+  description?: string;
+  price?: number;
+  stock?: number;
+  state?: ProductState;
+}
+
+export interface ProductDisplay {
+  id: number | undefined;
+  nombre: string;
+  categoria: string;
+  precio: number;
+  stock: number;
+  activo: boolean;
+  description?: string;
+}
+
+export interface ProductCard {
+  product_id?: number;
+  product_name: string;
+  description: string;
+  price: number;
+  stock: number;
+  images: string[];
+  isOffer?: boolean;
+}
+
+export interface PageProductResponse {
+  page: number;
+  max_size_per_page: number;
+  content: Product[];
+  totalElements: number;
+}
