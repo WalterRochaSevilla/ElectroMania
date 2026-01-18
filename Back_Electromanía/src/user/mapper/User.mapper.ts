@@ -38,6 +38,16 @@ export class UserMapper implements Mapper<UserModel, User,Prisma.UserCreateInput
         model.social_reason = entity.social_reason;
         return model;
     }
+    toRegisterAdminUserEntity(model: UserCreateRequestModel): Prisma.UserCreateInput {
+        return {
+            name: model.name,
+            email: model.email,
+            password: model.password,
+            nit_ci: model.nit_ci,
+            social_reason: model.social_reason,
+            role: "ADMIN"
+        };
+    }
     toJwtPayloadModel(entity: User): UserJwtPayloadModel {
         return {
             uuid: entity.uuid,

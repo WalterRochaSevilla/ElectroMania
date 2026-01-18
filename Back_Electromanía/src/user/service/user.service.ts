@@ -5,6 +5,7 @@ import { UserCreateRequestModel } from '../models/UserCreateRequest.model';
 import { UserMapper } from '../mapper/User.mapper';
 import { UserModel } from '../models/User.model';
 import { Prisma } from '@prisma/client';
+import { UserRole } from '../enums/UserRole.enum';
 
 @Injectable()
 export class UserService {
@@ -52,5 +53,19 @@ export class UserService {
 
   async filterBy(filter: Prisma.UserWhereInput) {
     return this.prisma.user.findMany({ where: filter });
+  }
+  async registerAdminUser(user: UserCreateRequestModel) {
+    try{
+      const hashedPassword = await this.passwordService.hashPassword(user.password);
+      user.password = hashedPassword;
+      const entity = this.userMapper.toRegisterAdminUserEntity(user);
+      const result = await this.createUser(entity);
+      return this.userMapper.toRegisterUserModel(result);
+    }catch(error){
+      if(error.code === 'P2002'){
+        throw new Error('User already exists');
+      }
+      throw error;
+    }
   }
 }

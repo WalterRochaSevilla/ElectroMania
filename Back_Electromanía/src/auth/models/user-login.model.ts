@@ -1,5 +1,4 @@
 import { IsEmail, IsNotEmpty, IsString, IsStrongPassword } from "class-validator";
-import { Email } from "./value objects/email";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class UserLoginRequestModel {
@@ -9,11 +8,11 @@ export class UserLoginRequestModel {
     @ApiProperty({
         title: 'email',
         description: 'Correo electronico del usuario',
-        type: Email,
+        type: String,
         required: true,
         example: 'prueba@gmail.com'
     })
-    email: Email;
+    email: string;
 
     @IsNotEmpty()
     @IsString()
