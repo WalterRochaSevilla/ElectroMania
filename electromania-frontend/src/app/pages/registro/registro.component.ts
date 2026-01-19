@@ -30,6 +30,10 @@ export class RegistroComponent {
     this.router.navigate(['/login']);
   }
 
+  Irahome() {
+    this.router.navigate(['/home']);
+  }
+
   formatearNIT() {
     this.nit = formatNIT(this.nit);
   }
@@ -60,7 +64,7 @@ export class RegistroComponent {
     try {
       await this.authService.registerUser(data);
       this.toast.success('Registro exitoso! Ahora puedes iniciar sesión.');
-      this.volverAlLogin();
+      this.Irahome();
     } catch {
       this.toast.error('Error en el registro. Por favor intente nuevamente.');
     }

@@ -50,6 +50,18 @@
   font-size: 0.9rem;
 }
 
+/* NIT */
+.label-principal {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.requerido {
+    color: red;
+    font-weight: bold;
+}
+
 /* FORM FIELDS */
 .campo-formulario {
   margin-bottom: 24px;
