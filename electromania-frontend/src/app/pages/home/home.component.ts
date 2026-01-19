@@ -35,7 +35,7 @@ export class HomeComponent implements OnInit {
   productos: ProductCard[] = [];
   productosFiltrados: ProductCard[] = [];
 
-  get tieneFilrosActivos(): boolean {
+  get tieneFiltrosActivos(): boolean {
     return this.busqueda.trim() !== '' ||
            this.orden !== 'relevancia' ||
            this.categoriaSeleccionada !== '' ||
@@ -146,14 +146,14 @@ export class HomeComponent implements OnInit {
       );
     }
 
-    // Price filter
+    // Price filter (using < for upper bounds to avoid boundary overlap)
     if (this.precioSeleccionado) {
       if (this.precioSeleccionado === '0-50') {
         resultado = resultado.filter(p => p.price < 50);
       } else if (this.precioSeleccionado === '50-100') {
-        resultado = resultado.filter(p => p.price >= 50 && p.price <= 100);
+        resultado = resultado.filter(p => p.price >= 50 && p.price < 100);
       } else if (this.precioSeleccionado === '100+') {
-        resultado = resultado.filter(p => p.price > 100);
+        resultado = resultado.filter(p => p.price >= 100);
       }
     }
 

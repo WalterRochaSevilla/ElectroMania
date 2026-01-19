@@ -29,7 +29,6 @@ export class ProductosComponent implements OnInit {
   readonly totals = this.cartService.totals;
   readonly isEmpty = this.cartService.isEmpty;
 
-  generarFactura = signal(true);
   nombreFactura = signal('');
   nitFactura = signal('');
   emailFactura = signal('');

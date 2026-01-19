@@ -47,8 +47,11 @@ export class AppComponent implements OnInit {
     
     this.scrollThrottle = true;
     requestAnimationFrame(() => {
-      this.isScrolled.set(window.scrollY > 100);
-      this.scrollThrottle = false;
+      try {
+        this.isScrolled.set(window.scrollY > 100);
+      } finally {
+        this.scrollThrottle = false;
+      }
     });
   }
 
@@ -117,5 +120,10 @@ export class AppComponent implements OnInit {
 
   isAdmin(): boolean {
     return this.authService.isAdmin();
+  }
+
+  logoutAndCloseMenu() {
+    this.logout();
+    this.toggleMobileMenu();
   }
 }
