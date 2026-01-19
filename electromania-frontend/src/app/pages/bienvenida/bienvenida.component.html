@@ -45,27 +45,27 @@
           PRODUCTOS EN OFERTA
         </span>
         <span class="flecha">
-          {{ ofertasAbiertas ? '▲' : '▼' }}
+          @if (ofertasAbiertas) {
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+          } @else {
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          }
         </span>
       </div>
 
       <!-- CARRUSEL OFERTAS -->
       <div class="carrusel-oferta" [class.mostrar]="ofertasAbiertas">
-        <button class="flecha-nav prev" (click)="scrollOfertasPrev()" title="Anterior">
-          ‹
-        </button>
-
-        <div class="grid-productos" #ofertasList appDraggableScroll>
-          @for (producto of productosOferta; track producto) {
+        <div class="grid-productos fade-edges" #ofertasList appDraggableScroll>
+          @for (producto of productosOferta; track producto.product_id) {
             <app-product-card [product]="producto" [isOffer]="true"
               (cardClick)="verDetalles(producto)" (addToCart)="verDetalles(producto)" class="tarjeta-producto-wrapper">
             </app-product-card>
           }
         </div>
-
-        <button class="flecha-nav next" (click)="scrollOfertasNext()" title="Siguiente">
-          ›
-        </button>
       </div>
     </div>
     }
@@ -82,21 +82,13 @@
 
     <!-- CARRUSEL DESTACADOS -->
     <div class="contenedor-slider">
-      <button class="nav-btn prev" (click)="scrollDestacadosPrev()" title="Anterior">
-        ‹
-      </button>
-
-      <div class="wrapper-productos" #destacadosList appDraggableScroll>
-        @for (producto of productosDestacados; track producto) {
+      <div class="wrapper-productos fade-edges" #destacadosList appDraggableScroll>
+        @for (producto of productosDestacados; track producto.product_id) {
           <app-product-card [product]="producto" [isFeatured]="true"
             (cardClick)="verDetalles(producto)" (addToCart)="verDetalles(producto)" class="tarjeta-producto-wrapper">
           </app-product-card>
         }
       </div>
-
-      <button class="nav-btn next" (click)="scrollDestacadosNext()" title="Siguiente">
-        ›
-      </button>
     </div>
     }
 

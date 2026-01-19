@@ -1,4 +1,6 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject, PLATFORM_ID, afterNextRender } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { StorageService } from './storage.service';
 
 const STORAGE_KEY = 'theme';
 
@@ -6,19 +8,28 @@ const STORAGE_KEY = 'theme';
   providedIn: 'root'
 })
 export class ThemeService {
-  private isDarkSignal = signal(true);
+  private platformId = inject(PLATFORM_ID);
+  private storageService = inject(StorageService);
+  private isDarkSignal = signal(true); // Default to dark for SSR
+
+  private get isBrowser(): boolean {
+    return isPlatformBrowser(this.platformId);
+  }
 
   readonly isDark = this.isDarkSignal.asReadonly();
   readonly theme = computed(() => this.isDarkSignal() ? 'dark' : 'light');
 
   constructor() {
-    this.initTheme();
+    // Defer browser-only initialization to avoid hydration mismatch
+    afterNextRender(() => {
+      this.initTheme();
+    });
   }
 
   private initTheme(): void {
-    if (typeof window === 'undefined') return;
+    if (!this.isBrowser) return;
 
-    const savedTheme = localStorage.getItem(STORAGE_KEY);
+    const savedTheme = this.storageService.getItem(STORAGE_KEY);
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
     if (savedTheme) {
@@ -36,11 +47,11 @@ export class ThemeService {
   }
 
   private applyTheme(): void {
-    if (typeof document === 'undefined') return;
+    if (!this.isBrowser) return;
 
     const theme = this.theme();
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem(STORAGE_KEY, theme);
+    this.storageService.setItem(STORAGE_KEY, theme);
 
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {

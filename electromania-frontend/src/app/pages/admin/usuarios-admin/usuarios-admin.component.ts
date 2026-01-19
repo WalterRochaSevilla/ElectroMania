@@ -1,18 +1,19 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { ToastService } from '../../../services/toast.service';
 import { ModalService } from '../../../services/modal.service';
 import { UserService } from '../../../services/user.service';
 import { UserDisplay, User } from '../../../models';
 import { UserFormModalComponent, UserFormData } from '../../../components/user-form-modal/user-form-modal.component';
+import { AdminSidebarComponent } from '../../../components/admin-sidebar/admin-sidebar.component';
 
 @Component({
   selector: 'app-usuarios-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, UserFormModalComponent],
+  imports: [CommonModule, FormsModule, UserFormModalComponent, AdminSidebarComponent],
   templateUrl: './usuarios-admin.component.html',
   styleUrl: './usuarios-admin.component.css'
 })

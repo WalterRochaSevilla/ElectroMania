@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
 import { ProductCard } from '../../models';
@@ -10,17 +10,19 @@ import { DraggableScrollDirective } from '../../directives/draggable-scroll.dire
   standalone: true,
   imports: [ProductCardComponent, DraggableScrollDirective],
   templateUrl: './bienvenida.component.html',
-  styleUrls: ['./bienvenida.component.css']
+  styleUrls: ['./bienvenida.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BienvenidaComponent implements OnInit, AfterViewInit {
   private router = inject(Router);
   private productosService = inject(ProductosService);
+  private cdr = inject(ChangeDetectorRef);
 
   @ViewChild('ofertasList', { static: true }) ofertasList!: ElementRef<HTMLDivElement>;
   @ViewChild('destacadosList', { static: true }) destacadosList!: ElementRef<HTMLDivElement>;
   @ViewChild('heroSection') heroSection!: ElementRef<HTMLElement>;
 
-  ofertasAbiertas = false;
+  ofertasAbiertas = true;
   backgroundLoaded = false;
   loading = false;
 
@@ -51,6 +53,7 @@ export class BienvenidaComponent implements OnInit, AfterViewInit {
       this.productosOferta = [];
     } finally {
       this.loading = false;
+      this.cdr.markForCheck();
     }
   }
 
@@ -104,32 +107,7 @@ export class BienvenidaComponent implements OnInit, AfterViewInit {
     this.ofertasAbiertas = !this.ofertasAbiertas;
   }
 
-  scrollOfertasPrev() {
-    this.scrollCarrusel(this.ofertasList.nativeElement, -1);
-  }
 
-  scrollOfertasNext() {
-    this.scrollCarrusel(this.ofertasList.nativeElement, 1);
-  }
-
-  scrollDestacadosPrev() {
-    this.scrollCarrusel(this.destacadosList.nativeElement, -1);
-  }
-
-  scrollDestacadosNext() {
-    this.scrollCarrusel(this.destacadosList.nativeElement, 1);
-  }
-
-  private scrollCarrusel(element: HTMLDivElement, direction: number) {
-    if (!element) return;
-
-    const scrollAmount = 340;
-
-    element.scrollBy({
-      left: scrollAmount * direction,
-      behavior: 'smooth'
-    });
-  }
 
   setDefaultImage(event: Event) {
     const img = event.target as HTMLImageElement;

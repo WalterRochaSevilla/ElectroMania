@@ -65,6 +65,11 @@ export interface ProductFormData {
                 <textarea id="descripcion" name="descripcion" [(ngModel)]="formData.descripcion" rows="3" placeholder="Detalles del producto..."></textarea>
               </div>
 
+              <div class="form-group">
+                <label for="imagen">URL de Imagen (opcional)</label>
+                <input type="url" id="imagen" name="imagen" [(ngModel)]="formData.imagen" placeholder="https://ejemplo.com/imagen.jpg">
+              </div>
+
             </div>
 
             <div class="modal-footer">
@@ -97,21 +102,26 @@ export interface ProductFormData {
     }
 
     .modal-content {
-      background: var(--surface-card);
-      border: 1px solid var(--border-color);
+      background: var(--bg-card, #1e293b);
+      border: 1px solid var(--border-color, #334155);
       border-radius: 1rem;
       width: 90%;
       max-width: 500px;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
       animation: scaleIn 0.2s ease-out;
       display: flex;
       flex-direction: column;
       max-height: 90vh;
     }
 
+    :host-context([data-theme='light']) .modal-content {
+      background: #ffffff;
+      border-color: #e2e8f0;
+    }
+
     .modal-header {
       padding: 1.25rem 1.5rem;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color, #334155);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -120,8 +130,12 @@ export interface ProductFormData {
     .modal-header h3 {
       font-size: 1.125rem;
       font-weight: 600;
-      color: var(--text-primary);
+      color: var(--text-primary, #f1f5f9);
       margin: 0;
+    }
+
+    :host-context([data-theme='light']) .modal-header h3 {
+      color: #1e293b;
     }
 
     .close-btn {
@@ -156,28 +170,39 @@ export interface ProductFormData {
     label {
       font-size: 0.875rem;
       font-weight: 500;
-      color: var(--text-secondary);
+      color: var(--text-secondary, #94a3b8);
+    }
+
+    :host-context([data-theme='light']) label {
+      color: #64748b;
     }
 
     input, select, textarea {
       padding: 0.75rem;
       border-radius: 0.5rem;
-      border: 1px solid var(--border-color);
-      background: var(--surface-ground);
-      color: var(--text-primary);
+      border: 1px solid var(--border-color, #334155);
+      background: var(--bg-main, #0f172a);
+      color: var(--text-primary, #f1f5f9);
       font-family: inherit;
       transition: border-color 0.2s;
     }
 
+    :host-context([data-theme='light']) input,
+    :host-context([data-theme='light']) select,
+    :host-context([data-theme='light']) textarea {
+      background: #f8fafc;
+      border-color: #e2e8f0;
+      color: #1e293b;
+    }
+
     input:focus, select:focus, textarea:focus {
       outline: none;
-      border-color: var(--primary-color);
+      border-color: var(--brand-primary, #6366f1);
     }
 
     .modal-footer {
       padding: 1rem 1.5rem;
-      background: var(--surface-hover);
-      border-top: 1px solid var(--border-color);
+      background: transparent;
       display: flex;
       justify-content: flex-end;
       gap: 0.75rem;
@@ -194,24 +219,45 @@ export interface ProductFormData {
 
     .btn-cancel {
       background: transparent;
-      color: var(--text-secondary);
-      border: 1px solid var(--border-color);
+      color: var(--text-secondary, #94a3b8);
+      border: 1px solid var(--border-color, #334155);
     }
     .btn-cancel:hover {
-      background: var(--surface-ground);
-      color: var(--text-primary);
+      background: var(--bg-card, #1e293b);
+      color: var(--text-primary, #f1f5f9);
+    }
+
+    :host-context([data-theme='light']) .btn-cancel {
+      color: #64748b;
+      border-color: #e2e8f0;
+    }
+    :host-context([data-theme='light']) .btn-cancel:hover {
+      background: #e2e8f0;
+      color: #1e293b;
     }
 
     .btn-save {
-      background: var(--primary-color);
+      background: var(--brand-primary, #6366f1);
       color: white;
     }
     .btn-save:hover {
-      background: var(--primary-dark);
+      background: #4f46e5;
     }
     .btn-save:disabled {
       opacity: 0.5;
       cursor: not-allowed;
+    }
+
+    /* Hide number input spinners */
+    input[type="number"] {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
     }
 
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -242,7 +288,8 @@ export class ProductFormModalComponent implements OnChanges {
             descripcion: '',
             price: 0,
             stock: 0,
-            categoria: 'General'
+            categoria: 'General',
+            imagen: ''
         };
     }
 

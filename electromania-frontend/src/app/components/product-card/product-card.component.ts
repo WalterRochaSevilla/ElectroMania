@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductCard } from '../../models';
 
@@ -7,7 +7,8 @@ import { ProductCard } from '../../models';
     standalone: true,
     imports: [CommonModule],
     templateUrl: './product-card.component.html',
-    styleUrls: ['./product-card.component.css']
+    styleUrls: ['./product-card.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductCardComponent {
 

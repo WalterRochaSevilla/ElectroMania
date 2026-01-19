@@ -59,8 +59,17 @@ export class RegistroComponent {
 
     try {
       await this.authService.registerUser(data);
-      this.toast.success('Registro exitoso! Ahora puedes iniciar sesión.');
-      this.volverAlLogin();
+
+      // Auto-login after successful registration
+      try {
+        await this.authService.login({ email: this.email, password: this.contrasena });
+        this.toast.success('¡Registro exitoso! Bienvenido a Electromania.');
+        this.router.navigate(['/bienvenida']);
+      } catch {
+        // If auto-login fails, redirect to login page
+        this.toast.success('Registro exitoso! Ahora puedes iniciar sesión.');
+        this.volverAlLogin();
+      }
     } catch {
       this.toast.error('Error en el registro. Por favor intente nuevamente.');
     }

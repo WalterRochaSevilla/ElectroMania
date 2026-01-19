@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -9,11 +9,6 @@ import { AuthService } from '../../services/auth.service';
   imports: [RouterLink, RouterLinkActive],
   template: `
     <div class="sidebar">
-      <div class="logo-area">
-        <div class="logo-icon">E</div>
-        <span class="logo-text">ELECTROMANIA</span>
-      </div>
-    
       <nav class="sidebar-nav">
         <!-- Dashboard: All Roles -->
         <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
@@ -58,55 +53,17 @@ import { AuthService } from '../../services/auth.service';
           Ver Tienda
         </a>
       </nav>
-    
-      <div class="sidebar-footer">
-        <button class="btn-logout" (click)="logout()">
-          <span class="icon">
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-          </span>
-          Salir
-        </button>
-      </div>
     </div>
     `,
   styles: [`
     .sidebar {
-      width: 260px;
-      background: var(--bg-card); /* was #020617 */
+      width: 220px;
+      background: var(--bg-card);
       border-right: 1px solid var(--border-color);
       display: flex;
       flex-direction: column;
-      padding: 24px;
+      padding: 24px 16px;
       height: 100%;
-    }
-
-    .logo-area {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 40px;
-    }
-
-    .logo-icon {
-      width: 32px;
-      height: 32px;
-      background: var(--brand-primary);
-      color: white;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 1.2rem;
-    }
-
-    .logo-text {
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      font-size: 1.1rem;
-      color: var(--text-primary);
     }
 
     .sidebar-nav {
@@ -141,37 +98,31 @@ import { AuthService } from '../../services/auth.service';
        background: var(--slate-200);
     }
 
-    .user-info {
-        color: var(--text-muted);
-        margin-bottom: 12px;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-        text-align: center;
-    }
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding: 16px;
+        height: auto;
+      }
 
-    .btn-logout {
-      width: 100%;
-      padding: 12px;
-      background: rgba(239, 68, 68, 0.1);
-      color: #ef4444;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-weight: 600;
-    }
-    
-    .btn-logout:hover {
-        background: rgba(239, 68, 68, 0.2);
+      .sidebar-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .nav-item {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+      }
     }
   `]
 })
 export class AdminSidebarComponent implements OnInit {
   private authService = inject(AuthService);
-  private router = inject(Router);
 
   userRole = '';
 
@@ -181,10 +132,5 @@ export class AdminSidebarComponent implements OnInit {
 
   get isAdmin(): boolean {
     return this.userRole === 'admin';
-  }
-
-  logout() {
-    this.authService.logout();
-    this.router.navigate(['/login']);
   }
 }

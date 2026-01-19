@@ -1,145 +1,129 @@
-<div class="usuarios-admin-container">
-  <div class="pagina-usuarios">
-    <!-- HEADER -->
-    <header class="header-usuarios">
-      <div class="logo">
-        <img src="LogoProvisorio.png" alt="Electromanía" />
-      </div>
+<div class="admin-layout">
+  <app-admin-sidebar></app-admin-sidebar>
 
-      <nav class="menu-superior">
-        <a href="#" class="menu-item" routerLink="/dashboard">
-          Dashboard
-        </a>
-        <a href="#" class="menu-item" routerLink="/productos-admin">
-          Productos
-        </a>
-        <a href="#" class="menu-item" routerLink="/usuarios-admin">
-          Usuarios
-          <span class="linea-usuarios"></span>
-        </a>
-      </nav>
-
-      <div class="acciones-header">
-        <button class="btn-ingresar" (click)="cerrarSesion()">Cerrar Sesión</button>
+  <div class="main-content">
+    <header class="top-bar">
+      <h2>Gestión de Usuarios</h2>
+      <div class="header-actions">
+        <button class="btn-primary" (click)="agregarUsuario()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Nuevo Usuario
+        </button>
+        <input type="text" class="search-input" placeholder="Buscar usuario..." [(ngModel)]="busqueda" (input)="filtrarUsuarios()" />
       </div>
     </header>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="main-usuarios">
-      <div class="encabezado-seccion">
-        <h1>Gestión de Usuarios</h1>
-        <div class="acciones-superiores">
-          <button class="btn-agregar" (click)="agregarUsuario()">
-            + Nuevo Usuario
-          </button>
-          <div class="buscador-usuarios">
-            <input type="text" placeholder="Buscar usuario..." [(ngModel)]="busqueda" (input)="filtrarUsuarios()" />
-            <span class="icono-buscar">🔍</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- TABLA DE USUARIOS -->
-      <div class="tabla-container">
-        <table class="tabla-usuarios">
-          <thead>
-            <tr>
-              <th>USUARIO</th>
-              <th>ROL</th>
-              <th>NIT/CI</th>
-              <th>ESTADO</th>
-              <th>ACCIONES</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (usuario of usuariosFiltrados; track usuario) {
-            <tr>
-              <td>
-                <div class="info-usuario-cell">
-                  <div class="avatar-usuario">
-                    {{ obtenerIniciales(usuario.nombre) }}
-                  </div>
-                  <div class="datos-usuario">
-                    <div class="nombre-usuario">{{ usuario.nombre }}</div>
-                    <div class="email-usuario">{{ usuario.email }}</div>
-                  </div>
+    <!-- TABLA DE USUARIOS -->
+    <div class="table-container">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>USUARIO</th>
+            <th>ROL</th>
+            <th>NIT/CI</th>
+            <th>ESTADO</th>
+            <th>ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (usuario of usuariosFiltrados; track usuario.id) {
+          <tr>
+            <td>
+              <div class="user-info-cell">
+                <div class="user-avatar" [attr.data-role]="usuario.rol.toLowerCase()">
+                  {{ obtenerIniciales(usuario.nombre) }}
                 </div>
-              </td>
-              <td>
-                <span class="badge-rol" [class]="'rol-' + usuario.rol.toLowerCase()">
-                  {{ usuario.rol }}
-                </span>
-              </td>
-              <td class="documento-usuario">{{ usuario.nitCi }}</td>
-              <td>
-                <span class="badge-estado" [class.activo]="usuario.estado === 'Activo'"
-                  [class.inactivo]="usuario.estado === 'Inactivo'">
-                  <span class="punto-estado"></span>
-                  {{ usuario.estado }}
-                </span>
-              </td>
-              <td>
-                <div class="acciones-cell">
-                  <button class="btn-editar" (click)="editarUsuario(usuario)" title="Editar">
-                    ✏️
-                  </button>
-                  <button class="btn-eliminar" (click)="eliminarUsuario(usuario.id)" title="Eliminar">
-                    🗑️
-                  </button>
-                  <button class="btn-toggle" (click)="toggleEstado(usuario)"
-                    [title]="usuario.estado === 'Activo' ? 'Desactivar' : 'Activar'">
-                    {{ usuario.estado === 'Activo' ? '☉' : '○' }}
-                  </button>
-                  <button class="btn-reset" (click)="resetPassword(usuario)" title="Resetear Contraseña">
-                    🔄
-                  </button>
+                <div class="user-details">
+                  <div class="user-name">{{ usuario.nombre }}</div>
+                  <div class="user-email">{{ usuario.email }}</div>
                 </div>
-              </td>
-            </tr>
-            }
-          </tbody>
-        </table>
+              </div>
+            </td>
+            <td>
+              <span class="role-badge" [class]="'role-' + usuario.rol.toLowerCase()">
+                {{ usuario.rol }}
+              </span>
+            </td>
+            <td class="nit-cell">{{ usuario.nitCi }}</td>
+            <td>
+              <span class="status-badge" [class.active]="usuario.estado === 'Activo'" [class.inactive]="usuario.estado === 'Inactivo'">
+                <span class="status-dot"></span>
+                {{ usuario.estado }}
+              </span>
+            </td>
+            <td>
+              <div class="actions-cell">
+                <button class="btn-icon edit" (click)="editarUsuario(usuario)" title="Editar">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                </button>
+                <button class="btn-icon delete" (click)="eliminarUsuario(usuario.id)" title="Eliminar">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+                <button class="btn-icon toggle" (click)="toggleEstado(usuario)" [title]="usuario.estado === 'Activo' ? 'Desactivar' : 'Activar'">
+                  @if (usuario.estado === 'Activo') {
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="8" x2="12" y2="12"></line>
+                      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                  } @else {
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                    </svg>
+                  }
+                </button>
+                <button class="btn-icon reset" (click)="resetPassword(usuario)" title="Resetear Contraseña">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FILTROS Y ESTADÍSTICAS -->
+    <div class="table-footer">
+      <div class="filter-buttons">
+        <button class="btn-filter" [class.active]="filtroRol === 'all'" (click)="aplicarFiltroRol('all')">
+          Todos
+        </button>
+        <button class="btn-filter" [class.active]="filtroRol === 'Admin'" (click)="aplicarFiltroRol('Admin')">
+          Administradores
+        </button>
+        <button class="btn-filter" [class.active]="filtroRol === 'Vendedor'" (click)="aplicarFiltroRol('Vendedor')">
+          Vendedores
+        </button>
+        <button class="btn-filter" [class.active]="filtroRol === 'Cliente'" (click)="aplicarFiltroRol('Cliente')">
+          Clientes
+        </button>
       </div>
 
-      <!-- FILTROS Y ESTADÍSTICAS -->
-      <div class="filtros-estadisticas">
-        <div class="filtros-rapidos">
-          <button class="btn-filtro" [class.activo]="filtroRol === 'all'" (click)="aplicarFiltroRol('all')">
-            Todos
-          </button>
-          <button class="btn-filtro" [class.activo]="filtroRol === 'Admin'" (click)="aplicarFiltroRol('Admin')">
-            Administradores
-          </button>
-          <button class="btn-filtro" [class.activo]="filtroRol === 'Vendedor'" (click)="aplicarFiltroRol('Vendedor')">
-            Vendedores
-          </button>
-          <button class="btn-filtro" [class.activo]="filtroRol === 'Cliente'" (click)="aplicarFiltroRol('Cliente')">
-            Clientes
-          </button>
-        </div>
-
-        <div class="estadisticas">
-          <div class="estadistica-item">
-            <span class="estadistica-label">Total:</span>
-            <span class="estadistica-valor">{{ usuarios.length }}</span>
-          </div>
-          <div class="estadistica-item">
-            <span class="estadistica-label">Activos:</span>
-            <span class="estadistica-valor activos">{{ contarActivos() }}</span>
-          </div>
-          <div class="estadistica-item">
-            <span class="estadistica-label">Inactivos:</span>
-            <span class="estadistica-valor inactivos">{{ contarInactivos() }}</span>
-          </div>
-        </div>
+      <div class="summary">
+        <span>Total: <strong>{{ usuarios.length }}</strong></span>
+        <span>Activos: <strong class="text-success">{{ contarActivos() }}</strong></span>
+        <span>Inactivos: <strong class="text-danger">{{ contarInactivos() }}</strong></span>
       </div>
-    </main>
+    </div>
   </div>
-
-  <app-user-form-modal
-    [isVisible]="isModalOpen"
-    [user]="selectedUser"
-    (saveUser)="handleModalSave($event)"
-    (cancelModal)="handleModalCancel()">
-  </app-user-form-modal>
 </div>
+
+<!-- USER FORM MODAL -->
+<app-user-form-modal
+  [isVisible]="isModalOpen"
+  [user]="selectedUser"
+  (saveUser)="handleModalSave($event)"
+  (cancelModal)="handleModalCancel()">
+</app-user-form-modal>

@@ -208,6 +208,24 @@
   display: none;
 }
 
+/* Smooth edge fade effect */
+.fade-edges {
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 5%,
+    black 95%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 5%,
+    black 95%,
+    transparent 100%
+  );
+}
+
 .tarjeta-producto-wrapper {
   flex: 0 0 300px;
   /* Fixed width for the wrapper */
@@ -216,33 +234,10 @@
 
 
 
-/* Navigation Buttons */
-.flecha-nav,
-.nav-btn {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 1.5rem;
-  z-index: 20;
-}
-
-.flecha-nav:hover,
-.nav-btn:hover {
-  border-color: var(--brand-primary);
-  color: var(--brand-primary);
-}
-
 .contenedor-slider {
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 /* Resp */

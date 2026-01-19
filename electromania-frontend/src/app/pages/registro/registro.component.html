@@ -78,7 +78,7 @@
                                 <input type="checkbox" [(ngModel)]="aceptaTerminos" />
                                 <span class="checkmark"></span>
                                 <span class="checkbox-text">
-                                    Acepto los <a href="#" class="enlace-terminos">términos y condiciones</a>
+                                    Acepto los <button type="button" class="enlace-terminos">términos y condiciones</button>
                                 </span>
                             </label>
                         </div>
@@ -92,9 +92,9 @@
                         <!-- ENLACE VOLVER AL LOGIN -->
                         <div class="registro-footer">
                             <p>
-                                <a href="#" class="enlace-volver" (click)="volverAlLogin(); $event.preventDefault()">
+                                <button type="button" class="enlace-volver" (click)="volverAlLogin()">
                                     ← Volver al Login
-                                </a>
+                                </button>
                             </p>
                         </div>
                     </div>

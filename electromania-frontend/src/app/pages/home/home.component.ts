@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ProductosService } from '../../services/productos.service';
@@ -12,24 +12,36 @@ import { ProductCard } from '../../models';
   standalone: true,
   imports: [FormsModule, ProductCardComponent],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrl: './home.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent implements OnInit {
   router = inject(Router);
   private productosService = inject(ProductosService);
   private cartService = inject(CartService);
   private toast = inject(ToastService);
+  private cdr = inject(ChangeDetectorRef);
 
   filtrosAvanzadosAbierto = false;
   busqueda = '';
   orden = 'relevancia';
+  categoriaSeleccionada = '';
+  precioSeleccionado = '';
+  disponibilidadSeleccionada = '';
   loading = false;
 
   categorias: string[] = [];
-  categoriasSeleccionadas = new Set<string>();
 
   productos: ProductCard[] = [];
   productosFiltrados: ProductCard[] = [];
+
+  get tieneFilrosActivos(): boolean {
+    return this.busqueda.trim() !== '' ||
+           this.orden !== 'relevancia' ||
+           this.categoriaSeleccionada !== '' ||
+           this.precioSeleccionado !== '' ||
+           this.disponibilidadSeleccionada !== '';
+  }
 
   async ngOnInit() {
     this.cargarFiltrosGuardados();
@@ -47,6 +59,7 @@ export class HomeComponent implements OnInit {
       this.toast.error('Error al cargar productos');
     } finally {
       this.loading = false;
+      this.cdr.markForCheck();
     }
   }
 
@@ -60,9 +73,9 @@ export class HomeComponent implements OnInit {
       const data = JSON.parse(filtros);
       this.busqueda = data.busqueda || '';
       this.orden = data.orden || 'relevancia';
-      if (data.categorias) {
-        this.categoriasSeleccionadas = new Set(data.categorias);
-      }
+      this.categoriaSeleccionada = data.categoria || '';
+      this.precioSeleccionado = data.precio || '';
+      this.disponibilidadSeleccionada = data.disponibilidad || '';
     }
   }
 
@@ -70,7 +83,9 @@ export class HomeComponent implements OnInit {
     const data = {
       busqueda: this.busqueda,
       orden: this.orden,
-      categorias: Array.from(this.categoriasSeleccionadas)
+      categoria: this.categoriaSeleccionada,
+      precio: this.precioSeleccionado,
+      disponibilidad: this.disponibilidadSeleccionada
     };
     localStorage.setItem('electromania_filtros', JSON.stringify(data));
   }
@@ -83,35 +98,71 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  filtrarCategoria(categoria: string) {
-    if (this.categoriasSeleccionadas.has(categoria)) {
-      this.categoriasSeleccionadas.delete(categoria);
-    } else {
-      this.categoriasSeleccionadas.add(categoria);
-    }
-    this.guardarFiltros();
-    this.aplicarFiltros();
-  }
-
   buscarComponentes() {
     this.guardarFiltros();
     this.aplicarFiltros();
+    this.cdr.markForCheck();
   }
 
   ordenarComponentes() {
     this.guardarFiltros();
     this.aplicarFiltros();
+    this.cdr.markForCheck();
+  }
+
+  aplicarFiltrosAvanzados() {
+    this.guardarFiltros();
+    this.aplicarFiltros();
+    this.filtrosAvanzadosAbierto = false;
+    this.cdr.markForCheck();
+  }
+
+  restablecerFiltros() {
+    this.categoriaSeleccionada = '';
+    this.precioSeleccionado = '';
+    this.disponibilidadSeleccionada = '';
+    this.orden = 'relevancia';
+    this.guardarFiltros();
+    this.aplicarFiltros();
+    this.cdr.markForCheck();
   }
 
   aplicarFiltros() {
     let resultado = [...this.productos];
 
+    // Search filter
     if (this.busqueda.trim() !== '') {
       resultado = resultado.filter(p =>
-        p.product_name.toLowerCase().includes(this.busqueda.toLowerCase())
+        p.product_name.toLowerCase().includes(this.busqueda.toLowerCase()) ||
+        p.description.toLowerCase().includes(this.busqueda.toLowerCase())
       );
     }
 
+    // Category filter
+    if (this.categoriaSeleccionada) {
+      resultado = resultado.filter(p =>
+        p.product_name.toLowerCase().includes(this.categoriaSeleccionada.toLowerCase()) ||
+        p.description.toLowerCase().includes(this.categoriaSeleccionada.toLowerCase())
+      );
+    }
+
+    // Price filter
+    if (this.precioSeleccionado) {
+      if (this.precioSeleccionado === '0-50') {
+        resultado = resultado.filter(p => p.price < 50);
+      } else if (this.precioSeleccionado === '50-100') {
+        resultado = resultado.filter(p => p.price >= 50 && p.price <= 100);
+      } else if (this.precioSeleccionado === '100+') {
+        resultado = resultado.filter(p => p.price > 100);
+      }
+    }
+
+    // Availability filter
+    if (this.disponibilidadSeleccionada === 'in-stock') {
+      resultado = resultado.filter(p => p.stock > 0);
+    }
+
+    // Sorting
     if (this.orden === 'precioAsc') {
       resultado.sort((a, b) => a.price - b.price);
     } else if (this.orden === 'precioDesc') {

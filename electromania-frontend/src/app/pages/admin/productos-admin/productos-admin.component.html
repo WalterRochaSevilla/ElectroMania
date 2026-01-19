@@ -41,7 +41,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (producto of productos; track producto) {
+            @for (producto of productos; track producto.id) {
             <tr>
               <td class="id-col">{{ producto.id }}</td>
               <td>

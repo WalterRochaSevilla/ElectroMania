@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -6,6 +6,7 @@ import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { ProductosService } from '../../../services/productos.service';
 import { AdminSidebarComponent } from '../../../components/admin-sidebar/admin-sidebar.component';
+import { ThemeService } from '../../../services/theme.service';
 
 interface LowStockProduct {
   id: string;
@@ -24,6 +25,7 @@ interface LowStockProduct {
 export class DashboardComponent implements OnInit {
   private router = inject(Router);
   private productosService = inject(ProductosService);
+  private themeService = inject(ThemeService);
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
 
@@ -38,8 +40,37 @@ export class DashboardComponent implements OnInit {
 
   lowStockProducts: LowStockProduct[] = [];
 
+  constructor() {
+    effect(() => {
+      const isDark = this.themeService.isDark();
+      this.updateChartColors(isDark);
+    });
+  }
+
   async ngOnInit() {
     await this.loadDashboardData();
+  }
+
+  private updateChartColors(isDark: boolean) {
+    const textColor = isDark ? '#94a3b8' : '#64748b';
+    const labelColor = isDark ? '#e2e8f0' : '#1e293b';
+    const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+
+    if (this.lineChartOptions?.scales) {
+      const scales = this.lineChartOptions.scales as Record<string, { ticks?: { color?: string }, grid?: { color?: string } }>;
+      if (scales['y']?.ticks) scales['y'].ticks.color = textColor;
+      if (scales['y']?.grid) scales['y'].grid.color = gridColor;
+      if (scales['x']?.ticks) scales['x'].ticks.color = textColor;
+    }
+
+    if (this.barChartOptions?.scales) {
+      const scales = this.barChartOptions.scales as Record<string, { ticks?: { color?: string }, grid?: { color?: string } }>;
+      if (scales['x']?.ticks) scales['x'].ticks.color = textColor;
+      if (scales['x']?.grid) scales['x'].grid.color = gridColor;
+      if (scales['y']?.ticks) scales['y'].ticks.color = labelColor;
+    }
+
+    this.chart?.update();
   }
 
   async loadDashboardData() {
@@ -137,7 +168,7 @@ export class DashboardComponent implements OnInit {
       },
       y: {
         grid: { display: false },
-        ticks: { color: '#e2e8f0', font: { weight: 'bold' } }
+        ticks: { color: '#94a3b8', font: { weight: 'bold' } }
       }
     },
     plugins: {
