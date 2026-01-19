@@ -64,10 +64,10 @@ export class ProductosAdminComponent {
     this.router.navigate(['/login']);
   }
   Dashboard() {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/admin/dashboard']);
   }
   Usuarios() {
-    this.router.navigate(['/usuarios-admin']);
+    this.router.navigate(['/admin/usuarios']);
   }
 
   cambiarModo() {

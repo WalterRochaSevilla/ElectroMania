@@ -27,23 +27,34 @@ import { DetalleProductoComponent } from './pages/detalle-producto/detalle-produ
 import { BienvenidaComponent } from './pages/bienvenida/bienvenida.component';
 import { SobreNosotrosComponent } from './pages/sobre-nosotros/sobre-nosotros.component';
 import { ContactenosComponent } from './pages/contactenos/contactenos.component';
+import { adminGuard } from './core/guards/admin.guard'; // 
+import { UsuariosAdminComponent } from './pages/admin/usuarios-admin/usuarios-admin.component';
 
 export const routes: Routes = [
-  // 1. La Bienvenida es el inicio (solo debe haber un path '')
+  // 1. PÁGINA DE INICIO
   { path: '', component: BienvenidaComponent },
-  { path: 'sobre-nosotros', component: SobreNosotrosComponent },
-  { path: 'contactenos', component: ContactenosComponent },
-  // 2. Rutas normales
+  
+  // 2. RUTAS PÚBLICAS
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'registro', component: RegistroComponent },
-  { path: 'producto', component: ProductosComponent },
-  { path: 'productos-admin', component: ProductosAdminComponent },
-  { path: 'dashboard', component: DashboardComponent },
-  
-  // 3. Ruta de detalle con parámetro
+  { path: 'productos', component: ProductosComponent },
+  { path: 'sobre-nosotros', component: SobreNosotrosComponent },
+  { path: 'contactenos', component: ContactenosComponent },
   { path: 'detalle-producto/:id', component: DetalleProductoComponent },
-
-  // 4. Comodín: Si escriben cualquier otra cosa, vuelven a la Bienvenida
+  
+  // 3. RUTAS DE ADMINISTRACIÓN - PROTEGIDAS CON GUARD 👈
+  {
+    path: 'admin',
+    canActivate: [adminGuard], // 👈 AQUÍ SE APLICA EL GUARD
+    children: [
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'productos', component: ProductosAdminComponent },
+      { path: 'usuarios', component: UsuariosAdminComponent },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+    ]
+  },
+  
+  // 4. RUTA POR DEFECTO
   { path: '**', redirectTo: '', pathMatch: 'full' },
 ];

@@ -102,51 +102,46 @@ export class RegistroComponent {
   /* =========================
      REGISTRO
   ========================= */
-  registrar() {
-    if (!this.formularioValido()) {
-      console.error('Formulario inválido. Por favor complete todos los campos correctamente.');
-      return;
-    }
+  /* =========================
+   REGISTRO
+========================= */
+registrar() {
+  if (!this.formularioValido()) {
+    console.error('Formulario inválido. Por favor complete todos los campos correctamente.');
+    alert('Por favor complete todos los campos correctamente.');
+    return;
+  }
 
-    console.log('Registrando usuario con los siguientes datos:', {
-      nit: this.nit,
-      razonSocial: this.razonSocial,
-      email: this.email,
-      aceptaTerminos: this.aceptaTerminos,
-      fechaRegistro: new Date().toISOString()
-    });
+  console.log('Registrando usuario con los siguientes datos:', {
+    nit: this.nit,
+    razonSocial: this.razonSocial,
+    email: this.email,
+    aceptaTerminos: this.aceptaTerminos,
+    fechaRegistro: new Date().toISOString()
+  });
 
-    const data = {
-      email: this.email,
-      name: this.razonSocial,
-      password: this.contrasena,
-      nit_ci: this.nit,
-      social_reason: this.razonSocial
-    }
+  const data = {
+    email: this.email,
+    name: this.razonSocial,
+    password: this.contrasena,
+    nit_ci: this.nit,
+    social_reason: this.razonSocial
+  }
 
-    // Aquí iría la lógica real de registro:
-    // 1. Validar que el email no esté registrado
-    // 2. Encriptar contraseña
-    // 3. Enviar datos al backend
-    // 4. Manejar respuesta del servidor
-    
-    // Simulación de registro exitoso
-
-    this.authService.registerUser(data).then((response) => {
+  // Usamos subscribe en lugar de then
+  this.authService.registerUser(data).subscribe({
+    next: (response) => {
       console.log('Respuesta del servidor:', response);
-    })
-
-    const registroExitoso = true;
-    
-    if (registroExitoso) {
       console.log('¡Registro exitoso! Redirigiendo al login...');
       alert('¡Registro exitoso! Ahora puedes iniciar sesión.');
       this.volverAlLogin();
-    } else {
-      console.error('Error en el registro. Por favor intente nuevamente.');
+    },
+    error: (error) => {
+      console.error('Error en el registro:', error);
       alert('Error en el registro. Por favor verifique sus datos.');
     }
-  }
+  });
+}
 
   /* =========================
      FUNCIONES AUXILIARES
