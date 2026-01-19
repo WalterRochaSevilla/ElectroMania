@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AuthService } from './service/auth.service';
 import { AuthController } from './controller/auth.controller';
 import { CommonModule } from '../common/common.module';
@@ -11,7 +11,8 @@ import { UserMapper } from '../user/mapper/User.mapper';
 
 @Module({
   imports: [
-    CommonModule,UserModule,
+    CommonModule,
+    forwardRef(() => UserModule),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: Configuration().jwtConstants.secret,

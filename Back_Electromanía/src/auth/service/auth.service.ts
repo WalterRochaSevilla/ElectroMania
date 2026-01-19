@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/service/prisma.service';
 import { UserMapper } from '../../user/mapper/User.mapper';
 import { UserCreateRequestModel } from '../../user/models/UserCreateRequest.model';
@@ -14,6 +14,7 @@ export class AuthService {
     constructor(
         private readonly userMapper: UserMapper,
         private readonly prisma: PrismaService,
+        @Inject(forwardRef(() => UserService))
         private readonly userService: UserService,
         private readonly passwordService: PasswordService,
         private readonly jwtService: JwtService
