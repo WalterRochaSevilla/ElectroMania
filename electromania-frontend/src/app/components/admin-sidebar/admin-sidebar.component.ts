@@ -98,25 +98,10 @@ import { AuthService } from '../../services/auth.service';
        background: var(--slate-200);
     }
 
-    /* Mobile responsive */
+    /* Mobile: hide sidebar since navigation is in hamburger menu */
     @media (max-width: 768px) {
       .sidebar {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid var(--border-color);
-        padding: 16px;
-        height: auto;
-      }
-
-      .sidebar-nav {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-
-      .nav-item {
-        padding: 10px 14px;
-        font-size: 0.9rem;
+        display: none;
       }
     }
   `]

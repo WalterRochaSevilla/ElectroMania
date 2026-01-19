@@ -379,6 +379,16 @@
   margin-top: auto;
 }
 
+.mobile-section-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--brand-primary);
+  padding: 8px 16px 4px;
+  margin-top: 8px;
+}
+
 :host-context([data-theme='light']) .mobile-divider {
   background: rgba(0, 0, 0, 0.1);
 }

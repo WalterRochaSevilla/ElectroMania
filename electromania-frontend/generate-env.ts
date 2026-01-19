@@ -2,12 +2,14 @@
 const fs = require('fs');
 const path = require('path');
 
+// Default to localhost for local development, use env var for Vercel deployments
+const apiDomain = process.env.API_DOMAIN || 'http://localhost:3000';
+
 // Contenido del archivo environment.ts
 // Usamos process.env para acceder a las variables de entorno de Vercel.
-// VERCEL_ENV es una variable de Vercel que indica el entorno (production, preview, development).
 const envFileContent = `
 export const environment = {
-  API_DOMAIN: '${process.env.API_DOMAIN}',
+  API_DOMAIN: '${apiDomain}',
 };
 `;
 
