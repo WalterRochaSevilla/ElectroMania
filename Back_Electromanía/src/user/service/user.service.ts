@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/service/prisma.service';
 import { PasswordService } from '../../common/utils/password.service';
 import { UserCreateRequestModel } from '../models/UserCreateRequest.model';
@@ -6,6 +6,7 @@ import { UserMapper } from '../mapper/User.mapper';
 import { UserModel } from '../models/User.model';
 import { Prisma } from '@prisma/client';
 import { UserRole } from '../enums/UserRole.enum';
+import { AuthService } from '../../auth/service/auth.service';
 
 @Injectable()
 export class UserService {
@@ -14,6 +15,8 @@ export class UserService {
     private readonly userMapper: UserMapper,
     private readonly prisma: PrismaService,
     private readonly passwordService: PasswordService,
+    @Inject(forwardRef(() => AuthService))
+    private readonly authService: AuthService
   ) {}
   async findAll() {
     return this.prisma.user.findMany();
@@ -41,6 +44,14 @@ export class UserService {
       }
       throw error;
     }
+  }
+  async getUserByUUID(token: string) {
+    const userToken = await this.authService.getUserFromToken(token);
+    const user = await this.getUserByField('uuid', userToken.uuid);
+    if(!user){
+      throw new NotFoundException('User not found');
+    }
+    return this.userMapper.toModel(user);
   }
 
   async getUserByField(field: string, value: string) {
