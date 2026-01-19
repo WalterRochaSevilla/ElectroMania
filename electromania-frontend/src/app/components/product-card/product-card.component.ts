@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ProductCard } from '../../models';
 
 @Component({
     selector: 'app-product-card',
@@ -10,12 +11,12 @@ import { CommonModule } from '@angular/common';
 })
 export class ProductCardComponent {
 
-    @Input() product: any;
+    @Input() product!: ProductCard;
     @Input() isOffer = false;
     @Input() isFeatured = false;
 
-    @Output() addToCart = new EventEmitter<any>();
-    @Output() cardClick = new EventEmitter<any>();
+    @Output() addToCart = new EventEmitter<ProductCard>();
+    @Output() cardClick = new EventEmitter<ProductCard>();
 
     onAddToCart(event: Event) {
         event.stopPropagation(); // Prevent card click
@@ -30,7 +31,8 @@ export class ProductCardComponent {
         return price * 0.85; // Example 15% discount for offers
     }
 
-    handleImageError(event: any) {
-        event.target.src = 'https://via.placeholder.com/300?text=No+Image';
+    handleImageError(event: Event) {
+        const img = event.target as HTMLImageElement;
+        img.src = 'https://via.placeholder.com/300?text=No+Image';
     }
 }

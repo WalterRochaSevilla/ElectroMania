@@ -4,8 +4,8 @@
 .admin-layout {
   display: flex;
   min-height: 100vh;
-  background: var(--bg-main, #0f172a);
-  color: var(--text-primary, #e2e8f0);
+  background: var(--bg-main);
+  color: var(--text-primary);
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
@@ -29,9 +29,9 @@
 }
 
 .search-input {
-  background: #1e293b;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
   padding: 8px 16px;
   border-radius: 8px;
   width: 250px;
@@ -55,7 +55,7 @@
 }
 
 .btn-primary {
-  background: var(--brand-primary, #6366f1);
+  background: var(--brand-primary);
   color: white;
   border: none;
   padding: 10px 20px;
@@ -74,8 +74,8 @@
 
 .btn-secondary {
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #e2e8f0;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
   padding: 10px 20px;
   border-radius: 8px;
   font-weight: 600;
@@ -86,16 +86,22 @@
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--slate-800);
+  color: var(--text-primary);
 }
+
+:host-context([data-theme='light']) .btn-secondary:hover {
+  background: var(--slate-200);
+}
+
 
 /* =========================
    TABLE STYLES
 ========================= */
 .table-card {
-  background: #1e293b;
+  background: var(--bg-card);
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
   overflow: hidden;
   margin-bottom: 24px;
 }
@@ -108,19 +114,20 @@
 .admin-table th {
   text-align: left;
   padding: 16px;
-  background: #0f172a;
-  color: #94a3b8;
+  background: var(--bg-main);
+  color: var(--text-secondary);
   font-weight: 600;
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .admin-table td {
   padding: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-color);
   vertical-align: middle;
+  color: var(--text-primary);
 }
 
 .admin-table tr:last-child td {
@@ -129,6 +136,10 @@
 
 .admin-table tr:hover {
   background: rgba(255, 255, 255, 0.02);
+}
+
+:host-context([data-theme='light']) .admin-table tr:hover {
+  background: rgba(0, 0, 0, 0.02);
 }
 
 .id-col {
@@ -144,12 +155,12 @@
 
 .product-name {
   font-weight: 600;
-  color: #f1f5f9;
+  color: var(--text-primary);
 }
 
 .product-category {
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: var(--text-muted);
 }
 
 /* STATUS & BADGES */
@@ -228,17 +239,17 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #1e293b;
+  background: var(--bg-card);
   padding: 16px 24px;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
 }
 
 .summary {
   display: flex;
   gap: 24px;
   font-size: 0.9rem;
-  color: #94a3b8;
+  color: var(--text-muted);
 }
 
 .text-success {
@@ -252,9 +263,9 @@
 }
 
 .btn-page {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #e2e8f0;
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
   padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;

@@ -1,5 +1,5 @@
 <div class="login-container">
-    <div class="pagina-catalogo-container" [class.modo-claro]="!modoOscuro">
+    <div class="pagina-catalogo-container">
 
         <!-- Global Navbar is in AppComponent -->
         <main class="main-content">
@@ -20,14 +20,11 @@
 
                         <div class="campo-formulario">
                             <label for="password">Contraseña</label>
-                            <div class="input-contenedor password-input">
-                                <input [type]="mostrarContrasena ? 'text' : 'password'" id="password"
-                                    [(ngModel)]="contrasena" placeholder="········" />
-                                <button type="button" class="btn-mostrar-contrasena"
-                                    (click)="alternarMostrarContrasena()">
-                                    {{ mostrarContrasena ? 'Ocultar' : 'Mostrar' }}
-                                </button>
-                            </div>
+                            <app-password-input
+                                inputId="password"
+                                placeholder="········"
+                                [(ngModel)]="contrasena"
+                            ></app-password-input>
                         </div>
 
                         <button class="btn-login" (click)="iniciarSesion()">

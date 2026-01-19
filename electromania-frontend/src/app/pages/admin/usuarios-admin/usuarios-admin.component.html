@@ -1,5 +1,5 @@
 <div class="usuarios-admin-container">
-  <div class="pagina-usuarios" [class.modo-claro]="!modoOscuro">
+  <div class="pagina-usuarios">
     <!-- HEADER -->
     <header class="header-usuarios">
       <div class="logo">
@@ -20,9 +20,6 @@
       </nav>
 
       <div class="acciones-header">
-        <button class="toggle-modo" (click)="cambiarModo()">
-          {{ modoOscuro ? '☀️' : '🌙' }}
-        </button>
         <button class="btn-ingresar" (click)="cerrarSesion()">Cerrar Sesión</button>
       </div>
     </header>
@@ -36,12 +33,7 @@
             + Nuevo Usuario
           </button>
           <div class="buscador-usuarios">
-            <input 
-              type="text" 
-              placeholder="Buscar usuario..." 
-              [(ngModel)]="busqueda"
-              (input)="filtrarUsuarios()"
-            />
+            <input type="text" placeholder="Buscar usuario..." [(ngModel)]="busqueda" (input)="filtrarUsuarios()" />
             <span class="icono-buscar">🔍</span>
           </div>
         </div>
@@ -60,7 +52,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let usuario of usuariosFiltrados">
+            @for (usuario of usuariosFiltrados; track usuario) {
+            <tr>
               <td>
                 <div class="info-usuario-cell">
                   <div class="avatar-usuario">
@@ -79,7 +72,8 @@
               </td>
               <td class="documento-usuario">{{ usuario.nitCi }}</td>
               <td>
-                <span class="badge-estado" [class.activo]="usuario.estado === 'Activo'" [class.inactivo]="usuario.estado === 'Inactivo'">
+                <span class="badge-estado" [class.activo]="usuario.estado === 'Activo'"
+                  [class.inactivo]="usuario.estado === 'Inactivo'">
                   <span class="punto-estado"></span>
                   {{ usuario.estado }}
                 </span>
@@ -92,15 +86,17 @@
                   <button class="btn-eliminar" (click)="eliminarUsuario(usuario.id)" title="Eliminar">
                     🗑️
                   </button>
-                  <button class="btn-toggle" (click)="toggleEstado(usuario)" [title]="usuario.estado === 'Activo' ? 'Desactivar' : 'Activar'">
+                  <button class="btn-toggle" (click)="toggleEstado(usuario)"
+                    [title]="usuario.estado === 'Activo' ? 'Desactivar' : 'Activar'">
                     {{ usuario.estado === 'Activo' ? '☉' : '○' }}
                   </button>
-                  <button class="btn-reset" (click)="resetPassword(usuario.id)" title="Resetear Contraseña">
+                  <button class="btn-reset" (click)="resetPassword(usuario)" title="Resetear Contraseña">
                     🔄
                   </button>
                 </div>
               </td>
             </tr>
+            }
           </tbody>
         </table>
       </div>
@@ -139,4 +135,11 @@
       </div>
     </main>
   </div>
+
+  <app-user-form-modal
+    [isVisible]="isModalOpen"
+    [user]="selectedUser"
+    (saveUser)="handleModalSave($event)"
+    (cancelModal)="handleModalCancel()">
+  </app-user-form-modal>
 </div>

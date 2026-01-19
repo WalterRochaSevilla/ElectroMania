@@ -1,5 +1,5 @@
 <div class="registro-container">
-    <div class="pagina-catalogo-container" [class.modo-claro]="!modoOscuro">
+    <div class="pagina-catalogo-container">
 
         <!-- Global Navbar is in AppComponent -->
         <main class="main-content">
@@ -53,14 +53,11 @@
                                 CONTRASEÑA
                                 <span class="hint">Mínimo 6 caracteres</span>
                             </label>
-                            <div class="input-contenedor password-input">
-                                <input [type]="mostrarContrasena ? 'text' : 'password'" id="password"
-                                    [(ngModel)]="contrasena" placeholder="··············" minlength="6" />
-                                <button type="button" class="btn-mostrar-contrasena"
-                                    (click)="alternarMostrarContrasena()">
-                                    {{ mostrarContrasena ? 'Ocultar' : 'Mostrar' }}
-                                </button>
-                            </div>
+                            <app-password-input
+                                inputId="password"
+                                placeholder="··············"
+                                [(ngModel)]="contrasena"
+                            ></app-password-input>
                         </div>
 
                         <!-- REPETIR CONTRASEÑA -->
@@ -68,14 +65,11 @@
                             <label for="confirmPassword">
                                 CONFIRMAR CONTRASEÑA
                             </label>
-                            <div class="input-contenedor password-input">
-                                <input [type]="mostrarConfirmarContrasena ? 'text' : 'password'" id="confirmPassword"
-                                    [(ngModel)]="confirmarContrasena" placeholder="··············" minlength="6" />
-                                <button type="button" class="btn-mostrar-contrasena"
-                                    (click)="alternarMostrarConfirmarContrasena()">
-                                    {{ mostrarConfirmarContrasena ? 'Ocultar' : 'Mostrar' }}
-                                </button>
-                            </div>
+                            <app-password-input
+                                inputId="confirmPassword"
+                                placeholder="··············"
+                                [(ngModel)]="confirmarContrasena"
+                            ></app-password-input>
                         </div>
 
                         <!-- TÉRMINOS Y CONDICIONES -->

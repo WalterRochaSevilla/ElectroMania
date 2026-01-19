@@ -30,7 +30,7 @@
   align-items: center;
   gap: 16px;
   /* Add subtle blur fade at bottom if scrolling? simplified for now */
-  box-shadow: 0 4px 20px -10px rgba(0, 0, 0, 0.1);
+  /* box-shadow removed to fix artifact */
 }
 
 /* Glass Search Bar */

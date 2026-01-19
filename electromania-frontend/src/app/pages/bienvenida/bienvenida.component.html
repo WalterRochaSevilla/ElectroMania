@@ -29,6 +29,7 @@
   <div class="container">
 
     <!-- SECCIÓN OFERTAS -->
+    @if (productosOferta.length > 0) {
     <div class="flag-oferta-wrapper">
       <div class="flag-diseno" (click)="toggleOfertas()" (keyup.enter)="toggleOfertas()" tabindex="0"
         [class.active]="ofertasAbiertas" [title]="ofertasAbiertas ? 'Ocultar ofertas' : 'Mostrar ofertas'">
@@ -54,10 +55,12 @@
           ‹
         </button>
 
-        <div class="grid-productos" #ofertasList>
-          <app-product-card *ngFor="let producto of productosOferta" [product]="producto" [isOffer]="true"
-            (cardClick)="verDetalles(producto)" (addToCart)="verDetalles(producto)" class="tarjeta-producto-wrapper">
-          </app-product-card>
+        <div class="grid-productos" #ofertasList appDraggableScroll>
+          @for (producto of productosOferta; track producto) {
+            <app-product-card [product]="producto" [isOffer]="true"
+              (cardClick)="verDetalles(producto)" (addToCart)="verDetalles(producto)" class="tarjeta-producto-wrapper">
+            </app-product-card>
+          }
         </div>
 
         <button class="flecha-nav next" (click)="scrollOfertasNext()" title="Siguiente">
@@ -65,8 +68,10 @@
         </button>
       </div>
     </div>
+    }
 
     <!-- SECCIÓN DESTACADOS -->
+    @if (productosDestacados.length > 0) {
     <div class="encabezado-seccion">
       <h2 class="titulo-tech">PRODUCTOS DESTACADOS</h2>
       <div class="linea-acento"></div>
@@ -81,16 +86,19 @@
         ‹
       </button>
 
-      <div class="wrapper-productos" #destacadosList>
-        <app-product-card *ngFor="let producto of productosDestacados" [product]="producto" [isFeatured]="true"
-          (cardClick)="verDetalles(producto)" (addToCart)="verDetalles(producto)" class="tarjeta-producto-wrapper">
-        </app-product-card>
+      <div class="wrapper-productos" #destacadosList appDraggableScroll>
+        @for (producto of productosDestacados; track producto) {
+          <app-product-card [product]="producto" [isFeatured]="true"
+            (cardClick)="verDetalles(producto)" (addToCart)="verDetalles(producto)" class="tarjeta-producto-wrapper">
+          </app-product-card>
+        }
       </div>
 
       <button class="nav-btn next" (click)="scrollDestacadosNext()" title="Siguiente">
         ›
       </button>
     </div>
+    }
 
   </div>
 </div>

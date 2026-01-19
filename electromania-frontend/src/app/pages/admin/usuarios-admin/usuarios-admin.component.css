@@ -3,22 +3,24 @@
 ========================= */
 .pagina-usuarios {
   min-height: 100vh;
-  background: linear-gradient(180deg, #0b132b, #020617);
-  color: #e5e7eb;
+  background: var(--bg-main);
+  color: var(--text-primary);
   font-family: 'Segoe UI', sans-serif;
-  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 /* =========================
-   HEADER
+   HEADER (Simplified to match Layout)
 ========================= */
 .header-usuarios {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 28px;
-  background: #111827;
-  border-bottom: 1px solid #1f2937;
+  padding: 24px 32px;
+  background: var(--bg-main);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .logo img {
@@ -32,20 +34,20 @@
 }
 
 .menu-item {
-  color: #c7d2fe;
+  color: var(--text-secondary);
   text-decoration: none;
   font-weight: 500;
   position: relative;
   display: inline-block;
   padding-bottom: 8px;
 }
-  
+
 .menu-item:hover {
-  color: #60a5fa;
+  color: var(--brand-primary);
 }
 
 .menu-item:nth-child(3) {
-  color: #facc15;
+  color: var(--brand-primary);
   font-weight: 600;
 }
 
@@ -53,11 +55,11 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 100%; 
+  width: 100%;
   height: 3px;
-  background: #facc15;
+  background: var(--brand-primary);
   border-radius: 2px;
-  box-shadow: 0 2px 4px rgba(250, 204, 21, 0.3);
+  box-shadow: var(--shadow-glow);
 }
 
 .acciones-header {
@@ -67,17 +69,17 @@
 }
 
 .toggle-modo {
-  background: #1f2937;
-  border: none;
-  color: #facc15;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
   padding: 8px;
   border-radius: 50%;
   cursor: pointer;
 }
 
 .btn-ingresar {
-  background: #facc15;
-  color: #1f2937;
+  background: var(--brand-primary);
+  color: white;
   border: none;
   padding: 8px 18px;
   border-radius: 8px;
@@ -86,35 +88,15 @@
 }
 
 .btn-ingresar:hover {
-  background: #fde047;
-}
-
-/* =========================
-   MODO CLARO
-========================= */
-.pagina-usuarios.modo-claro {
-  background: #f9fafb;
-  color: #111827;
-}
-
-.modo-claro .header-usuarios {
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.modo-claro .menu-item {
-  color: #374151;
-}
-
-.modo-claro .linea-usuarios {
-  background: #d97706;
+  background: var(--brand-hover);
 }
 
 /* =========================
    CONTENIDO PRINCIPAL
 ========================= */
 .main-usuarios {
-  padding: 28px;
+  padding: 32px;
+  flex: 1;
 }
 
 .encabezado-seccion {
@@ -127,7 +109,7 @@
 .encabezado-seccion h1 {
   font-size: 28px;
   font-weight: 700;
-  color: #facc15;
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -162,9 +144,9 @@
 }
 
 .buscador-usuarios input {
-  background: #1f2937;
-  border: 1px solid #374151;
-  color: #e5e7eb;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
   padding: 10px 16px 10px 40px;
   border-radius: 8px;
   font-size: 14px;
@@ -173,22 +155,23 @@
 
 .buscador-usuarios input:focus {
   outline: none;
-  border-color: #60a5fa;
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
 }
 
 .icono-buscar {
   position: absolute;
   left: 12px;
-  color: #9ca3af;
+  color: var(--text-muted);
 }
 
 /* =========================
    TABLA DE USUARIOS
 ========================= */
 .tabla-container {
-  background: #111827;
+  background: var(--bg-card);
   border-radius: 16px;
-  border: 1px solid #1f2937;
+  border: 1px solid var(--border-color);
   overflow: hidden;
   margin-bottom: 24px;
 }
@@ -199,32 +182,37 @@
 }
 
 .tabla-usuarios thead {
-  background: #1f2937;
+  background: var(--bg-main);
 }
 
 .tabla-usuarios th {
   padding: 18px 16px;
   text-align: left;
   font-weight: 600;
-  color: #c7d2fe;
+  color: var(--text-secondary);
   text-transform: uppercase;
   font-size: 14px;
   letter-spacing: 0.5px;
-  border-bottom: 2px solid #374151;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .tabla-usuarios tbody tr {
-  border-bottom: 1px solid #1f2937;
+  border-bottom: 1px solid var(--border-color);
   transition: background-color 0.2s ease;
 }
 
 .tabla-usuarios tbody tr:hover {
-  background-color: #1f2937;
+  background-color: var(--bg-main);
+}
+
+/* Light mode hover visibility fix */
+:host-context([data-theme='light']) .tabla-usuarios tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
 }
 
 .tabla-usuarios td {
   padding: 18px 16px;
-  color: #e5e7eb;
+  color: var(--text-primary);
 }
 
 /* =========================
@@ -261,7 +249,7 @@
 
 .email-usuario {
   font-size: 13px;
-  color: #9ca3af;
+  color: var(--text-muted);
 }
 
 /* =========================
@@ -294,7 +282,7 @@
 .documento-usuario {
   font-family: monospace;
   font-weight: 500;
-  color: #c7d2fe;
+  color: var(--text-secondary);
 }
 
 .badge-estado {
@@ -308,12 +296,12 @@
 }
 
 .badge-estado.activo {
-  background: rgba(16, 185, 129, 0.2);
+  background: rgba(16, 185, 129, 0.15);
   color: #10b981;
 }
 
 .badge-estado.inactivo {
-  background: rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.15);
   color: #ef4444;
 }
 
@@ -339,7 +327,10 @@
   gap: 8px;
 }
 
-.btn-editar, .btn-eliminar, .btn-toggle, .btn-reset {
+.btn-editar,
+.btn-eliminar,
+.btn-toggle,
+.btn-reset {
   width: 36px;
   height: 36px;
   border: none;
@@ -353,39 +344,43 @@
 }
 
 .btn-editar {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.btn-editar:hover {
   background: #3b82f6;
   color: white;
 }
 
-.btn-editar:hover {
-  background: #60a5fa;
+.btn-eliminar {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
 }
 
-.btn-eliminar {
+.btn-eliminar:hover {
   background: #ef4444;
   color: white;
 }
 
-.btn-eliminar:hover {
-  background: #f87171;
+.btn-toggle {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
 }
 
-.btn-toggle {
+.btn-toggle:hover {
   background: #f59e0b;
   color: white;
 }
 
-.btn-toggle:hover {
-  background: #fbbf24;
-}
-
 .btn-reset {
-  background: #8b5cf6;
-  color: white;
+  background: rgba(139, 92, 246, 0.1);
+  color: #8b5cf6;
 }
 
 .btn-reset:hover {
-  background: #a78bfa;
+  background: #8b5cf6;
+  color: white;
 }
 
 /* =========================
@@ -396,9 +391,9 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  background: #111827;
+  background: var(--bg-card);
   border-radius: 16px;
-  border: 1px solid #1f2937;
+  border: 1px solid var(--border-color);
 }
 
 .filtros-rapidos {
@@ -408,9 +403,9 @@
 
 .btn-filtro {
   padding: 8px 16px;
-  background: #1f2937;
-  border: 1px solid #374151;
-  color: #9ca3af;
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
   border-radius: 20px;
   cursor: pointer;
   font-size: 14px;
@@ -419,14 +414,14 @@
 }
 
 .btn-filtro:hover {
-  background: #374151;
-  color: #e5e7eb;
+  background: var(--bg-card);
+  color: var(--text-primary);
 }
 
 .btn-filtro.activo {
-  background: #3b82f6;
+  background: var(--brand-primary);
   color: white;
-  border-color: #3b82f6;
+  border-color: var(--brand-primary);
 }
 
 .estadisticas {
@@ -442,14 +437,14 @@
 
 .estadistica-label {
   font-size: 13px;
-  color: #9ca3af;
+  color: var(--text-muted);
   margin-bottom: 4px;
 }
 
 .estadistica-valor {
   font-size: 20px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .estadistica-valor.activos {
@@ -458,72 +453,4 @@
 
 .estadistica-valor.inactivos {
   color: #ef4444;
-}
-
-/* =========================
-   MODO CLARO - USUARIOS
-========================= */
-.modo-claro .tabla-container,
-.modo-claro .filtros-estadisticas {
-  background: #ffffff;
-  border-color: #e5e7eb;
-}
-
-.modo-claro .tabla-usuarios thead {
-  background: #f3f4f6;
-}
-
-.modo-claro .tabla-usuarios th {
-  color: #374151;
-  border-bottom-color: #d1d5db;
-}
-
-.modo-claro .tabla-usuarios tbody tr {
-  border-bottom-color: #e5e7eb;
-}
-
-.modo-claro .tabla-usuarios tbody tr:hover {
-  background-color: #f9fafb;
-}
-
-.modo-claro .tabla-usuarios td {
-  color: #111827;
-}
-
-.modo-claro .email-usuario {
-  color: #6b7280;
-}
-
-.modo-claro .documento-usuario {
-  color: #374151;
-}
-
-.modo-claro .buscador-usuarios input {
-  background: #ffffff;
-  border-color: #d1d5db;
-  color: #111827;
-}
-
-.modo-claro .btn-filtro {
-  background: #f3f4f6;
-  border-color: #d1d5db;
-  color: #6b7280;
-}
-
-.modo-claro .btn-filtro:hover {
-  background: #e5e7eb;
-  color: #374151;
-}
-
-.modo-claro .btn-filtro.activo {
-  background: #3b82f6;
-  color: white;
-}
-
-.modo-claro .estadistica-label {
-  color: #6b7280;
-}
-
-.modo-claro .estadistica-valor {
-  color: #111827;
 }

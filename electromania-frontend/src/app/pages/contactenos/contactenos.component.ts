@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Importante para directivas básicas
+ // Importante para directivas básicas
 
 @Component({
   selector: 'app-contactenos',
   standalone: true, // <--- ASEGÚRATE DE QUE ESTO ESTÉ AQUÍ
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './contactenos.component.html',
   styleUrls: ['./contactenos.component.css']
 })

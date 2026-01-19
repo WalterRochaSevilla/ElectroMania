@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/service/prisma.service';
 import { ProductService } from '../../product/service/product.service';
 import { UserService } from '../../user/service/user.service';
@@ -7,6 +7,7 @@ import { CartMapper } from '../mapper/cart.mapper';
 import { AuthService } from '../../auth/service/auth.service';
 import { AddProductToCartRequestDto } from '../dto/addProductToCartRequest.dto';
 import { Prisma } from '@prisma/client';
+import { CartUpdateRequest } from '../models/CartUpdateRequest.model';
 
 @Injectable()
 export class CartService {
@@ -61,15 +62,13 @@ export class CartService {
         let activeCart = await this.prisma.cart.findFirst({
             where: {
                 user_uuid: user.uuid,
-                state: "ACTIVE"
+                state: "ACTIVE",
             }
         })
-        if(activeCart){
-            return this.createCartDetail(activeCart.cart_id, addProductRequest);
-        }else{
+        if(!activeCart){
             activeCart = await this.createCart(token);
-            return this.createCartDetail(activeCart.cart_id, addProductRequest);
         }
+        return this.checkCartDetail(activeCart.cart_id, addProductRequest);
     }
 
     async createCartDetail(cart_id: number, addProductRequest:AddProductToCartRequestDto) {
@@ -81,8 +80,78 @@ export class CartService {
             unit_price: product.price,
             sub_total: product.price * addProductRequest.quantity
         } as Prisma.CartDetailsCreateInput
+        await this.productService.discountStock(
+            addProductRequest.productId,
+            addProductRequest.quantity
+        )
         return this.prisma.cartDetails.create({
             data: cartDetails
+        })
+    }
+    private async checkCartDetail(cart_id: number, addProductRequest:AddProductToCartRequestDto) {
+        const product = await this.productService.getProductById(addProductRequest.productId);
+        if(!product){
+            throw new NotFoundException('Product not found');
+        }
+        const cartDetail = await this.prisma.cartDetails.findFirst({
+            where: {
+                cart_id: cart_id,
+                product_id: addProductRequest.productId
+            },
+        })
+        if(!cartDetail){
+            return this.createCartDetail(cart_id, addProductRequest);
+        }
+        return this.updateCartDetail(cart_id, addProductRequest);
+    }
+    async updateCartDetail(cart_id: number, addProductRequest:AddProductToCartRequestDto) {
+        const cartDetail = await this.prisma.cartDetails.findFirst({
+            where: {
+                cart_id: cart_id,
+                product_id: addProductRequest.productId
+            },
+        })
+        if(!cartDetail){
+            return this.createCartDetail(cart_id, addProductRequest);
+        }
+        const product = await this.productService.getProductById(addProductRequest.productId);
+        await this.productService.discountStock(
+            addProductRequest.productId,
+            addProductRequest.quantity
+        )
+        const cartDetails = {
+            cart_id: cart_id,
+            product_id: addProductRequest.productId,
+            quantity: {
+                increment: addProductRequest.quantity
+            },
+            unit_price: product.price,
+            sub_total: product.price * (cartDetail.quantity + addProductRequest.quantity)
+        } as Prisma.CartDetailsUpdateInput
+        return this.prisma.cartDetails.update({
+            where: {
+                id: cartDetail.id
+            },
+            data: cartDetails
+        })
+    }
+    async updateCart(cartId: number,cartUpdateRequest:CartUpdateRequest){
+        let updateData;
+        if(cartUpdateRequest.state){
+            updateData = {
+                state: cartUpdateRequest.state,
+                total: cartUpdateRequest.total
+            } as Prisma.CartUpdateInput
+        }else{
+            updateData = {
+                total: cartUpdateRequest.total
+            } as Prisma.CartUpdateInput
+        }
+        return this.prisma.cart.update({
+            where: {
+                cart_id: cartId
+            },
+            data: updateData
         })
     }
 }

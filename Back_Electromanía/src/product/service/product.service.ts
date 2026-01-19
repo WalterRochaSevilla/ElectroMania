@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/service/prisma.service';
 import { ProductMapper } from '../mapper/Product.mapper';
 import { ProductImageMapper } from '../mapper/ProductImage.mapper';
@@ -133,4 +133,31 @@ export class ProductService {
       where:{ product_id: productId}
     }) != null
   }
+  async discountStock(productId: number, quantity: number) {
+    if (quantity <= 0) return;
+
+    const product = await this.prisma.product.findUnique({
+        where: { product_id: productId },
+        select: { stock: true },
+    });
+
+    if (!product) {
+        throw new NotFoundException('Product not found');
+    }
+
+    if (product.stock < quantity) {
+        throw new ForbiddenException('Product out of stock');
+    }
+
+    return this.prisma.product.update({
+        where: { product_id: productId },
+        data: {
+            stock: {
+              decrement: quantity,
+            },
+        },
+      }
+    );
+  }
+
 }
