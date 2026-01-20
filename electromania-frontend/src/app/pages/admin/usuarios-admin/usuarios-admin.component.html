@@ -13,7 +13,7 @@
         <a href="#" class="menu-item" routerLink="/admin/productos">
           Productos
         </a>
-        <a href="#" class="menu-item" routerLink="/usuarios-admin">
+        <a href="#" class="menu-item" routerLink="/admin/usuarios">
           Usuarios
           <span class="linea-usuarios"></span>
         </a>
@@ -32,9 +32,16 @@
       <div class="encabezado-seccion">
         <h1>Gestión de Usuarios</h1>
         <div class="acciones-superiores">
-          <button class="btn-agregar" (click)="agregarUsuario()">
+          <!-- ✅ SOLO ADMIN PUEDE CREAR NUEVOS USUARIOS -->
+          <button class="btn-agregar" (click)="agregarUsuario()" *ngIf="authService.canCreate()">
             + Nuevo Usuario
           </button>
+          
+          <!-- ✅ MENSAJE PARA EMPLEADOS (cuando no pueden crear) -->
+          <div *ngIf="authService.isEmployee() && !authService.canCreate()" class="permission-message">
+            <small>📋 Solo administradores pueden agregar usuarios</small>
+          </div>
+          
           <div class="buscador-usuarios">
             <input 
               type="text" 
@@ -79,25 +86,56 @@
               </td>
               <td class="documento-usuario">{{ usuario.nitCi }}</td>
               <td>
-                <span class="badge-estado" [class.activo]="usuario.estado === 'Activo'" [class.inactivo]="usuario.estado === 'Inactivo'">
+                <!-- ✅ SOLO ADMIN PUEDE CAMBIAR ESTADO (pero el badge se muestra siempre) -->
+                <span class="badge-estado" 
+                      [class.activo]="usuario.estado === 'Activo'" 
+                      [class.inactivo]="usuario.estado === 'Inactivo'"
+                      [style.cursor]="authService.canEdit() ? 'pointer' : 'default'"
+                      [style.opacity]="authService.canEdit() ? '1' : '0.6'">
                   <span class="punto-estado"></span>
                   {{ usuario.estado }}
                 </span>
               </td>
               <td>
                 <div class="acciones-cell">
-                  <button class="btn-editar" (click)="editarUsuario(usuario)" title="Editar">
+                  <!-- ✅ SOLO ADMIN PUEDE EDITAR -->
+                  <button class="btn-editar" 
+                          (click)="editarUsuario(usuario)" 
+                          title="Editar" 
+                          *ngIf="authService.canEdit()">
                     ✏️
                   </button>
-                  <button class="btn-eliminar" (click)="eliminarUsuario(usuario.id)" title="Eliminar">
+                  
+                  <!-- ✅ SOLO ADMIN PUEDE ELIMINAR -->
+                  <button class="btn-eliminar" 
+                          (click)="eliminarUsuario(usuario.id)" 
+                          title="Eliminar" 
+                          *ngIf="authService.canDelete()">
                     🗑️
                   </button>
-                  <button class="btn-toggle" (click)="toggleEstado(usuario)" [title]="usuario.estado === 'Activo' ? 'Desactivar' : 'Activar'">
+                  
+                  <!-- ✅ SOLO ADMIN PUEDE CAMBIAR ESTADO -->
+                  <button class="btn-toggle" 
+                          (click)="authService.canEdit() ? toggleEstado(usuario) : null" 
+                          [title]="usuario.estado === 'Activo' ? 'Desactivar' : 'Activar'" 
+                          [style.cursor]="authService.canEdit() ? 'pointer' : 'not-allowed'"
+                          [style.opacity]="authService.canEdit() ? '1' : '0.6'">
                     {{ usuario.estado === 'Activo' ? '☉' : '○' }}
                   </button>
-                  <button class="btn-reset" (click)="resetPassword(usuario.id)" title="Resetear Contraseña">
+                  
+                  <!-- ✅ SOLO ADMIN PUEDE RESETEAR CONTRASEÑA -->
+                  <button class="btn-reset" 
+                          (click)="authService.canEdit() ? resetPassword(usuario.id) : null" 
+                          title="Resetear Contraseña"
+                          [style.cursor]="authService.canEdit() ? 'pointer' : 'not-allowed'"
+                          [style.opacity]="authService.canEdit() ? '1' : '0.6'">
                     🔄
                   </button>
+                  
+                  <!-- ✅ MENSAJE PARA EMPLEADOS (cuando no pueden realizar acciones) -->
+                  <div *ngIf="authService.isEmployee() && !authService.canEdit()" class="employee-message">
+                    <small>Solo visualización</small>
+                  </div>
                 </div>
               </td>
             </tr>

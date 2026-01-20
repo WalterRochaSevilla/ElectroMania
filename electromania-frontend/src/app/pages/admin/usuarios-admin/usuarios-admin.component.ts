@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ProductosService } from '../../../services/productos.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-usuarios-admin',
@@ -111,7 +112,8 @@ export class UsuariosAdminComponent {
      INYECCIÓN DE DEPENDENCIAS
   ========================= */
   constructor(private router: Router,
-    private productosService: ProductosService
+    private productosService: ProductosService,
+    public authService: AuthService
   ) {
     this.productosService.getProductos().subscribe(productos => {
       console.log(productos);

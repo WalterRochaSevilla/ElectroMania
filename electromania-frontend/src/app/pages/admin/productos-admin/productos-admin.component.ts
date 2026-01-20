@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AdminSidebarComponent } from '../../../components/admin-sidebar/admin-sidebar.component';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-productos-admin',
@@ -44,7 +45,10 @@ export class ProductosAdminComponent {
   /* =========================
      INYECCIÓN DE DEPENDENCIAS
   ========================= */
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    public authService: AuthService 
+  ) { }
 
   /* =========================
      CALCULADOS

@@ -54,9 +54,8 @@
         </div>
       </div>
 
-      <!-- CHARTS ROW -->
+      <!-- CHARTS ROW 1 - TENDENCIA DE VENTAS -->
       <div class="charts-row">
-        <!-- REVENUE CHART -->
         <div class="chart-card large">
           <div class="card-header">
             <h3>Tendencia de Ventas</h3>
@@ -67,12 +66,18 @@
             </select>
           </div>
           <div class="chart-wrapper">
-            <canvas baseChart [data]="lineChartData" [options]="lineChartOptions" [type]="lineChartType">
+            <canvas #revenueChart baseChart 
+              [data]="lineChartData" 
+              [options]="lineChartOptions" 
+              [type]="lineChartType">
             </canvas>
+          </div>
+          <div class="chart-info">
+            <small>Cambia el período para ver diferentes datos de ventas</small>
           </div>
         </div>
 
-        <!-- TOP SELLING CHART -->
+        <!-- MÁS VENDIDOS -->
         <div class="chart-card">
           <div class="card-header">
             <h3>Más Vendidos</h3>
@@ -84,7 +89,94 @@
         </div>
       </div>
 
-      <!-- LOW STOCK TABLE -->
+      <!-- CHARTS ROW 2 - TENDENCIA DE PRODUCTOS -->
+      <div class="charts-row">
+        <div class="chart-card large">
+          <div class="card-header">
+            <h3>Tendencia de Productos</h3>
+            <select class="period-select" [(ngModel)]="periodoSeleccionadoProductos" (change)="updateProductTrendChart()">
+              <option value="7d">7 Días</option>
+              <option value="30d">30 Días</option>
+              <option value="90d">90 Días</option>
+            </select>
+          </div>
+          <div class="chart-wrapper">
+            <canvas #productChart baseChart 
+              [data]="lineChartProductData" 
+              [options]="lineChartProductOptions" 
+              [type]="lineChartProductType">
+            </canvas>
+          </div>
+          <div class="chart-info">
+            <small>Cada período muestra datos completamente diferentes</small>
+          </div>
+        </div>
+        
+        <!-- RESUMEN DE INVENTARIO SIMPLIFICADO -->
+        <div class="chart-card">
+          <div class="card-header">
+            <h3>Resumen de Inventario</h3>
+          </div>
+          <div class="inventory-summary">
+            <div class="inventory-item">
+              <div class="inventory-label">
+                <div class="inventory-icon icon-products">
+                  <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                </div>
+                <div class="inventory-text">
+                  <span class="title">Productos Activos</span>
+                  <span class="subtitle">En stock disponible</span>
+                </div>
+              </div>
+              <div class="inventory-value">
+                <div class="main-value">{{ inventorySummary.activeProducts }}</div>
+              </div>
+            </div>
+
+            <div class="inventory-item">
+              <div class="inventory-label">
+                <div class="inventory-icon icon-new">
+                  <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                </div>
+                <div class="inventory-text">
+                  <span class="title">Nuevos este mes</span>
+                  <span class="subtitle">Productos agregados</span>
+                </div>
+              </div>
+              <div class="inventory-value">
+                <div class="main-value">+{{ inventorySummary.newThisMonth }}</div>
+                <div class="change positive">▲ 15% vs mes anterior</div>
+              </div>
+            </div>
+
+            <div class="inventory-item">
+              <div class="inventory-label">
+                <div class="inventory-icon icon-categories">
+                  <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                  </svg>
+                </div>
+                <div class="inventory-text">
+                  <span class="title">Categorías</span>
+                  <span class="subtitle">Variedad de productos</span>
+                </div>
+              </div>
+              <div class="inventory-value">
+                <div class="main-value">{{ inventorySummary.categories }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOW STOCK TABLE - VERSIÓN MODIFICADA CON PERMISOS -->
       <div class="table-section">
         <h3 class="flex items-center gap-2">
           <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-red-500">
@@ -92,7 +184,17 @@
               d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
           Alerta de Stock / Vencidos
+          
+          <!-- ✅ Badge de rol para admin -->
+          <span *ngIf="authService.isAdmin()" class="role-badge-admin">
+            👑 Administrador
+          </span>
+          <!-- ✅ Badge de rol para empleado -->
+          <span *ngIf="authService.isEmployee()" class="role-badge-employee">
+            👔 Solo lectura
+          </span>
         </h3>
+        
         <div class="table-responsive">
           <table class="dashboard-table">
             <thead>
@@ -115,7 +217,18 @@
                   </span>
                 </td>
                 <td>
-                  <button class="btn-action">Reabastecer</button>
+                  <!-- ✅ Botón de reabastecer solo visible para admin -->
+                  <button *ngIf="authService.canEdit()" 
+                          class="btn-action" 
+                          (click)="reabastecerProducto(prod.id)"
+                          title="Reabastecer producto">
+                    Reabastecer
+                  </button>
+                  
+                  <!-- ✅ Mensaje para empleados cuando no pueden reabastecer -->
+                  <div *ngIf="authService.isEmployee() && !authService.canEdit()" class="employee-message">
+                    <small>Solicitar reabastecimiento</small>
+                  </div>
                 </td>
               </tr>
             </tbody>

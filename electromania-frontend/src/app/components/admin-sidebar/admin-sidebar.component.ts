@@ -15,7 +15,7 @@ import { AuthService } from '../../services/auth.service';
       </div>
 
       <nav class="sidebar-nav">
-        <!-- Dashboard: All Roles -->
+        <!-- Dashboard: Todos los roles (admin y empleado) -->
         <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-item">
           <span class="icon">
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -25,8 +25,8 @@ import { AuthService } from '../../services/auth.service';
           Dashboard
         </a>
 
-        <!-- Products: Admin Only -->
-        <a *ngIf="isAdmin" routerLink="/admin/productos" routerLinkActive="active" class="nav-item">
+        <!-- Productos: Admin Y Empleado pueden ver -->
+        <a *ngIf="authService.isAdminOrEmployee()" routerLink="/admin/productos" routerLinkActive="active" class="nav-item">
           <span class="icon">
              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -35,8 +35,8 @@ import { AuthService } from '../../services/auth.service';
           Productos
         </a>
 
-        <!-- Users: Admin Only -->
-        <a *ngIf="isAdmin" routerLink="/admin/usuarios" routerLinkActive="active" class="nav-item">
+        <!-- Usuarios: SOLO Admin -->
+        <a *ngIf="authService.isAdmin()" routerLink="/admin/usuarios" routerLinkActive="active" class="nav-item">
           <span class="icon">
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -44,6 +44,15 @@ import { AuthService } from '../../services/auth.service';
           </span> 
           Usuarios
         </a>
+
+        <!-- Indicador especial para Empleados -->
+        <div *ngIf="authService.isEmployee()" class="employee-info">
+          <div class="role-indicator">
+            <span class="icon">👔</span>
+            <span class="role-text">Modo Empleado</span>
+            <small>Solo visualización</small>
+          </div>
+        </div>
 
         <a routerLink="/home" class="nav-item">
           <span class="icon">
@@ -56,6 +65,14 @@ import { AuthService } from '../../services/auth.service';
       </nav>
       
       <div class="sidebar-footer">
+        <!-- Información del usuario/rol -->
+        <div class="user-info">
+          <div class="role-badge" [class.admin]="authService.isAdmin()" [class.employee]="authService.isEmployee()">
+            {{ authService.isAdmin() ? '👑 Administrador' : '👔 Empleado' }}
+          </div>
+          <small>Rol actual</small>
+        </div>
+        
         <button class="btn-logout" (click)="logout()">
           <span class="icon">
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -129,12 +146,66 @@ import { AuthService } from '../../services/auth.service';
       color: var(--brand-primary, #6366f1);
     }
 
+    .employee-info {
+      margin-top: 20px;
+      padding: 12px;
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 8px;
+    }
+
+    .role-indicator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      color: #3b82f6;
+      font-size: 0.85rem;
+    }
+
+    .role-indicator .icon {
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+
+    .role-indicator small {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+    }
+
     .user-info {
-        color: #64748b;
-        margin-bottom: 12px;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-        text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 16px;
+      color: #64748b;
+    }
+
+    .role-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 4px;
+      min-width: 120px;
+    }
+
+    .role-badge.admin {
+      background: rgba(139, 92, 246, 0.2);
+      color: #8b5cf6;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .role-badge.employee {
+      background: rgba(59, 130, 246, 0.2);
+      color: #3b82f6;
+      border: 1px solid rgba(59, 130, 246, 0.3);
     }
 
     .btn-logout {
@@ -158,16 +229,13 @@ import { AuthService } from '../../services/auth.service';
   `]
 })
 export class AdminSidebarComponent implements OnInit {
-  userRole: string = '';
-
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(
+    public authService: AuthService, // ✅ Hacerlo público
+    private router: Router
+  ) { }
 
   ngOnInit() {
-    this.userRole = this.authService.getRole();
-  }
-
-  get isAdmin(): boolean {
-    return this.userRole === 'admin';
+    // Ya no necesitamos userRole, usamos authService directamente
   }
 
   logout() {

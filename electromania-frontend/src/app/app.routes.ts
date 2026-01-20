@@ -1,21 +1,3 @@
-/*import { Routes } from '@angular/router';
-import { LoginComponent } from './pages/login/login.component';
-import { RegistroComponent } from './pages/registro/registro.component';
-import { HomeComponent } from './pages/home/home.component';
-import { ProductosComponent } from './pages/productos/productos.component';
-import { ProductosAdminComponent } from './pages/admin/productos-admin/productos-admin.component';
-import { DashboardComponent } from './pages/admin/dashboard/dashboard.component';
-
-export const routes: Routes = [
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'registro', component: RegistroComponent },
-  { path: 'producto', component: ProductosComponent },
-  { path: 'productos-admin', component: ProductosAdminComponent },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: '**', redirectTo: '/home', pathMatch: 'full' } 
-];*/
 import { Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
 import { RegistroComponent } from './pages/registro/registro.component';
@@ -27,7 +9,8 @@ import { DetalleProductoComponent } from './pages/detalle-producto/detalle-produ
 import { BienvenidaComponent } from './pages/bienvenida/bienvenida.component';
 import { SobreNosotrosComponent } from './pages/sobre-nosotros/sobre-nosotros.component';
 import { ContactenosComponent } from './pages/contactenos/contactenos.component';
-import { adminGuard } from './core/guards/admin.guard'; // 
+import { adminGuard } from './core/guards/admin.guard'; // Guard para admin/empleado
+import { adminOnlyGuard } from './core/guards/admin-only.guard'; 
 import { UsuariosAdminComponent } from './pages/admin/usuarios-admin/usuarios-admin.component';
 
 export const routes: Routes = [
@@ -46,11 +29,15 @@ export const routes: Routes = [
   // 3. RUTAS DE ADMINISTRACIÓN - PROTEGIDAS CON GUARD 👈
   {
     path: 'admin',
-    canActivate: [adminGuard], // 👈 AQUÍ SE APLICA EL GUARD
+    canActivate: [adminGuard], // 👈 AQUÍ SE APLICA EL GUARD para admin y empleado
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'productos', component: ProductosAdminComponent },
-      { path: 'usuarios', component: UsuariosAdminComponent },
+      { 
+        path: 'usuarios', 
+        component: UsuariosAdminComponent,
+        canActivate: [adminOnlyGuard] // 👈 SOLO ADMIN puede acceder
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },

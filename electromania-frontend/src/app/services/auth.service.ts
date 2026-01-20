@@ -68,7 +68,7 @@ export class AuthService {
     const decoded = this.decodeToken();
     
     if (!decoded) {
-      return 'guest';
+      return 'guest';//tokne no existe
     }
     
     // verificamos la expiracion
@@ -100,5 +100,38 @@ export class AuthService {
       localStorage.removeItem('user_role');
       localStorage.removeItem('role');
     }
+  }
+    // ========== NUEVOS MÉTODOS PARA ROLES ==========
+
+  // Verificar si es administrador
+  isAdmin(): boolean {
+    const role = this.getRole();
+    return role === 'admin' || role === 'ADMIN';
+  }
+
+  // Verificar si es empleado
+  isEmployee(): boolean {
+    const role = this.getRole();
+    return role === 'empleado' || role === 'employee' || role === 'EMPLEADO';
+  }
+
+  // Verificar si es admin o empleado
+  isAdminOrEmployee(): boolean {
+    return this.isAdmin() || this.isEmployee();
+  }
+
+  // Verificar si puede editar (solo admin por ahora)
+  canEdit(): boolean {
+    return this.isAdmin();
+  }
+
+  // Verificar si puede eliminar (solo admin)
+  canDelete(): boolean {
+    return this.isAdmin();
+  }
+
+  // Verificar si puede crear (solo admin)
+  canCreate(): boolean {
+    return this.isAdmin();
   }
 }

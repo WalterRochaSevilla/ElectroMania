@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
-import { ChartConfiguration, ChartData, ChartEvent, ChartType } from 'chart.js';
+import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { ProductosService } from '../../../services/productos.service';
 import { AdminSidebarComponent } from '../../../components/admin-sidebar/admin-sidebar.component';
+import { AuthService } from '../../../services/auth.service'; 
 
 @Component({
   selector: 'app-dashboard',
@@ -16,11 +17,12 @@ import { AdminSidebarComponent } from '../../../components/admin-sidebar/admin-s
 })
 export class DashboardComponent implements OnInit {
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
+  @ViewChild('productChart') productChart: BaseChartDirective | undefined;
 
   modoOscuro = true;
   periodoSeleccionado: '7d' | '30d' | '90d' = '7d';
+  periodoSeleccionadoProductos: '7d' | '30d' | '90d' = '7d';
 
-  // Stats
   stats = {
     totalRevenue: 0,
     revenueChange: 0,
@@ -28,36 +30,57 @@ export class DashboardComponent implements OnInit {
     systemStatus: 'Revisando...'
   };
 
+  inventorySummary = {
+    activeProducts: 0,
+    newThisMonth: 0,
+    categories: 0
+  };
+
   lowStockProducts: any[] = [];
 
   constructor(
     private router: Router,
-    private productosService: ProductosService
+    private productosService: ProductosService,
+    public authService: AuthService
   ) { }
+  
+  reabastecerProducto(id: string) {
+    if (this.authService.canEdit()) {
+       if (confirm('¿Reabastecer este producto?')) {
+        console.log('Reabasteciendo producto:', id);
+       }
+      }else{
+        console.log('Empleado: Solicitar permiso para reabastecer');
+        alert('Contacta al administrador para reabastecer productos');
+      }
+
+  }
 
   ngOnInit() {
     this.loadDashboardData();
+    this.updateProductTrendChart(); 
   }
 
   loadDashboardData() {
-    // 1. Load KPI Stats
     this.productosService.getDashboardStats().subscribe(data => {
       this.stats = data;
     });
 
-    // 2. Load Revenue Chart
     this.updateRevenueChart();
+    this.updateProductTrendChart();
 
-    // 3. Load Top Selling
     this.productosService.getTopSellingProducts().subscribe(products => {
       this.barChartData.labels = products.map(p => p.name);
       this.barChartData.datasets[0].data = products.map(p => p.sold);
       this.chart?.update();
     });
 
-    // 4. Load Low Stock Table
     this.productosService.getLowStockProducts().subscribe(products => {
       this.lowStockProducts = products;
+    });
+
+    this.productosService.getInventorySummary().subscribe(summary => {
+      this.inventorySummary = summary;
     });
   }
 
@@ -69,7 +92,7 @@ export class DashboardComponent implements OnInit {
       {
         data: [],
         label: 'Ventas (Bs.)',
-        backgroundColor: 'rgba(99, 102, 241, 0.2)', // Indigo 500 with opacity
+        backgroundColor: 'rgba(99, 102, 241, 0.2)',
         borderColor: '#6366f1',
         pointBackgroundColor: '#fff',
         pointBorderColor: '#6366f1',
@@ -113,7 +136,7 @@ export class DashboardComponent implements OnInit {
   public lineChartType: ChartType = 'line';
 
   updateRevenueChart() {
-    this.productosService.getRevenueStats(this.periodoSeleccionado).subscribe(res => {
+    this.productosService.getRevenueStats(this.periodoSeleccionado).subscribe((res: any) => {
       this.lineChartData.labels = res.labels;
       this.lineChartData.datasets[0].data = res.data;
       this.chart?.update();
@@ -121,7 +144,87 @@ export class DashboardComponent implements OnInit {
   }
 
   /* =========================
-     CHART 2: TOP SELLING (BAR)
+     CHART 2: PRODUCT TREND (LINE) - TOTALMENTE FUNCIONAL
+  ========================= */
+  public lineChartProductData: ChartConfiguration['data'] = {
+    datasets: [
+      {
+        data: [15, 22, 18, 25, 30, 27, 35],
+        label: 'Productos Registrados',
+        backgroundColor: 'rgba(34, 197, 94, 0.2)',
+        borderColor: '#22c55e',
+        pointBackgroundColor: '#fff',
+        pointBorderColor: '#22c55e',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: 'rgba(34, 197, 94, 0.8)',
+        fill: 'origin',
+        tension: 0.4
+      }
+    ],
+    labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
+  };
+
+  public lineChartProductOptions: ChartConfiguration['options'] = {
+    elements: {
+      line: {
+        tension: 0.4
+      }
+    },
+    scales: {
+      y: {
+        position: 'left',
+        beginAtZero: true,
+        grid: {
+          color: 'rgba(255,255,255,0.05)'
+        },
+        ticks: { 
+          color: '#94a3b8',
+          callback: function(value) {
+            return Number(value).toFixed(0);
+          }
+        }
+      },
+      x: {
+        grid: {
+          display: false
+        },
+        ticks: { color: '#94a3b8' }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            return `Productos: ${context.parsed.y}`;
+          }
+        }
+      }
+    },
+    maintainAspectRatio: false,
+    responsive: true
+  };
+
+  public lineChartProductType: ChartType = 'line';
+
+  updateProductTrendChart() {
+      this.productosService.getProductTrendStats(this.periodoSeleccionadoProductos).subscribe((res: any) => {
+      this.lineChartProductData = {
+      ...this.lineChartProductData,
+      labels: res.labels,
+      datasets: [{
+        ...this.lineChartProductData.datasets[0],
+        data: res.data
+        }]
+        };
+        if (this.productChart && this.productChart.chart) {
+           this.productChart.chart.update('none');
+           }
+    });
+  }
+
+  /* =========================
+     CHART 3: TOP SELLING (BAR)
   ========================= */
   public barChartData: ChartData<'bar'> = {
     labels: [],
@@ -130,7 +233,7 @@ export class DashboardComponent implements OnInit {
         data: [],
         label: 'Unidades Vendidas',
         backgroundColor: [
-          '#6366f1', // Indigo
+          '#6366f1',
           '#818cf8',
           '#a5b4fc',
           '#c7d2fe'
@@ -142,7 +245,7 @@ export class DashboardComponent implements OnInit {
 
   public barChartOptions: ChartConfiguration['options'] = {
     responsive: true,
-    indexAxis: 'y', // Horizontal bar
+    indexAxis: 'y',
     maintainAspectRatio: false,
     scales: {
       x: {
@@ -161,9 +264,6 @@ export class DashboardComponent implements OnInit {
 
   public barChartType: ChartType = 'bar';
 
-  /* =========================
-     ACTIONS
-  ========================= */
   cambiarModo() {
     this.modoOscuro = !this.modoOscuro;
   }

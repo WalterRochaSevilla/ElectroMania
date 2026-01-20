@@ -9,10 +9,6 @@
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-/* SIDEBAR styles removed - now in component */
-
-
-/* MAIN CONTENT */
 .main-content {
   flex: 1;
   padding: 32px;
@@ -58,6 +54,11 @@
   display: flex;
   align-items: flex-start;
   gap: 16px;
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
 }
 
 .stat-icon {
@@ -130,6 +131,10 @@
   flex-direction: column;
 }
 
+.chart-card.large {
+  grid-column: span 1;
+}
+
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -149,12 +154,125 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 6px 12px;
   border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.period-select:hover {
+  border-color: #6366f1;
+}
+
+.period-select:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
 }
 
 .chart-wrapper {
   position: relative;
   height: 300px;
   width: 100%;
+}
+
+.chart-info {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.8rem;
+  color: #94a3b8;
+  text-align: center;
+}
+
+/* INVENTORY SUMMARY */
+.inventory-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+}
+
+.inventory-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.inventory-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-2px);
+}
+
+.inventory-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.inventory-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.icon-products {
+  background: rgba(99, 102, 241, 0.1);
+  color: #6366f1;
+}
+
+.icon-new {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+}
+
+.icon-categories {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+.inventory-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.inventory-text .title {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.inventory-text .subtitle {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.inventory-value {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.inventory-value .main-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.inventory-value .change {
+  font-size: 0.75rem;
+  margin-top: 4px;
+}
+
+.inventory-value .change.positive {
+  color: #22c55e;
 }
 
 /* TABLES */
@@ -176,19 +294,30 @@
   color: #94a3b8;
   font-size: 0.9rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-weight: 600;
 }
 
 .dashboard-table td {
   padding: 16px 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   color: #e2e8f0;
+  vertical-align: middle;
+}
+
+.id-col {
+  font-family: 'Courier New', monospace;
+  color: #94a3b8;
+  font-weight: 600;
 }
 
 .status-badge {
-  padding: 4px 10px;
+  padding: 6px 12px;
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 600;
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
 }
 
 .status-badge.critical {
@@ -205,22 +334,53 @@
   background: transparent;
   border: 1px solid #6366f1;
   color: #6366f1;
-  padding: 6px 12px;
+  padding: 8px 16px;
   border-radius: 6px;
   font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.2s;
+  font-weight: 600;
 }
 
 .btn-action:hover {
   background: #6366f1;
   color: white;
+  transform: translateY(-1px);
+}
+
+/* UTILITY CLASSES */
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.gap-2 {
+  gap: 8px;
+}
+
+.text-red-500 {
+  color: #ef4444;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-success {
+  color: #22c55e;
 }
 
 /* RESPONSIVE */
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
   .charts-row {
     grid-template-columns: 1fr;
+  }
+  
+  .chart-card.large {
+    grid-column: span 1;
   }
 }
 
@@ -229,12 +389,124 @@
     flex-direction: column;
   }
 
-  .sidebar {
-    width: 100%;
+  .main-content {
     padding: 16px;
   }
-
-  .logo-area {
-    margin-bottom: 16px;
+  
+  .stats-row {
+    grid-template-columns: 1fr;
   }
+  
+  .inventory-item {
+    padding: 12px;
+  }
+  
+  .inventory-value .main-value {
+    font-size: 1.1rem;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .card-header h3 {
+    font-size: 1rem;
+  }
+  
+  .period-select {
+    align-self: flex-start;
+    width: 100%;
+  }
+  
+  .chart-wrapper {
+    height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .stat-icon {
+    margin: 0 auto 16px;
+  }
+  
+  .inventory-label {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+  
+  .inventory-text {
+    text-align: center;
+  }
+  
+  .inventory-value {
+    text-align: center;
+  }
+  
+  .dashboard-table {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .btn-action {
+    padding: 6px 12px;
+  }
+}
+/* =========================
+   BADGES DE ROL
+========================= */
+.role-badge-admin, .role-badge-employee {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+.role-badge-admin {
+  background: rgba(139, 92, 246, 0.2);
+  color: #8b5cf6;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.role-badge-employee {
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+/* =========================
+   MENSAJES DE PERMISO
+========================= */
+.employee-message {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  margin-top: 4px;
+  display: inline-block;
+}
+
+/* =========================
+   ESTILOS PARA BOTONES DESHABILITADOS
+========================= */
+button[style*="cursor: not-allowed"] {
+  opacity: 0.6;
+}
+
+button[style*="cursor: not-allowed"]:hover {
+  background: inherit !important;
+  transform: none !important;
+  border-color: #6366f1 !important;
 }
