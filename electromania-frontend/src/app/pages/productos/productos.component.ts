@@ -1,55 +1,55 @@
-import { Component, OnInit, inject, effect } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastService } from '../../services/toast.service';
 import { CartService } from '../../services/cart.service';
-import { CartItem } from '../../models';
+import { AuthService } from '../../services/auth.service';
+
+const WHATSAPP_NUMBER = '59178888888';
 
 @Component({
   selector: 'app-productos',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './productos.component.html',
-  styleUrls: ['./productos.component.css']
+  styleUrls: ['./productos.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductosComponent implements OnInit {
   private router = inject(Router);
   private toast = inject(ToastService);
-  private cartService = inject(CartService);
+  private authService = inject(AuthService);
+  protected cartService = inject(CartService);
 
-  carrito: CartItem[] = [];
-  totalItems = 0;
-  subtotal = 0;
-  impuestos = 0;
-  total = 0;
+  readonly isAuthenticated = this.authService.isAuthenticated$;
+  readonly currentUser = this.authService.currentUser;
 
-  generarFactura = true;
-  nombreFactura = '';
-  nitFactura = '';
-  emailFactura = '';
+  readonly carrito = this.cartService.items;
+  readonly totals = this.cartService.totals;
+  readonly isEmpty = this.cartService.isEmpty;
 
-  procesando = false;
-  mostrarModalExito = false;
-  numeroFactura = '';
-
-  constructor() {
-    effect(() => {
-      this.carrito = this.cartService.getItems();
-      const totals = this.cartService.getTotals();
-      this.totalItems = totals.totalItems;
-      this.subtotal = totals.subtotal;
-      this.impuestos = totals.impuestos;
-      this.total = totals.total;
-    });
-  }
+  nombreFactura = signal('');
+  nitFactura = signal('');
+  emailFactura = signal('');
+  procesando = signal(false);
+  mostrarModalExito = signal(false);
+  numeroFactura = signal('');
 
   ngOnInit() {
-    this.cargarCarritoInicial();
+    this.autoFillUserData();
   }
 
-  cargarCarritoInicial() {
-    // Mock data removed. CartService loads from Backend or LocalStorage.
+  private autoFillUserData() {
+    const user = this.currentUser();
+    if (user) {
+      if (user.email) {
+        this.emailFactura.set(user.email);
+      }
+      if (user.nombre) {
+        this.nombreFactura.set(user.nombre);
+      }
+    }
   }
 
   irACatalogo() {
@@ -65,60 +65,89 @@ export class ProductosComponent implements OnInit {
   }
 
   volverATienda() {
-    this.mostrarModalExito = false;
+    this.mostrarModalExito.set(false);
     this.cartService.clear();
     this.router.navigate(['/home']);
   }
 
   aumentarCantidad(index: number) {
-    const item = this.carrito[index];
+    const item = this.carrito()[index];
     if (item) {
       this.cartService.increaseQuantity(item.id);
     }
   }
 
   disminuirCantidad(index: number) {
-    const item = this.carrito[index];
+    const item = this.carrito()[index];
     if (item) {
       this.cartService.decreaseQuantity(item.id);
     }
   }
 
   eliminarProducto(index: number) {
-    const item = this.carrito[index];
+    const item = this.carrito()[index];
     if (item) {
       this.cartService.removeItem(item.id);
     }
   }
 
   async procesarPago() {
-    if (this.procesando) return;
+    if (this.procesando()) return;
 
-    if (this.cartService.isEmpty()) {
-      this.toast.error('Tu carrito está vacío');
+    if (this.isEmpty()) {
+      this.toast.error('Tu carrito esta vacio');
       return;
     }
 
-    if (this.generarFactura && (!this.nombreFactura || !this.nitFactura || !this.emailFactura)) {
-      this.toast.warning('Por favor completa los datos de facturación');
+    if (!this.nombreFactura() || !this.nitFactura()) {
+      this.toast.warning('Por favor completa los datos de facturación (Nombre y NIT/CI son obligatorios)');
       return;
     }
 
-    this.procesando = true;
+    this.procesando.set(true);
 
-    await this.simularProcesamiento();
+    const whatsappMessage = this.generateWhatsAppMessage();
+    const whatsappUrl = this.generateWhatsAppUrl(whatsappMessage);
 
-    this.numeroFactura = `FAC-${Math.floor(10000 + Math.random() * 90000)}`;
+    window.open(whatsappUrl, '_blank');
 
-    this.mostrarModalExito = true;
-    this.procesando = false;
+    this.numeroFactura.set(`PED-${Math.floor(10000 + Math.random() * 90000)}`);
+    this.mostrarModalExito.set(true);
+    this.procesando.set(false);
   }
 
-  simularProcesamiento(): Promise<void> {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, 2000);
-    });
+  private generateWhatsAppMessage(): string {
+    const items = this.carrito();
+    const totales = this.totals();
+
+    const productList = items.map(item => 
+      `• ${item.nombre} x${item.cantidad} = Bs. ${(item.precio * item.cantidad).toFixed(2)}`
+    ).join('\n');
+
+    const message = `¡Hola Electromania! 👋
+
+Quiero realizar el siguiente pedido:
+
+${productList}
+
+───────────────
+*Subtotal:* Bs. ${totales.subtotal.toFixed(2)}
+*Impuestos (13%):* Bs. ${totales.impuestos.toFixed(2)}
+*TOTAL A PAGAR:* Bs. ${totales.total.toFixed(2)}
+───────────────
+
+*Datos de Facturación:*
+📝 Nombre: ${this.nombreFactura()}
+🆔 NIT/CI: ${this.nitFactura()}
+${this.emailFactura() ? `📧 Email: ${this.emailFactura()}` : ''}
+
+¡Gracias!`;
+
+    return message;
+  }
+
+  private generateWhatsAppUrl(message: string): string {
+    const encodedMessage = encodeURIComponent(message);
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
   }
 }

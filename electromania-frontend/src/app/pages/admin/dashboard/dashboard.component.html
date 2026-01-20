@@ -21,7 +21,7 @@
               <h3>Ingresos Totales</h3>
               <div class="value">Bs. {{ stats.totalRevenue | number:'1.2-2' }}</div>
               <div class="trend positive">
-                <span>▲ {{ stats.revenueChange }}%</span> vs mes anterior
+                <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> {{ stats.revenueChange }}%</span> vs mes anterior
               </div>
             </div>
           </div>
@@ -86,13 +86,13 @@
 
           <!-- LOW STOCK TABLE -->
           <div class="table-section">
-            <h3 class="flex items-center gap-2">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-red-500">
+            <h3 class="section-title">
+              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="alert-icon">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-                Alerta de Stock / Vencidos
-              </h3>
+              </svg>
+              <span>Alerta de Stock / Vencidos</span>
+            </h3>
               <div class="table-responsive">
                 <table class="dashboard-table">
                   <thead>
@@ -105,7 +105,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @for (prod of lowStockProducts; track prod) {
+                    @for (prod of lowStockProducts; track prod.id) {
                       <tr>
                         <td class="id-col">{{ prod.id }}</td>
                         <td>{{ prod.name }}</td>

@@ -34,6 +34,9 @@
             <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path>
           </svg>
           Filtros
+          @if (tieneFiltrosActivos) {
+            <span class="filter-indicator"></span>
+          }
         </button>
       </div>
 
@@ -45,7 +48,7 @@
             <div class="filter-group">
               <label for="category-filter">Categoría</label>
               <div class="custom-select-wrapper">
-                <select id="category-filter">
+                <select id="category-filter" [(ngModel)]="categoriaSeleccionada">
                   <option value="">Todas</option>
                   @for (cat of categorias; track cat) {
                     <option [value]="cat">{{ cat }}</option>
@@ -57,7 +60,7 @@
             <div class="filter-group">
               <label for="price-filter">Precio</label>
               <div class="custom-select-wrapper">
-                <select id="price-filter">
+                <select id="price-filter" [(ngModel)]="precioSeleccionado">
                   <option value="">Todos</option>
                   <option value="0-50">Menos de 50 Bs.</option>
                   <option value="50-100">50 - 100 Bs.</option>
@@ -69,28 +72,27 @@
             <div class="filter-group">
               <label for="sort-select">Ordenar Por</label>
               <div class="custom-select-wrapper">
-                <select id="sort-select" [(ngModel)]="orden" (change)="ordenarComponentes()">
+                <select id="sort-select" [(ngModel)]="orden">
                   <option value="relevancia">Relevancia</option>
                   <option value="precioAsc">Precio: Menor a Mayor</option>
                   <option value="precioDesc">Precio: Mayor a Menor</option>
                 </select>
               </div>
             </div>
-            <!-- Filter Group: Stock (Mock) -->
+            <!-- Filter Group: Stock -->
             <div class="filter-group">
               <label for="stock-filter">Disponibilidad</label>
               <div class="custom-select-wrapper">
-                <select id="stock-filter">
+                <select id="stock-filter" [(ngModel)]="disponibilidadSeleccionada">
                   <option value="">Todos</option>
                   <option value="in-stock">En Stock</option>
-                  <option value="pre-order">Pre-orden</option>
                 </select>
               </div>
             </div>
           </div>
           <div class="filters-actions">
-            <button class="btn-reset">Restablecer</button>
-            <button class="btn-apply" (click)="toggleFiltrosAvanzados()">Aplicar Filtros</button>
+            <button class="btn-reset" (click)="restablecerFiltros()">Restablecer</button>
+            <button class="btn-apply" (click)="aplicarFiltrosAvanzados()">Aplicar Filtros</button>
           </div>
         </div>
       }
@@ -103,7 +105,7 @@
       <section class="contenido-catalogo">
 
         <div class="grid-productos">
-          @for (producto of productosFiltrados; track producto) {
+          @for (producto of productosFiltrados; track producto.product_id) {
             <app-product-card [product]="producto"
               (cardClick)="router.navigate(['/detalle-producto', producto.product_id])" (addToCart)="agregarAlCarrito($event)">
             </app-product-card>

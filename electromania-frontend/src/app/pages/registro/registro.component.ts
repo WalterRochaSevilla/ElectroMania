@@ -59,11 +59,26 @@ export class RegistroComponent {
 
     try {
       await this.authService.registerUser(data);
-      this.toast.success('Registro exitoso! Ahora puedes iniciar sesión.');
-      this.volverAlLogin();
+
+      // Auto-login after successful registration
+      try {
+        await this.authService.login({ email: this.email, password: this.contrasena });
+        this.clearSensitiveData();
+        this.toast.success('¡Registro exitoso! Bienvenido a Electromania.');
+        this.router.navigate(['/bienvenida']);
+      } catch {
+        this.clearSensitiveData();
+        this.toast.success('Registro exitoso! Ahora puedes iniciar sesión.');
+        this.volverAlLogin();
+      }
     } catch {
       this.toast.error('Error en el registro. Por favor intente nuevamente.');
     }
+  }
+
+  private clearSensitiveData() {
+    this.contrasena = '';
+    this.confirmarContrasena = '';
   }
 
   generarContrasena() {

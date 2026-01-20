@@ -66,8 +66,8 @@ import { ModalService } from '../../services/modal.service';
     }
 
     .modal-content {
-      background: var(--surface-card);
-      border: 1px solid var(--border-color);
+      background: var(--bg-card, #1e293b);
+      border: 1px solid var(--border-color, #334155);
       border-radius: 1rem;
       width: 90%;
       max-width: 400px;
@@ -76,9 +76,14 @@ import { ModalService } from '../../services/modal.service';
       overflow: hidden;
     }
 
+    :host-context([data-theme='light']) .modal-content {
+      background: #ffffff;
+      border-color: #e2e8f0;
+    }
+
     .modal-header {
       padding: 1.25rem 1.5rem;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color, #334155);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -93,12 +98,12 @@ import { ModalService } from '../../services/modal.service';
     /* Header Colors */
     .modal-header.danger h3 { color: #ef4444; }
     .modal-header.warning h3 { color: #f59e0b; }
-    .modal-header.info h3 { color: var(--primary-color); }
+    .modal-header.info h3 { color: var(--brand-primary, #6366f1); }
 
     .close-btn {
       background: transparent;
       border: none;
-      color: var(--text-secondary);
+      color: var(--text-secondary, #94a3b8);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -106,17 +111,24 @@ import { ModalService } from '../../services/modal.service';
     }
     .close-btn svg { width: 20px; height: 20px; }
 
+    :host-context([data-theme='light']) .close-btn {
+      color: #64748b;
+    }
+
     .modal-body {
       padding: 1.5rem;
-      color: var(--text-secondary);
+      color: var(--text-secondary, #94a3b8);
       font-size: 0.95rem;
       line-height: 1.5;
     }
 
+    :host-context([data-theme='light']) .modal-body {
+      color: #475569;
+    }
+
     .modal-footer {
       padding: 1rem 1.5rem;
-      background: var(--surface-hover); 
-      border-top: 1px solid var(--border-color);
+      background: transparent;
       display: flex;
       justify-content: flex-end;
       gap: 0.75rem;
@@ -133,12 +145,21 @@ import { ModalService } from '../../services/modal.service';
 
     .btn-cancel {
       background: transparent;
-      color: var(--text-secondary);
-      border: 1px solid var(--border-color);
+      color: var(--text-secondary, #94a3b8);
+      border: 1px solid var(--border-color, #334155);
     }
     .btn-cancel:hover {
-      background: var(--surface-ground);
-      color: var(--text-primary);
+      background: var(--surface-ground, #1e293b);
+      color: var(--text-primary, #f1f5f9);
+    }
+
+    :host-context([data-theme='light']) .btn-cancel {
+      color: #64748b;
+      border-color: #e2e8f0;
+    }
+    :host-context([data-theme='light']) .btn-cancel:hover {
+      background: #f1f5f9;
+      color: #1e293b;
     }
 
     .btn-confirm {
@@ -151,8 +172,8 @@ import { ModalService } from '../../services/modal.service';
     .btn-confirm.warning { background: #f59e0b; }
     .btn-confirm.warning:hover { background: #d97706; }
 
-    .btn-confirm.info { background: var(--primary-color); }
-    .btn-confirm.info:hover { background: var(--primary-dark); }
+    .btn-confirm.info { background: var(--brand-primary, #6366f1); }
+    .btn-confirm.info:hover { background: var(--brand-primary-dark, #4f46e5); }
 
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }

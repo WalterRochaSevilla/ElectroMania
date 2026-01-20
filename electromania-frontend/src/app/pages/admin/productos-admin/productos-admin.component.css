@@ -275,3 +275,44 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .top-bar {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .header-actions {
+    flex-wrap: wrap;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-layout {
+    flex-direction: column;
+  }
+
+  .main-content {
+    padding: 16px;
+  }
+
+  .actions-bar {
+    flex-wrap: wrap;
+  }
+
+  .table-footer {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .summary {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}

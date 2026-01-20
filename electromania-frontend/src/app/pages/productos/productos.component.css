@@ -336,6 +336,25 @@
   background: var(--slate-600);
 }
 
+.btn-whatsapp {
+  background: #25D366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-whatsapp:hover:not(:disabled) {
+  background: #128C7E;
+}
+
+.facturacion-titulo {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
 /* =========================
    MODAL
 ========================= */
@@ -386,8 +405,17 @@
   margin: 0 auto 24px;
 }
 
+.modal-icon-wrapper.whatsapp {
+  background: rgba(37, 211, 102, 0.15);
+  color: #25D366;
+}
+
 :host-context([data-theme='dark']) .modal-icon-wrapper {
   background: rgba(22, 163, 74, 0.2);
+}
+
+:host-context([data-theme='dark']) .modal-icon-wrapper.whatsapp {
+  background: rgba(37, 211, 102, 0.2);
 }
 
 .modal-exito h2 {

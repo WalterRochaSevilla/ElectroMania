@@ -32,7 +32,31 @@
 
 :host-context([data-theme='dark']) .imagen-container {
     background: #f8fafc;
-    /* Keep image bg light for better product visibility even in dark mode */
+}
+
+.placeholder-image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--text-muted, #94a3b8);
+    text-align: center;
+    padding: 16px;
+}
+
+.placeholder-image svg {
+    opacity: 0.5;
+}
+
+.placeholder-image span {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary, #64748b);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .imagen-container img {
