@@ -37,7 +37,7 @@ export class CreateProductRequestModel {
         description: "imagen",
         type: String
     })
-    image: string;
+    image?: string;
     @IsOptional()
     @IsNumber()
     @ApiProperty({
@@ -45,5 +45,5 @@ export class CreateProductRequestModel {
         description: "Categoria del Producto",
         type: Number
     })
-    category_id: number
+    category_id?: number
 }
