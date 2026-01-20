@@ -49,12 +49,19 @@ export class ProductService {
   async getAllProducts(): Promise<ProductModel[]> {
     try{
       const products = await this.prisma.product.findMany({
-        include: { productImages: true },
+        include: { 
+          productImages: true, 
+          productCategories:{
+            include: {
+              category: true 
+            }
+          }
+        },
       });
       if(products.length === 0){
         throw new NotFoundException('Products not found');
       }
-      return products.map((p) => this.productMapper.toModel(p));
+      return products.map((p) => this.productMapper.toModelWithCategoryAndImages(p));
     }catch(e){
       throw new NotFoundException('Products not found');
     }

@@ -80,7 +80,10 @@ export class ProductModel {
         }
     )
     state: string;
+}
 
+export class ProductWithImagesModel extends ProductModel {
+    @IsNotEmpty()
     @IsArray()
     @ApiProperty(
         {
@@ -90,7 +93,38 @@ export class ProductModel {
             type: [String],
             required: true,
             isArray: true,
-            
+        }
+    )
+    images: string[];
+}
+
+export class ProductWithCategoriesModel extends ProductModel {
+    @IsNotEmpty()
+    @IsArray()
+    @ApiProperty(
+        {
+            title: 'categories',
+            description: 'Categorias del producto',
+            example: ['Electronics', 'Clothing'],
+            type: [String],
+            required: true,
+            isArray: true,
+        }
+    )
+    categories: string[];
+}
+
+export class ProductWithCategoriesAndImagesModel extends ProductWithCategoriesModel {
+    @IsNotEmpty()
+    @IsArray()
+    @ApiProperty(
+        {
+            title: 'images',
+            description: 'Imagenes del producto',
+            example: ['https://example.com/image1.jpg', 'https://example.com/image2.jpg'],
+            type: [String],
+            required: true,
+            isArray: true,
         }
     )
     images: string[];

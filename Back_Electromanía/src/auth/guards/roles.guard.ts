@@ -1,4 +1,4 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { UserRole } from '../../user/enums/UserRole.enum';
 import { ROLES_KEY } from '../decorators/roles.decorator';
@@ -14,15 +14,20 @@ export class RolesGuard implements CanActivate {
     ) {}
     private extractTokenFromHeader(request: Request): string | undefined {
         const [type, token] = request.headers.authorization?.split(' ') ?? [];
+        if(!token){
+            throw new UnauthorizedException("Debe Iniciar Sesion");
+        }
         return type === 'Bearer' ? token : undefined;
     }
     private tokenToUser(token: string): UserJwtPayloadModel {
         const payload = this.jwtService.decode(token)
         return payload.user as UserJwtPayloadModel
     }
-    matchRoles(roles: UserRole[], user: UserJwtPayloadModel) {
+    hasRole(roles: UserRole[], user: UserJwtPayloadModel) {
         return roles.some(role=>{
-            return user.role === role
+            if(user.role === role){
+                return user.role === role
+            }
         })
     }
 
@@ -36,6 +41,9 @@ export class RolesGuard implements CanActivate {
         }
         const token = this.extractTokenFromHeader(context.switchToHttp().getRequest());
         const user = this.tokenToUser(token?? '');
-        return this.matchRoles(requiredRoles, user);
+        if(!this.hasRole(requiredRoles, user)){
+            throw new ForbiddenException('Acceso denegado, No tiene los permisos suficientes');
+        }
+        return true
     }
 }

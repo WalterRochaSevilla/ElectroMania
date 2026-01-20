@@ -24,8 +24,7 @@ export class CartDetailsMapper {
         throw new Error('Product not found');
     }
     model.quantity = entity.quantity;
-    model.total = Number(entity.sub_total);
-
+    model.total = entity.quantity * Number(entity.unit_price);
     return model;
   }
 

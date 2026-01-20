@@ -1,12 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
-
 // ----------------------------------------------------
-// ENUMS
+// GENERATOR & DATASOURCE
 // ----------------------------------------------------
 
 generator client {
@@ -18,6 +11,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ----------------------------------------------------
+// ENUMS
+// ----------------------------------------------------
 
 enum CartState {
   ACTIVE
@@ -41,82 +37,208 @@ enum UserState {
   INACTIVE
 }
 
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  DELIVERED
+  CANCELED
+}
+
+enum PaymentMethod {
+  CASH // QR / efectivo / transferencia (Bolivia)
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  CANCELED
+}
+
+enum InvoiceStatus {
+  ISSUED
+  CANCELED
+}
+
 // ----------------------------------------------------
 // MODELOS
 // ----------------------------------------------------
 
-// 🛒 CART
+// 👤 USER
+model User {
+  uuid          String     @id @default(uuid())
+  name          String     @db.VarChar(50)
+  email         String     @unique @db.VarChar(50)
+  password      String     @db.VarChar(60)
+  role          UserRole   @default(USER)
+  nit_ci        String     @db.VarChar(15)
+  social_reason String     @db.VarChar(100)
+  state         UserState  @default(ACTIVE)
+
+  carts         Cart[]
+  userOrders    UserOrder[]
+
+  @@map("users")
+}
+
+// 🛒 CART (INTENCIÓN DE COMPRA)
 model Cart {
-  cart_id     Int          @id @default(autoincrement())
-  user_uuid   String       @db.VarChar(100)
-  state       CartState    @default(ACTIVE)
-  created_at  DateTime     @db.Timestamp(6)
+  cart_id     Int       @id @default(autoincrement())
+  user_uuid   String
+  state       CartState @default(ACTIVE)
+  created_at  DateTime  @default(now())
 
-  // Relaciones
-  users       User[]       @relation("UserCarts")
+  user        User      @relation(fields: [user_uuid], references: [uuid])
   cartDetails CartDetails[]
+  order       Order?
 
+  @@index([user_uuid, state])
   @@map("cart")
 }
 
-// 🧾 CART DETAILS
+// 🧾 CART DETAILS (SOLO CARRITO)
 model CartDetails {
   id          Int      @id @default(autoincrement())
   cart_id     Int
   product_id  Int
   quantity    Int
   unit_price  Decimal  @db.Decimal(10, 2)
-  sub_total   Decimal  @db.Decimal(10, 2)
 
-  // Relaciones
-  cart    Cart?    @relation(fields: [cart_id], references: [cart_id])
-  product Product? @relation(fields: [product_id], references: [product_id])
+  cart        Cart     @relation(fields: [cart_id], references: [cart_id])
+  product     Product  @relation(fields: [product_id], references: [product_id])
 
+  @@unique([cart_id, product_id])
   @@map("cart_details")
+}
+
+// 📦 PRODUCT
+model Product {
+  product_id    Int           @id @default(autoincrement())
+  product_name  String        @unique @db.VarChar(50)
+  description   String        @db.VarChar(255)
+  price         Decimal       @db.Decimal(10, 2)
+  stock         Int           @default(0)
+  state         ProductState  @default(AVAILABLE)
+
+  productImages     ProductImage[]
+  cartDetails       CartDetails[]
+  productCategories ProductCategory[]
+  orderItems        OrderItem[]
+
+  @@map("products")
 }
 
 // 🖼️ PRODUCT IMAGE
 model ProductImage {
   product_id Int
-  image      String @db.VarChar(100)
+  image      String @db.VarChar(255)
 
-  // Relaciones
-  product Product @relation(fields: [product_id], references: [product_id])
+  product    Product @relation(fields: [product_id], references: [product_id])
 
-  @@id([product_id, image]) // clave primaria compuesta
+  @@id([product_id, image])
   @@map("product_images")
 }
 
-// 📦 PRODUCT
-model Product {
-  product_id    Int             @id @default(autoincrement())
-  product_name  String          @unique @db.VarChar(50)
-  description   String          @db.VarChar(50)
-  price         Decimal         @default(0.00) @db.Decimal(10, 2)
-  stock         Int             @default(0)
-  state         ProductState    @default(AVAILABLE)
+// 🏷️ CATEGORY
+model Category {
+  category_id   Int    @id @default(autoincrement())
+  category_name String @unique @db.VarChar(50)
+  description   String @db.VarChar(100)
 
-  // Relaciones
-  productImages ProductImage[]
-  cartDetails   CartDetails[]
+  productCategories ProductCategory[]
 
-  @@map("products")
+  @@map("categories")
 }
 
-// 👤 USER
-model User {
-  uuid          String       @id @default(uuid())
-  name          String       @db.VarChar(50)
-  email         String       @unique @db.VarChar(50)
-  password      String       @db.VarChar(60)
-  role          UserRole     @default(USER)
-  nit_ci        String       @db.VarChar(10)
-  social_reason String       @db.VarChar(50)
-  is_active     UserState    @default(ACTIVE)
+// 🔗 PRODUCT ↔ CATEGORY
+model ProductCategory {
+  product_id  Int
+  category_id Int
 
-  // Relaciones
-  carts Cart[] @relation("UserCarts")
+  product  Product  @relation(fields: [product_id], references: [product_id])
+  category Category @relation(fields: [category_id], references: [category_id])
 
-  @@map("users")
+  @@id([product_id, category_id])
+  @@map("product_categories")
 }
 
+// 📦 ORDER (VENTA)
+model Order {
+  order_id   Int      @id @default(autoincrement())
+  cart_id    Int      @unique
+  total      Decimal  @db.Decimal(10, 2)
+  status     OrderStatus @default(PENDING)
+  created_at DateTime @default(now())
+
+  cart       Cart     @relation(fields: [cart_id], references: [cart_id])
+  orderItems OrderItem[]
+  payment    Payment?
+  invoice    Invoice?
+  userOrders UserOrder[]
+
+  @@index([status, created_at])
+  @@map("orders")
+}
+
+// 📦 ORDER ITEM (SNAPSHOT HISTÓRICO)
+model OrderItem {
+  id            Int      @id @default(autoincrement())
+  order_id      Int
+  product_id    Int
+  product_name  String   @db.VarChar(50)
+  unit_price    Decimal  @db.Decimal(10, 2)
+  quantity      Int
+  total         Decimal  @db.Decimal(10, 2)
+
+  order   Order   @relation(fields: [order_id], references: [order_id])
+  product Product @relation(fields: [product_id], references: [product_id])
+
+  @@index([order_id])
+  @@map("order_items")
+}
+
+// 🔗 USER ↔ ORDER
+model UserOrder {
+  user_uuid String
+  order_id  Int
+
+  user  User  @relation(fields: [user_uuid], references: [uuid])
+  order Order @relation(fields: [order_id], references: [order_id])
+
+  @@id([user_uuid, order_id])
+  @@map("user_orders")
+}
+
+// 💳 PAYMENT
+model Payment {
+  payment_id Int @id @default(autoincrement())
+  order_id   Int @unique
+  amount     Decimal @db.Decimal(10, 2)
+  method     PaymentMethod
+  status     PaymentStatus @default(PENDING)
+  created_at DateTime @default(now())
+
+  order Order @relation(fields: [order_id], references: [order_id])
+
+  @@index([status, method])
+  @@map("payments")
+}
+
+// 🧾 INVOICE (FACTURA)
+model Invoice {
+  invoice_id     Int      @id @default(autoincrement())
+  order_id       Int      @unique
+  invoice_number String  @unique @db.VarChar(50)
+
+  nit_ci         String  @db.VarChar(15)
+  social_reason  String  @db.VarChar(100)
+  total          Decimal @db.Decimal(10, 2)
+
+  status         InvoiceStatus @default(ISSUED)
+  issued_at      DateTime @default(now())
+
+  order Order @relation(fields: [order_id], references: [order_id])
+
+  @@index([invoice_number])
+  @@map("invoices")
+}
