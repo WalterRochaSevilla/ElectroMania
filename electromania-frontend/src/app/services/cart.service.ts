@@ -1,7 +1,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment.template';
 import { firstValueFrom } from 'rxjs';
 import { CartItem, CartTotals } from '../models';
 

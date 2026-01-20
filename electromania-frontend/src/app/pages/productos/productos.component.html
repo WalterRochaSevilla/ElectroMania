@@ -124,8 +124,12 @@
                 </div>
                 }
               </div>
-              <button class="btn-pagar" (click)="procesarPago()" [disabled]="procesando">
-                {{ procesando ? 'Procesando...' : 'Pagar y Finalizar' }}
+              <button
+                class="btn-pagar"
+                (click)="procesarPago()"
+                [disabled]="procesando"
+              >
+                {{ procesando ? 'Comunicando al Comprador...' : 'Pagar y Finalizar' }}
               </button>
             </div>
           </div>

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment.template';
 import { firstValueFrom } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { LoginRequest, LoginResponse, DecodedToken, RegisterUserRequest } from '../models';
