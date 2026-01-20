@@ -46,14 +46,14 @@ export class ProductMapper {
           price: model.price,
           stock: model.stock
         }
-        if("image" in model){
+        if(model.image){
           entity.productImages = {
             create:[{
               image: model.image
             }]
           }
         }
-        if("category_id" in model){
+        if(model.category_id){
           entity.productCategories = {
             create:[{
               category_id: model.category_id

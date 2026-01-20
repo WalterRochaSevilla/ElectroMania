@@ -15,7 +15,9 @@ describe('ProductService', () => {
     const prisma = module.get(PrismaService);
     await prisma.cartDetails.deleteMany();
     await prisma.cart.deleteMany();
+    await prisma.productCategory.deleteMany();
     await prisma.productImage.deleteMany();
+    await prisma.category.deleteMany();
     await prisma.product.deleteMany();
   });
 
