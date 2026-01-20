@@ -7,17 +7,10 @@ type ProductImageWithProduct = Prisma.ProductImageGetPayload<{
   include: { product: { include: { productImages: true } } };
 }>;
 
+
 export class ProductImageMapper
-  implements
-    Mapper<
-      ProductModel,
-      ProductImageWithProduct,
-      Prisma.ProductImageCreateInput,
-      RegisterProductImageRequestModel,
-      Product
-    >
 {
-  toModel(entity: ProductImageWithProduct): ProductModel {
+  toModel(entity: ProductImageWithProduct):ProductModel  {
     const model = new ProductModel();
     model.product_id = entity.product_id;
     model.product_name = entity.product.product_name;
@@ -25,9 +18,6 @@ export class ProductImageMapper
     model.price = Number(entity.product.price);
     model.stock = entity.product.stock;
     model.state = entity.product.state;
-    model.images = entity.product.productImages
-      ? entity.product.productImages.map((img) => img.image)
-      : [];
     return model;
   }
 

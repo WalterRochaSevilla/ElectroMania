@@ -19,8 +19,16 @@ export class ProductService {
 
   async createProduct(dto: CreateProductRequestModel): Promise<ProductModel> {
     const data = this.productMapper.toEntity(dto);
-    const product = await this.prisma.product.create({ data });
-    return this.productMapper.toModel(product);
+    const product = await this.prisma.product.create({ data , 
+      include:{
+        productImages: true,
+        productCategories: {
+          include: {
+            category: true
+          }
+        }
+      } });
+    return this.productMapper.toModelWithCategoryAndImages(product);
   }
 
   async registerProductImage(
@@ -40,21 +48,34 @@ export class ProductService {
 
     const updated = await this.prisma.product.findUnique({
       where: { product_id: product.product_id },
-      include: { productImages: true },
+      include: { productImages: true,
+        productCategories: {
+          include: {
+            category: true
+          }
+        }
+      },
     });
 
-    return this.productMapper.toModel(updated!);
+    return this.productMapper.toModelWithCategoryAndImages(updated!);
   }
 
   async getAllProducts(): Promise<ProductModel[]> {
     try{
       const products = await this.prisma.product.findMany({
-        include: { productImages: true },
+        include: { 
+          productImages: true, 
+          productCategories:{
+            include: {
+              category: true 
+            }
+          }
+        },
       });
       if(products.length === 0){
         throw new NotFoundException('Products not found');
       }
-      return products.map((p) => this.productMapper.toModel(p));
+      return products.map((p) => this.productMapper.toModelWithCategoryAndImages(p));
     }catch(e){
       throw new NotFoundException('Products not found');
     }
@@ -74,19 +95,31 @@ export class ProductService {
       where: filter,
       skip,
       take,
-      include: { productImages: true },
+      include: { productImages: true,
+        productCategories: {
+          include: {
+            category: true
+          }
+        }
+       },
     });
-    return products.map((p) => this.productMapper.toModel(p));
+    return products.map((p) => this.productMapper.toModelWithCategoryAndImages(p));
   }
 
 
   async getFilterBy(filter: Prisma.ProductWhereInput): Promise<ProductModel[]> {
     const products = await this.prisma.product.findMany({
       where: filter,
-      include: { productImages: true },
+      include: { productImages: true,
+        productCategories: {
+          include: {
+            category: true
+          }
+        }
+       },
     });
 
-    return products.map((p) => this.productMapper.toModel(p));
+    return products.map((p) => this.productMapper.toModelWithCategoryAndImages(p));
   }
 
   async updateProduct(
@@ -96,9 +129,15 @@ export class ProductService {
     const updated = await this.prisma.product.update({
       where: { product_id: productId },
       data: this.productMapper.toUpdateEntity(dto),
-      include: { productImages: true },
+      include: { productImages: true,
+        productCategories: {
+          include: {
+            category: true
+          }
+        }
+       },
     });
-    return this.productMapper.toModel(updated);
+    return this.productMapper.toModelWithCategoryAndImages(updated);
   }
 
   async deleteProduct(productId: number): Promise<void> {
@@ -120,12 +159,18 @@ export class ProductService {
   async getProductById(productId: number): Promise<ProductModel> {
     const product = await this.prisma.product.findUnique({
       where: { product_id: productId },
-      include: { productImages: true },
+      include: { productImages: true,
+        productCategories: {
+          include: {
+            category: true
+          }
+        }
+       },
     });
     if (!product) {
       throw new NotFoundException('Product not found');
     }
-    return this.productMapper.toModel(product);
+    return this.productMapper.toModelWithCategoryAndImages(product);
   }
 
   async productExist(productId:number): Promise<Boolean>{

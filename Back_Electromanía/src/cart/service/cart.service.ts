@@ -78,7 +78,16 @@ export class CartService {
             product_id: addProductRequest.productId,
             quantity: addProductRequest.quantity,
             unit_price: product.price,
-            sub_total: product.price * addProductRequest.quantity
+            cart: {
+                connect: {
+                    cart_id: cart_id
+                }
+            },
+            product: {
+                connect: {
+                    product_id: addProductRequest.productId
+                }
+            }
         } as Prisma.CartDetailsCreateInput
         await this.productService.discountStock(
             addProductRequest.productId,

@@ -1,14 +1,14 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNumber, IsString } from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateProductRequestModel {
     @IsString()
     @ApiProperty({
-        title: "name",
+        title: "product_name",
         description: "Nombre del Producto",
         type: String
     })
-    name: string;
+    product_name: string;
     @IsString()
     @ApiProperty({
         title:"description",
@@ -30,4 +30,20 @@ export class CreateProductRequestModel {
         type: Number
     })
     stock: number;
+    @IsOptional()
+    @IsString()
+    @ApiProperty({
+        title: "image",
+        description: "imagen",
+        type: String
+    })
+    image?: string;
+    @IsOptional()
+    @IsNumber()
+    @ApiProperty({
+        title: "category",
+        description: "Categoria del Producto",
+        type: Number
+    })
+    category_id?: number
 }
