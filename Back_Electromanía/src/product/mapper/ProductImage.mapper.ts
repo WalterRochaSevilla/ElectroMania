@@ -1,5 +1,5 @@
 import { Mapper } from "src/common/interfaces/Mapper.interface";
-import { ProductModel, ProductWithImagesModel } from "../model/Product.model";
+import { ProductModel } from "../model/Product.model";
 import { RegisterProductImageRequestModel } from "../model/RegisterProductImageRequest.model";
 import { Product, ProductImage, Prisma } from "@prisma/client";
 
@@ -11,16 +11,13 @@ type ProductImageWithProduct = Prisma.ProductImageGetPayload<{
 export class ProductImageMapper
 {
   toModel(entity: ProductImageWithProduct):ProductModel  {
-    const model = new ProductWithImagesModel();
+    const model = new ProductModel();
     model.product_id = entity.product_id;
     model.product_name = entity.product.product_name;
     model.description = entity.product.description;
     model.price = Number(entity.product.price);
     model.stock = entity.product.stock;
     model.state = entity.product.state;
-    model.images = entity.product.productImages
-      ? entity.product.productImages.map((img) => img.image)
-      : [];
     return model;
   }
 

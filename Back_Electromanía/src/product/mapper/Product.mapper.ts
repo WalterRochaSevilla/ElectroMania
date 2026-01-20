@@ -1,9 +1,10 @@
 import { ProductModel, ProductWithCategoriesAndImagesModel, ProductWithCategoriesModel } from "../model/Product.model";
-import { CreateProductRequestModel } from "../model/CreateProductRequest.model";
+import { CreateProductRequestModel} from '../model/CreateProductRequest.model';
 import { Mapper } from "src/common/interfaces/Mapper.interface";
 
 import { $Enums, Prisma, Product, ProductImage, ProductCategory, Category } from '@prisma/client';
 import { CartProductModel } from '../../cart/models/CardProduct.model';
+import { isInstance } from "class-validator";
 
 
 export type ProductWithImages = Prisma.ProductGetPayload<{
@@ -39,16 +40,31 @@ export class ProductMapper {
     }
 
     toEntity(model: CreateProductRequestModel): Prisma.ProductCreateInput {
-        return{
-            product_name: model.name,
-            description: model.description,
-            price: model.price,
-            stock: model.stock
+        const entity: Prisma.ProductCreateInput ={
+          product_name: model.product_name,
+          description: model.description,
+          price: model.price,
+          stock: model.stock
         }
+        if("image" in model){
+          entity.productImages = {
+            create:[{
+              image: model.image
+            }]
+          }
+        }
+        if("category_id" in model){
+          entity.productCategories = {
+            create:[{
+              category_id: model.category_id
+            }]
+          }
+        }
+        return entity
     }
     toUpdateEntity(model: Partial<CreateProductRequestModel>): Prisma.ProductUpdateInput {
         return{
-            product_name: model.name,
+            product_name: model.product_name,
             description: model.description,
             price: model.price,
             stock: model.stock
