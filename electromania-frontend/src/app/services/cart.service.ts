@@ -203,9 +203,18 @@ export class CartService {
     }
   }
 
-  removeItem(id: number): void {
+  async removeItem(id: number): Promise<void> {
     this.itemsSignal.update(items => items.filter(item => item.id !== id));
-    this.saveToStorage();
+    
+    if (this.authService.isAuthenticated()) {
+      try {
+        await firstValueFrom(this.http.delete(`${environment.API_DOMAIN}/cart/removeItem/${id}`));
+      } catch (error) {
+        console.error('Failed to remove item from backend cart', error);
+      }
+    } else {
+      this.saveToStorage();
+    }
   }
 
   updateQuantity(id: number, cantidad: number): void {

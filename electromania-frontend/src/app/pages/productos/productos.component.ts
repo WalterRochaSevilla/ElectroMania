@@ -6,7 +6,7 @@ import { ToastService } from '../../services/toast.service';
 import { CartService } from '../../services/cart.service';
 import { AuthService } from '../../services/auth.service';
 
-const WHATSAPP_NUMBER = '59178888888';
+const WHATSAPP_NUMBER = '59177418158';
 
 @Component({
   selector: 'app-productos',

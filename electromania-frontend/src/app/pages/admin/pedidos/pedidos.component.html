@@ -1,0 +1,155 @@
+<div class="admin-layout">
+  <app-admin-sidebar />
+
+  <main class="admin-content">
+    <div class="page-header">
+      <h1>Gestión de Pedidos</h1>
+      <p class="subtitle">Seguimiento y control de órdenes</p>
+    </div>
+
+    @if (loading) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Cargando pedidos...</p>
+      </div>
+    } @else if (!backendReady) {
+      <div class="backend-pending">
+        <div class="pending-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <h2>Módulo en Desarrollo</h2>
+        <p>El sistema de gestión de pedidos está siendo implementado.</p>
+        
+        <div class="pending-details">
+          <h3>Funcionalidades Pendientes (Backend):</h3>
+          <ul>
+            <li>
+              <code>GET /orders</code>
+              <span>Listar todos los pedidos</span>
+            </li>
+            <li>
+              <code>GET /orders/:id</code>
+              <span>Obtener detalle de pedido</span>
+            </li>
+            <li>
+              <code>POST /orders</code>
+              <span>Crear pedido desde carrito</span>
+            </li>
+            <li>
+              <code>PATCH /orders/:id/status</code>
+              <span>Actualizar estado (incluye restaurar stock si se cancela)</span>
+            </li>
+            <li>
+              <code>DELETE /cart/clear</code>
+              <span>Vaciar carrito y restaurar stock</span>
+            </li>
+            <li>
+              <code>DELETE /cart/removeItem/:id</code>
+              <span>Eliminar item y restaurar stock</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="pending-info">
+          <h3>Estados de Pedido:</h3>
+          <div class="status-flow">
+            <span class="status-badge status-pending">PENDING</span>
+            <span class="arrow">→</span>
+            <span class="status-badge status-paid">PAID</span>
+            <span class="arrow">→</span>
+            <span class="status-badge status-shipped">SHIPPED</span>
+            <span class="arrow">→</span>
+            <span class="status-badge status-delivered">DELIVERED</span>
+          </div>
+          <div class="status-cancel">
+            <span class="status-badge status-canceled">CANCELED</span>
+            <span class="note">(Restaura stock automáticamente)</span>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="filters-bar">
+        <div class="search-box">
+          <input 
+            type="text" 
+            placeholder="Buscar por ID o cliente..."
+            [(ngModel)]="searchTerm"
+            (input)="applyFilters()"
+          />
+        </div>
+        <select [(ngModel)]="statusFilter" (change)="applyFilters()">
+          @for (option of statusOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </div>
+
+      @if (filteredOrders.length === 0) {
+        <div class="empty-state">
+          <p>No se encontraron pedidos</p>
+        </div>
+      } @else {
+        <div class="orders-table-container">
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (order of filteredOrders; track order.order_id) {
+                <tr>
+                  <td class="order-id">#{{ order.order_id }}</td>
+                  <td>
+                    <div class="client-info">
+                      <span class="client-name">{{ order.user?.name || 'N/A' }}</span>
+                      <span class="client-email">{{ order.user?.email || '' }}</span>
+                    </div>
+                  </td>
+                  <td class="order-total">{{ formatCurrency(order.total) }}</td>
+                  <td>
+                    <span class="status-badge" [class]="getStatusClass(order.status)">
+                      {{ getStatusLabel(order.status) }}
+                    </span>
+                  </td>
+                  <td class="order-date">{{ formatDate(order.created_at) }}</td>
+                  <td class="actions">
+                    @if (order.status === 'PENDING') {
+                      <button class="btn-action btn-confirm" (click)="updateStatus(order, 'PAID')">
+                        Confirmar Pago
+                      </button>
+                    }
+                    @if (order.status === 'PAID') {
+                      <button class="btn-action btn-ship" (click)="updateStatus(order, 'SHIPPED')">
+                        Marcar Enviado
+                      </button>
+                    }
+                    @if (order.status === 'SHIPPED') {
+                      <button class="btn-action btn-deliver" (click)="updateStatus(order, 'DELIVERED')">
+                        Marcar Entregado
+                      </button>
+                    }
+                    @if (order.status !== 'CANCELED' && order.status !== 'DELIVERED') {
+                      <button class="btn-action btn-cancel" (click)="cancelOrder(order)">
+                        Cancelar
+                      </button>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    }
+  </main>
+</div>

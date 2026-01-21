@@ -51,3 +51,8 @@ export interface PageProductResponse {
   content: Product[];
   totalElements: number;
 }
+
+export interface RegisterProductImageRequest {
+  name: string;
+  image_url: string;
+}

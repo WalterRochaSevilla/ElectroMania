@@ -46,6 +46,11 @@ export const routes: Routes = [
     canActivate: [adminGuard],
   },
   {
+    path: 'pedidos-admin',
+    loadComponent: () => import('./pages/admin/pedidos/pedidos.component').then(m => m.PedidosComponent),
+    canActivate: [adminGuard],
+  },
+  {
     path: 'detalle-producto/:id',
     loadComponent: () => import('./pages/detalle-producto/detalle-producto.component').then(m => m.DetalleProductoComponent),
   },

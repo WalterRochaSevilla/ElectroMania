@@ -9,7 +9,7 @@ import { AdminSidebarComponent } from '../../../components/admin-sidebar/admin-s
 import { ThemeService } from '../../../services/theme.service';
 
 interface LowStockProduct {
-  id: string;
+  id: number;
   name: string;
   stock: number;
   status: string;
@@ -180,5 +180,9 @@ export class DashboardComponent implements OnInit {
 
   cerrarSesion() {
     this.router.navigate(['/login']);
+  }
+
+  reabastecer(productId: number) {
+    this.router.navigate(['/productos-admin'], { queryParams: { restock: productId } });
   }
 }
