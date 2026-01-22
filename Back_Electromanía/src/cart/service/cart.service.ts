@@ -74,8 +74,6 @@ export class CartService {
     async createCartDetail(cart_id: number, addProductRequest:AddProductToCartRequestDto) {
         const product = await this.productService.getProductById(addProductRequest.productId);
         const cartDetails = {
-            cart_id: cart_id,
-            product_id: addProductRequest.productId,
             quantity: addProductRequest.quantity,
             unit_price: product.price,
             cart: {
