@@ -125,7 +125,8 @@ export class ProductosAdminComponent implements OnInit {
           product_name: data.nombre,
           description: data.descripcion,
           price: data.price,
-          stock: data.stock
+          stock: data.stock,
+          image: data.imagen
         });
         this.toast.success('Producto creado exitosamente');
         this.cargarProductos();

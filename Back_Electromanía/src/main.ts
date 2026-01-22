@@ -4,10 +4,17 @@ import Configuration from './config/Configuration';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { apiReference } from '@scalar/nestjs-api-reference';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
+import * as express from 'express';
 
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(
+    '/uploads',
+    express.static(join(process.cwd(), 'uploads'))
+  );
   const config = new DocumentBuilder()
   .setTitle('Electromania')
   .setDescription('API de Compra y Venta de Productos Electrónicos')
@@ -32,7 +39,9 @@ async function bootstrap() {
   app.enableCors({
     origin: Configuration().webSiteDomain.url
   });
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true
+  }));
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

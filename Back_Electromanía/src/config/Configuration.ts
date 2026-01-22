@@ -20,5 +20,8 @@ export default () => ({
     },
     webSiteDomain: {
         url: process.env.WEBSITE_DOMAIN
+    },
+    apiDomain: {
+        url: process.env.API_DOMAIN
     }
 })

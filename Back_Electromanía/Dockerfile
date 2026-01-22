@@ -1,30 +1,48 @@
-######################
-### DEVELOPMENT ######
-######################
 FROM node:20-alpine AS development
 
 WORKDIR /usr/src/app
 
-# Dependencias del sistema
-RUN apk add --no-cache libc6-compat netcat-openbsd
+RUN mkdir -p /usr/src/app/uploads/tmp
+RUN mkdir -p /usr/src/app/uploads/products
 
-# pnpm
+
+RUN apk add --no-cache libc6-compat netcat-openbsd
 RUN npm install -g pnpm
 
-# ❌ SIN --chown
 COPY pnpm-lock.yaml package*.json ./
-
 COPY prisma ./prisma
 
-# Dev deps
 RUN pnpm install --frozen-lockfile
 
-# Código (bind mount lo sobreescribe en runtime)
+RUN pnpm prisma generate
+
 COPY . .
 
 EXPOSE 3000
-# ❌ SIN USER
-# ❌ SIN CMD
+
+CMD ["pnpm", "start:dev"]
+
+######################
+### TEST ###########
+######################
+FROM node:20-alpine AS test
+
+WORKDIR /usr/src/app
+
+RUN apk add --no-cache libc6-compat
+RUN npm install -g pnpm
+
+COPY pnpm-lock.yaml package*.json ./
+COPY prisma ./prisma
+
+RUN pnpm install --frozen-lockfile
+
+RUN pnpm prisma generate
+
+COPY . .
+
+# Ejecutar tests (sin build, sin dist)
+CMD ["pnpm", "run", "test"]
 
 
 ######################
@@ -34,37 +52,38 @@ FROM node:20-alpine AS build
 
 WORKDIR /usr/src/app
 
+RUN apk add --no-cache libc6-compat
 RUN npm install -g pnpm
 
-COPY pnpm-lock.yaml package*.json ./
+COPY pnpm-lock.yaml package.json ./
+COPY prisma ./prisma
 RUN pnpm install --frozen-lockfile
+
+RUN pnpm prisma generate
 
 COPY . .
 
-RUN pnpm prisma generate
 RUN pnpm run build
-
-ENV NODE_ENV=production
-RUN pnpm install --prod --frozen-lockfile && pnpm cache clean --force
+RUN pnpm prune --prod
 
 
 ######################
-### PRODUCTION #######
+### PRODUCTION ######
 ######################
 FROM node:20-alpine AS production
 
 WORKDIR /usr/src/app
 
-ENV NODE_ENV=production
-
-# ✅ usuario no-root SOLO en prod
 RUN addgroup -S app && adduser -S app -G app
 
 COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
-COPY package*.json ./
+COPY package.json ./
 
 USER app
 
 EXPOSE 3000
-CMD ["node", "dist/main.js"]
+
+# ⚠️ prisma generate en runtime (ya con env)
+CMD ["node","dist/main.js"]
+

@@ -10,7 +10,7 @@ export interface ProductFormData {
     price: number;
     stock: number;
     categoria: string;
-    imagen?: string;
+    imagen?: File;
 }
 
 @Component({
@@ -76,9 +76,14 @@ export interface ProductFormData {
 
               <div class="form-group">
                 <label for="imagen">URL de Imagen (opcional)</label>
-                <input type="url" id="imagen" name="imagen" [(ngModel)]="formData.imagen" placeholder="https://ejemplo.com/imagen.jpg">
+                <input
+                  type="file"
+                  id="imagen"
+                  name="imagen"
+                  accept="image/*"
+                  (change)="onFileSelected($event)"
+                >
               </div>
-
             </div>
 
             <div class="modal-footer">
@@ -303,6 +308,12 @@ export class ProductFormModalComponent implements OnChanges, OnInit {
         }
     }
 
+    onFileSelected(event: Event) {
+      const input = event.target as HTMLInputElement;
+      if (input.files && input.files.length > 0) {
+        this.formData.imagen = input.files[0];
+      }
+    }
     ngOnChanges(changes: SimpleChanges) {
         if (changes['product'] && this.product) {
             this.formData = { ...this.product };
@@ -334,7 +345,7 @@ export class ProductFormModalComponent implements OnChanges, OnInit {
             price: 0,
             stock: 0,
             categoria: 'General',
-            imagen: ''
+            imagen: undefined
         };
     }
 

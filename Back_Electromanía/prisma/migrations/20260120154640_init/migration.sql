@@ -229,3 +229,67 @@ ALTER TABLE "payments" ADD CONSTRAINT "payments_order_id_fkey" FOREIGN KEY ("ord
 
 -- AddForeignKey
 ALTER TABLE "invoices" ADD CONSTRAINT "invoices_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "orders"("order_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+INSERT INTO "users" ("uuid","name","email","password","role","nit_ci","social_reason","state") VALUES ('da51d1ae-039d-4ca2-a7aa-50644cdf2917','Administrador','admin@admin.com','$2b$12$cGW69lT1JN.vc5O61N8RMOTA6wIz003kyP2m/o31LdpqRidVpBn2e','ADMIN','12712123','Admin','ACTIVE');
+
+-- =========================
+-- CATEGORÍAS
+-- =========================
+INSERT INTO categories (category_name, description) VALUES
+('Componentes Pasivos', 'Resistencias, capacitores e inductores'),
+('Microcontroladores', 'Placas y microcontroladores programables'),
+('Sensores', 'Sensores para proyectos electrónicos');
+
+-- =========================
+-- PRODUCTOS
+-- =========================
+INSERT INTO products (product_name, description, price, stock) VALUES
+-- Componentes Pasivos
+('Resistencia 220Ω', 'Resistencia 220 ohm 1/4W', 0.10, 1000),
+('Capacitor 100uF', 'Capacitor electrolítico 100uF 25V', 0.25, 800),
+('Inductor 10mH', 'Inductor 10 miliHenry', 0.40, 500),
+
+-- Microcontroladores
+('Arduino UNO R3', 'Placa Arduino UNO R3 original', 6.50, 150),
+('Arduino Nano', 'Placa Arduino Nano compatible', 4.80, 200),
+('ESP32 Dev Module', 'Placa ESP32 con WiFi y Bluetooth', 7.90, 120),
+
+-- Sensores
+('Sensor DHT11', 'Sensor de temperatura y humedad', 2.10, 300),
+('Sensor Ultrasonico HC-SR04', 'Sensor de distancia por ultrasonido', 2.50, 250),
+('Sensor PIR', 'Sensor de movimiento PIR HC-SR501', 3.20, 180);
+
+-- =========================
+-- RELACIÓN PRODUCTO - CATEGORÍA
+-- =========================
+INSERT INTO product_categories (product_id, category_id)
+SELECT p.product_id, c.category_id
+FROM products p
+JOIN categories c ON
+  (p.product_name IN ('Resistencia 220Ω','Capacitor 100uF','Inductor 10mH')
+      AND c.category_name = 'Componentes Pasivos')
+  OR
+  (p.product_name IN ('Arduino UNO R3','Arduino Nano','ESP32 Dev Module')
+      AND c.category_name = 'Microcontroladores')
+  OR
+  (p.product_name IN ('Sensor DHT11','Sensor Ultrasonico HC-SR04','Sensor PIR')
+      AND c.category_name = 'Sensores');
+
+-- =========================
+-- IMÁGENES (1 POR PRODUCTO)
+-- =========================
+INSERT INTO product_images (product_id, image)
+SELECT p.product_id, imgs.image_url
+FROM (
+  VALUES
+    ('Resistencia 220Ω', 'https://www.multimarcas.com.bo/storage/images/productos/5186-0-1739567595.jpg'),
+    ('Capacitor 100uF', 'https://sieeg.com.mx/wp-content/uploads/2023/01/D_NQ_NP_753403-MLM44551513359_012021-O-1-600x600.jpg'),
+    ('Inductor 10mH', 'https://electronicathido.com/assets/recursosImagenes/productos/841/imagenes/13A2_1.jpg'),
+    ('Arduino UNO R3', 'https://naylampmechatronics.com/1766-superlarge_default/arduboard-uno-r3-smd-micro-usb-robotdyn.jpg'),
+    ('Arduino Nano', 'https://static.cytron.io/image/catalog/products/ARDUINO-NANO/arduino-nano-d.png'),
+    ('ESP32 Dev Module', 'https://www.az-delivery.de/cdn/shop/products/esp-32-dev-kit-c-v4-895689.jpg?v=1679398546'),
+    ('Sensor DHT11', 'https://vva-industrial.net/wp-content/uploads/2025/08/%C2%BFQue-es-un-sensor-de-temperatura-DHT11.jpg'),
+    ('Sensor Ultrasonico HC-SR04', 'https://ja-bots.com/wp-content/uploads/2019/08/HCSR04-1.jpg'),
+    ('Sensor PIR', 'https://bugeados.com/wp-content/uploads/sensor-pir-arduino.jpg')
+) AS imgs(product_name, image_url)
+JOIN products p ON p.product_name = imgs.product_name;

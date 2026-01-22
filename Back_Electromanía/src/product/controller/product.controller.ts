@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Param, Post, Query, UseGuards, Delete, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards, Delete, Put, UploadedFile, UseInterceptors, ParseFilePipe, FileTypeValidator } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductService } from '../service/product.service';
 import { ProductModule } from '../product.module';
 import { CreateProductRequestModel } from '../model/CreateProductRequest.model';
@@ -10,6 +11,7 @@ import { Roles } from '../../auth/decorators/roles.decorator';
 import { UserRole } from '../../user/enums/UserRole.enum';
 import { ApiBody, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ProductModel } from '../model/Product.model';
+import { productMulterConfig } from '../../common/utils/multer/product-multer.config';
 
 
 @Controller('products')
@@ -182,8 +184,10 @@ export class ProductController {
         }
     })
     @Post("register")
-    registerProduct(@Body()product: CreateProductRequestModel): Promise<ProductModule>{
-        return this.productService.createProduct(product);
+    @UseInterceptors(FileInterceptor('image', productMulterConfig)) 
+    registerProduct(@Body()product: CreateProductRequestModel, 
+    @UploadedFile() image: Express.Multer.File): Promise<ProductModule>{
+        return this.productService.createProduct(product,image);
     }
     
     @Roles(UserRole.ADMIN)

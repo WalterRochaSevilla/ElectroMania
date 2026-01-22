@@ -8,6 +8,10 @@ import { CreateProductRequestModel } from '../model/CreateProductRequest.model';
 import { RegisterProductImageRequestModel } from '../model/RegisterProductImageRequest.model';
 import { PageProductResponseModel } from '../model/PageProductResponse.model';
 import { Prisma } from '@prisma/client';
+import { join, parse} from 'path';
+import * as sharp from 'sharp';
+import {promises as fs } from 'fs';
+import config from '../../config/Configuration'
 
 @Injectable()
 export class ProductService {
@@ -17,17 +21,31 @@ export class ProductService {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  async createProduct(dto: CreateProductRequestModel): Promise<ProductModel> {
+  async createProduct(dto: CreateProductRequestModel, image?: Express.Multer.File): Promise<ProductModel> {
     const data = this.productMapper.toEntity(dto);
-    const product = await this.prisma.product.create({ data , 
-      include:{
+    if (image) {
+      const tmpPath = image.path; // archivo temporal
+      const localDir = join(process.cwd(), 'uploads/products');
+      const { name } = parse(image.filename);
+      const localFile = join(localDir, `${name}.webp`);
+      const imagePath = `${config().apiDomain.url}/uploads/products/${name}.webp`;
+      data.productImages = {
+        create: [{ image: imagePath }]
+      };
+      await fs.mkdir(localDir, { recursive: true });
+      await sharp(tmpPath)
+        .resize(800, 800, { fit: 'inside' })
+        .webp({ quality: 75 })
+        .toFile(localFile);
+      await fs.unlink(tmpPath);
+    }
+    const product = await this.prisma.product.create({
+      data,
+      include: {
         productImages: true,
-        productCategories: {
-          include: {
-            category: true
-          }
-        }
-      } });
+        productCategories: { include: { category: true } }
+      }
+    });
     return this.productMapper.toModelWithCategoryAndImages(product);
   }
 

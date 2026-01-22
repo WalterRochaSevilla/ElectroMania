@@ -1,0 +1,29 @@
+services:
+  backend:
+    build:
+      context: ./Back_Electromanía
+      dockerfile: Dockerfile
+      target: production
+    container_name: electromania-backend
+    env_file: .env
+    volumes:
+      - ./uploads:/usr/src/app/uploads
+    ports:
+      - "3000:3000"
+
+  frontend:
+    build:
+      context: ./electromania-frontend
+      dockerfile: Dockerfile
+    container_name: electromania-frontend
+    ports:
+      - "80:80"
+
+  postgres:
+    image: postgres:16
+    env_file: .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+volumes:
+  pg_data:

@@ -50,3 +50,5 @@ Thumbs.db
 
 # Archivos de desarrollo local
 src/environments/environment.local.ts
+
+Back_Electromania/uploads/products

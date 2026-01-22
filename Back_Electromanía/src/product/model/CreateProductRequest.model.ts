@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNumber, IsOptional, IsString } from "class-validator";
+import { Type } from 'class-transformer';
 
 export class CreateProductRequestModel {
     @IsString()
@@ -16,19 +17,23 @@ export class CreateProductRequestModel {
         type: String
     })
     description: string;
+
     @IsNumber()
     @ApiProperty({
         title: "price",
         description: "Precio del Producto",
         type: Number
     })
+    @Type(() => Number)
     price: number;
+
     @IsNumber()
     @ApiProperty({
         title: "stock",
         description: "Stock del Producto",
         type: Number
     })
+    @Type(() => Number)
     stock: number;
     @IsOptional()
     @IsString()
