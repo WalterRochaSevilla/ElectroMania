@@ -60,7 +60,7 @@ export class CartService {
     // React to auth state changes - sync cart when user logs in/out
     effect(() => {
       const isAuth = this.authService.isAuthenticated$();
-      
+
       // Skip initial run and only react to actual changes
       if (this.previousAuthState !== null && this.previousAuthState !== isAuth) {
         if (isAuth) {
@@ -79,12 +79,12 @@ export class CartService {
 
   private async handleLogin(): Promise<void> {
     const guestItems = this.itemsSignal();
-    
+
     if (guestItems.length > 0) {
       // Merge guest cart with backend cart
       await this.mergeGuestCartToBackend(guestItems);
     }
-    
+
     await this.loadFromBackend();
     this.clearLocalStorage();
   }
@@ -205,14 +205,9 @@ export class CartService {
 
   async removeItem(id: number): Promise<void> {
     this.itemsSignal.update(items => items.filter(item => item.id !== id));
-    
-    if (this.authService.isAuthenticated()) {
-      try {
-        await firstValueFrom(this.http.delete(`${environment.API_DOMAIN}/cart/removeItem/${id}`));
-      } catch (error) {
-        console.error('Failed to remove item from backend cart', error);
-      }
-    } else {
+    // Note: Backend doesn't support removing items yet.
+    // Local removal only - changes won't persist across sessions for authenticated users.
+    if (!this.authService.isAuthenticated()) {
       this.saveToStorage();
     }
   }
