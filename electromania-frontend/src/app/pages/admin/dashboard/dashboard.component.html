@@ -107,7 +107,7 @@
                   <tbody>
                     @for (prod of lowStockProducts; track prod.id) {
                       <tr>
-                        <td class="id-col">{{ prod.id }}</td>
+                        <td class="id-col">#{{ prod.id }}</td>
                         <td>{{ prod.name }}</td>
                         <td class="font-bold">{{ prod.stock }}</td>
                         <td>
@@ -116,7 +116,7 @@
                           </span>
                         </td>
                         <td>
-                          <button class="btn-action">Reabastecer</button>
+                          <button class="btn-action" (click)="reabastecer(prod.id)">Reabastecer</button>
                         </td>
                       </tr>
                     }

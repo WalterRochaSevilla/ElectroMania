@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ProductosService } from '../../services/productos.service';
 
 export interface ProductFormData {
     id?: number;
@@ -50,14 +51,22 @@ export interface ProductFormData {
 
               <div class="form-group">
                 <label for="categoria">Categoría</label>
-                <select id="categoria" name="categoria" [(ngModel)]="formData.categoria">
-                  <option value="General">General</option>
-                  <option value="Microcontroladores">Microcontroladores</option>
-                  <option value="Sensores">Sensores</option>
-                  <option value="Motores">Motores</option>
-                  <option value="IoT">IoT</option>
-                  <option value="Componentes">Componentes</option>
+                <select id="categoria" name="categoria" [(ngModel)]="selectedCategory" (ngModelChange)="onCategoryChange($event)">
+                  @for (cat of categories; track cat) {
+                    <option [value]="cat">{{ cat }}</option>
+                  }
+                  <option value="__custom__">+ Agregar nueva...</option>
                 </select>
+                @if (showCustomInput) {
+                  <input 
+                    type="text" 
+                    id="custom-categoria" 
+                    name="customCategoria" 
+                    [(ngModel)]="formData.categoria" 
+                    placeholder="Nombre de la nueva categoría"
+                    class="custom-category-input"
+                  >
+                }
               </div>
 
               <div class="form-group">
@@ -260,25 +269,61 @@ export interface ProductFormData {
       margin: 0;
     }
 
+    .custom-category-input {
+      margin-top: 0.5rem;
+    }
+
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   `]
 })
-export class ProductFormModalComponent implements OnChanges {
+export class ProductFormModalComponent implements OnChanges, OnInit {
+    private productosService = inject(ProductosService);
+
     @Input() isVisible = false;
     @Input() product: ProductFormData | null = null;
     @Output() saveProduct = new EventEmitter<ProductFormData>();
     @Output() cancelModal = new EventEmitter<void>();
 
     formData: ProductFormData = this.getEmptyForm();
+    categories: string[] = ['General'];
+    selectedCategory = 'General';
+    showCustomInput = false;
+
+    async ngOnInit() {
+        await this.loadCategories();
+    }
+
+    async loadCategories() {
+        try {
+            const cats = await this.productosService.getCategoriasAsStrings();
+            this.categories = cats.length > 0 ? cats : ['General'];
+        } catch {
+            this.categories = ['General'];
+        }
+    }
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes['product'] && this.product) {
-            // Clone to avoid mutating parent state directly before save
             this.formData = { ...this.product };
+            this.selectedCategory = this.categories.includes(this.formData.categoria) 
+                ? this.formData.categoria 
+                : '__custom__';
+            this.showCustomInput = this.selectedCategory === '__custom__';
         } else if (changes['isVisible'] && this.isVisible && !this.product) {
-            // Reset form on open if creating new
             this.formData = this.getEmptyForm();
+            this.selectedCategory = 'General';
+            this.showCustomInput = false;
+        }
+    }
+
+    onCategoryChange(value: string) {
+        if (value === '__custom__') {
+            this.showCustomInput = true;
+            this.formData.categoria = '';
+        } else {
+            this.showCustomInput = false;
+            this.formData.categoria = value;
         }
     }
 

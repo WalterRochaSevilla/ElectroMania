@@ -92,7 +92,7 @@ export class HomeComponent implements OnInit {
 
   async cargarCategorias() {
     try {
-      this.categorias = await this.productosService.getCategorias();
+      this.categorias = await this.productosService.getCategoriasAsStrings();
     } catch {
       this.categorias = [];
     }

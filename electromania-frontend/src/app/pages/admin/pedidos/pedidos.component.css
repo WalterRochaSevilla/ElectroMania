@@ -1,0 +1,385 @@
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+.admin-content {
+  flex: 1;
+  padding: 32px;
+  overflow-y: auto;
+}
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+}
+
+.page-header .subtitle {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Loading State */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  color: var(--text-secondary);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--brand-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Backend Pending State */
+.backend-pending {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 48px;
+  text-align: center;
+  max-width: 700px;
+  margin: 40px auto;
+}
+
+.pending-icon {
+  margin-bottom: 16px;
+}
+
+.pending-icon svg {
+  width: 64px;
+  height: 64px;
+  color: #f59e0b;
+}
+
+.backend-pending h2 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.backend-pending > p {
+  color: var(--text-secondary);
+  margin: 0 0 32px 0;
+}
+
+.pending-details {
+  background: var(--bg-primary);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.pending-details h3 {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin: 0 0 16px 0;
+}
+
+.pending-details ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pending-details li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.pending-details li:last-child {
+  border-bottom: none;
+}
+
+.pending-details code {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--brand-primary);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-family: monospace;
+  white-space: nowrap;
+}
+
+.pending-details span {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.pending-info {
+  background: var(--bg-primary);
+  border-radius: 8px;
+  padding: 24px;
+  text-align: left;
+}
+
+.pending-info h3 {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin: 0 0 16px 0;
+}
+
+.status-flow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.arrow {
+  color: var(--text-secondary);
+}
+
+.status-cancel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.status-cancel .note {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+/* Filters */
+.filters-bar {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  flex: 1;
+  min-width: 200px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 10px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.filters-bar select {
+  padding: 10px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  min-width: 180px;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+}
+
+/* Orders Table */
+.orders-table-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.orders-table th,
+.orders-table td {
+  padding: 14px 16px;
+  text-align: left;
+}
+
+.orders-table th {
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.orders-table td {
+  border-top: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.order-id {
+  font-weight: 600;
+  color: var(--brand-primary);
+}
+
+.client-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.client-name {
+  font-weight: 500;
+}
+
+.client-email {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.order-total {
+  font-weight: 600;
+}
+
+.order-date {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-pending {
+  background: rgba(251, 191, 36, 0.15);
+  color: #f59e0b;
+}
+
+.status-paid {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}
+
+.status-shipped {
+  background: rgba(139, 92, 246, 0.15);
+  color: #8b5cf6;
+}
+
+.status-delivered {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+.status-canceled {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+/* Action Buttons */
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-action {
+  padding: 6px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-action:hover {
+  background: var(--bg-primary);
+}
+
+.btn-confirm {
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.btn-confirm:hover {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.btn-ship {
+  border-color: #8b5cf6;
+  color: #8b5cf6;
+}
+
+.btn-ship:hover {
+  background: rgba(139, 92, 246, 0.1);
+}
+
+.btn-deliver {
+  border-color: #22c55e;
+  color: #22c55e;
+}
+
+.btn-deliver:hover {
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.btn-cancel {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.btn-cancel:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-content {
+    padding: 16px;
+  }
+
+  .orders-table-container {
+    overflow-x: auto;
+  }
+
+  .orders-table {
+    min-width: 700px;
+  }
+
+  .backend-pending {
+    padding: 24px;
+    margin: 20px;
+  }
+
+  .status-flow {
+    justify-content: center;
+  }
+}

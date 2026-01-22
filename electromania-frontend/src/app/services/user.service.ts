@@ -14,6 +14,10 @@ export class UserService {
     return firstValueFrom(this.http.get<User[]>(`${environment.API_DOMAIN}/users/all`));
   }
 
+  async getCurrentUser(): Promise<User> {
+    return firstValueFrom(this.http.get<User>(`${environment.API_DOMAIN}/users/get`));
+  }
+
   async createUser(data: RegisterUserRequest): Promise<User> {
     return firstValueFrom(this.http.post<User>(`${environment.API_DOMAIN}/auth/register`, data));
   }

@@ -2,13 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Product, ProductCard, CreateProductRequest, UpdateProductRequest, PageProductResponse } from '../models';
+import { Product, ProductCard, CreateProductRequest, UpdateProductRequest, PageProductResponse, Category, RegisterProductImageRequest } from '../models';
+import { CategoryService } from './category.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductosService {
   private httpClient = inject(HttpClient);
+  private categoryService = inject(CategoryService);
 
   async getAllProducts(): Promise<Product[]> {
     return firstValueFrom(this.httpClient.get<Product[]>(`${environment.API_DOMAIN}/products/all`));
@@ -37,6 +39,10 @@ export class ProductosService {
     await firstValueFrom(this.httpClient.delete(`${environment.API_DOMAIN}/products/delete/${id}`));
   }
 
+  async addProductImage(data: RegisterProductImageRequest): Promise<Product> {
+    return firstValueFrom(this.httpClient.post<Product>(`${environment.API_DOMAIN}/products/addImage`, data));
+  }
+
   toProductCard(product: Product): ProductCard {
     return {
       product_id: product.product_id,
@@ -52,19 +58,13 @@ export class ProductosService {
     return products.map(p => this.toProductCard(p));
   }
 
-  async getCategorias(): Promise<string[]> {
-    return [
-      'Arduino & Microcontroladores',
-      'Sensores',
-      'Componentes Pasivos',
-      'Motores & Drivers',
-      'Pantallas & Displays',
-      'Fuentes de Energía',
-      'Herramientas',
-      'Impresión 3D',
-      'Conectividad & Cables',
-      'Kits Educativos'
-    ];
+  async getCategorias(): Promise<Category[]> {
+    return this.categoryService.getAll();
+  }
+
+  async getCategoriasAsStrings(): Promise<string[]> {
+    const categories = await this.categoryService.getAll();
+    return categories.map(c => c.name);
   }
 
   async getDashboardStats() {
@@ -98,11 +98,18 @@ export class ProductosService {
   }
 
   async getLowStockProducts() {
-    return [
-      { id: '#089', name: 'Sensor Humedad DHT11', stock: 2, status: 'Crítico' },
-      { id: '#102', name: 'Cable Jumper M-M', stock: 5, status: 'Bajo' },
-      { id: '#205', name: 'Resistencia 220Ω', stock: 8, status: 'Bajo' },
-      { id: '#012', name: 'Display LCD 16x2', stock: 0, status: 'Agotado' }
-    ];
+    const products = await this.getAllProducts();
+    const lowStockThreshold = 10;
+    
+    return products
+      .filter(p => p.stock <= lowStockThreshold)
+      .map(p => ({
+        id: p.product_id ?? 0,
+        name: p.product_name,
+        stock: p.stock,
+        status: p.stock === 0 ? 'Agotado' : p.stock <= 3 ? 'Crítico' : 'Bajo'
+      }))
+      .sort((a, b) => a.stock - b.stock)
+      .slice(0, 10);
   }
 }
