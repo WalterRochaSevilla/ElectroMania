@@ -70,22 +70,22 @@ export class ProductosComponent implements OnInit {
     this.router.navigate(['/home']);
   }
 
-  aumentarCantidad(index: number) {
-    const item = this.carrito()[index];
+  async aumentarCantidad(index: number) {
+    const item = this.carrito().find(i => i.id === index);
     if (item) {
-      this.cartService.increaseQuantity(item.id);
+      await this.cartService.increaseQuantity(item.id);
     }
   }
 
-  disminuirCantidad(index: number) {
-    const item = this.carrito()[index];
+  async disminuirCantidad(index: number) {
+    const item = this.carrito().find(i => i.id === index);
     if (item) {
-      this.cartService.decreaseQuantity(item.id);
+      await this.cartService.decreaseQuantity(item.id);
     }
   }
 
-  eliminarProducto(index: number) {
-    const item = this.carrito()[index];
+  eliminarProducto(product_id: number) {
+    const item = this.carrito().find(i => i.id === product_id);
     if (item) {
       this.cartService.removeItem(item.id);
     }

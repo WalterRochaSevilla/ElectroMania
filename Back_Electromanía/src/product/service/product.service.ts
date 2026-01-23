@@ -196,6 +196,18 @@ export class ProductService {
       where:{ product_id: productId}
     }) != null
   }
+  async addStock(productId: number, quantity: number) {
+    if (quantity <= 0) return;
+    return this.prisma.product.update({
+      where: { product_id: productId },
+      data: {
+        stock: {
+          increment: quantity,
+        },
+      },
+    });
+  }
+
   async discountStock(productId: number, quantity: number) {
     if (quantity <= 0) return;
 
