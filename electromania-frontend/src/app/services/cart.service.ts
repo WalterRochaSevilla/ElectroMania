@@ -204,12 +204,12 @@ export class CartService {
   }
 
   async removeItem(id: number): Promise<void> {
-    this.itemsSignal.update(items => items.filter(item => item.id !== id));
-    // Note: Backend doesn't support removing items yet.
-    // Local removal only - changes won't persist across sessions for authenticated users.
-    if (!this.authService.isAuthenticated()) {
-      this.saveToStorage();
+    if(this.authService.isAuthenticated()){
+      await firstValueFrom(this.http.post(`${environment.API_DOMAIN}/cart/deleteProduct`, {
+        productId: id
+      }))
     }
+    this.refreshCart();
   }
 
   updateQuantity(id: number, cantidad: number): void {
@@ -226,15 +226,23 @@ export class CartService {
     this.saveToStorage();
   }
 
-  increaseQuantity(id: number): void {
+  async increaseQuantity(id: number): Promise<void> {
     const item = this.itemsSignal().find(i => i.id === id);
+    await firstValueFrom(this.http.post(`${environment.API_DOMAIN}/cart/addStockProduct`, {
+      productId: id,
+      quantity: 1
+    }))
     if (item) {
       this.updateQuantity(id, item.cantidad + 1);
     }
   }
 
-  decreaseQuantity(id: number): void {
+  async decreaseQuantity(id: number): Promise<void> {
     const item = this.itemsSignal().find(i => i.id === id);
+    await firstValueFrom(this.http.post(`${environment.API_DOMAIN}/cart/minusStockProduct`, {
+      productId: id,
+      quantity: 1
+    }))
     if (item) {
       this.updateQuantity(id, item.cantidad - 1);
     }

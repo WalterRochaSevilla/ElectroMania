@@ -1,0 +1,56 @@
+services:
+  backend:
+    build:
+      context: ./Back_Electromanía
+      dockerfile: Dockerfile
+      target: development
+    container_name: electromania-backend
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    volumes:
+      - ./Back_Electromanía/src:/usr/src/app/src
+      - ./Back_Electromanía/prisma:/usr/src/app/prisma
+      - uploads_data:/usr/src/app/uploads
+
+    ports:
+      - "3000:3000"
+
+    command: sh -c "rm -rf dist && pnpm prisma migrate dev && pnpm start:dev"
+
+  frontend:
+    build:
+      context: ./electromania-frontend
+      dockerfile: Dockerfile
+      target: development
+    container_name: electromania-frontend
+    volumes:
+      - ./electromania-frontend:/usr/src/app
+      - angular_cache:/usr/src/app/.angular/cache
+    command: npm run start:dev
+    ports:
+      - "4200:4200"
+
+  postgres:
+    image: postgres:16
+    container_name: postgres-db
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER} -d ${DATABASE_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pg_data:
+  uploads_data:
+  angular_cache:

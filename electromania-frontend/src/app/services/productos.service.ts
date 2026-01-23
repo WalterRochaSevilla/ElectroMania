@@ -28,7 +28,16 @@ export class ProductosService {
   }
 
   async createProduct(product: CreateProductRequest): Promise<Product> {
-    return firstValueFrom(this.httpClient.post<Product>(`${environment.API_DOMAIN}/products/register`, product));
+    const formData = new FormData();
+    formData.append('product_name', product.product_name);
+    formData.append('description', product.description);
+    formData.append('price', product.price.toString());
+    formData.append('stock', product.stock.toString());
+
+    if (product.image) {
+      formData.append('image', product.image);
+    }
+    return firstValueFrom(this.httpClient.post<Product>(`${environment.API_DOMAIN}/products/register`, formData));
   }
 
   async updateProduct(id: number | string, product: UpdateProductRequest): Promise<Product> {

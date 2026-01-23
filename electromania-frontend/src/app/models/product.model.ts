@@ -15,6 +15,7 @@ export interface CreateProductRequest {
   description: string;
   price: number;
   stock: number;
+  image?: File;
 }
 
 export interface UpdateProductRequest {

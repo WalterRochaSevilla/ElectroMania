@@ -5,7 +5,8 @@ import { AuthGuard } from '../../auth/guards/auth.guard';
 import { Roles } from '../../auth/decorators/roles.decorator';
 import { UserRole } from '../../user/enums/UserRole.enum';
 import { CreateCartRequestDto } from '../dto/createCartRequest.dto';
-import { AddProductToCartRequestDto } from '../dto/addProductToCartRequest.dto';
+import { AddProductToCartRequestDto, MinusProductToCartRequestDto } from '../dto/addProductToCartRequest.dto';
+import { DeleteProductFromCartDto } from '../dto/delete-product-from-cart.dto';
 
 @Controller('cart')
 export class CartController {
@@ -31,4 +32,20 @@ export class CartController {
     async addProductToCart(@Headers('authorization') token: string,@Body() addProductRequest:AddProductToCartRequestDto){
         return this.cartService.addProductToCart(token.replace('Bearer ', ''), addProductRequest);
     }
+    @UseGuards(AuthGuard)
+    @Post("deleteProduct")
+    async deleteProductToCart(@Headers('authorization') token: string,@Body() deleteRequest:DeleteProductFromCartDto){
+        return this.cartService.deleteCartDetail(token.replace('Bearer ', ''), deleteRequest);
+    }
+    @UseGuards(AuthGuard)
+    @Post("addStockProduct")
+    async addStockProductToCart(@Headers('authorization') token: string,@Body() addProduct:AddProductToCartRequestDto){
+        return this.cartService.checkUpdateCartDetail(token.replace('Bearer ', ''), addProduct);
+    }
+    @UseGuards(AuthGuard)
+    @Post("minusStockProduct")
+    async minusStockProductToCart(@Headers('authorization') token: string,@Body() minusProduct:MinusProductToCartRequestDto){
+        return this.cartService.checkUpdateCartDetail(token.replace('Bearer ', ''), minusProduct);
+    }
+    
 }

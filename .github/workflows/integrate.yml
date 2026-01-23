@@ -37,21 +37,10 @@ jobs:
             JWT_EXPIRATION=${{ secrets.JWT_EXPIRATION }}
             BCRYPT_SALT_ROUNDS=${{ secrets.BCRYPT_SALT_ROUNDS }}
             PORT=${{ secrets.PORT }}
+            API_DOMAIN=${{ secrets.API_DOMAIN }}
             EOF
-
       - name: Build and start containers
-        run: docker compose up -d --build
-
-      - name: Wait for DB
-        run: sleep 15
-
-      - name: Run Prisma migrations
-        working-directory: ./Back_Electromanía
-        run: docker exec electromania-backend pnpm prisma migrate deploy
-
-      - name: Run Tests
-        run: docker exec electromania-backend pnpm run test
-
+        run: docker compose -f docker-compose.test.yml up --build --abort-on-container-exit
       - name: Stop containers
         if: always()
-        run: docker compose down -v
+        run: docker compose -f docker-compose.test.yml down -v

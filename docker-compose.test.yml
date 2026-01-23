@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    env_file: .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data_test:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./Back_Electromanía
+      dockerfile: Dockerfile
+      target: test
+    env_file: .env
+    depends_on:
+      - postgres
+    command: sh -c "pnpm prisma migrate deploy && pnpm run test"
+volumes:
+  pg_data_test:

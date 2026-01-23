@@ -26,14 +26,14 @@
                 </div>
                 <div class="columna cantidad-col">
                   <div class="contador-cantidad">
-                    <button class="btn-cantidad" (click)="disminuirCantidad(i)">
+                    <button class="btn-cantidad" (click)="disminuirCantidad(item.id)">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                       </svg>
                     </button>
                     <span class="cantidad">{{ item.cantidad }}</span>
-                    <button class="btn-cantidad" (click)="aumentarCantidad(i)">
+                    <button class="btn-cantidad" (click)="aumentarCantidad(item.id)">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -48,7 +48,7 @@
                   <span class="precio-unitario">{{ item.precio | number:'1.2-2' }} Bs. c/u</span>
                 </div>
                 <div class="columna acciones-col">
-                  <button class="btn-eliminar" (click)="eliminarProducto(i)">
+                  <button class="btn-eliminar" (click)="eliminarProducto(item.id)">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                       stroke-linecap="round" stroke-linejoin="round">
                       <polyline points="3 6 5 6 21 6"></polyline>
