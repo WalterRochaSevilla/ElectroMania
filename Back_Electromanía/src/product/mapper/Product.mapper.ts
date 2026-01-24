@@ -3,7 +3,7 @@ import { CreateProductRequestModel} from '../model/CreateProductRequest.model';
 import { Mapper } from "src/common/interfaces/Mapper.interface";
 
 import { $Enums, Prisma, Product, ProductImage, ProductCategory, Category } from '@prisma/client';
-import { CartProductModel } from '../../cart/models/CardProduct.model';
+import { CartProductModel, CartProductWithImagesModel } from '../../cart/models/CardProduct.model';
 import { isInstance } from "class-validator";
 
 
@@ -16,6 +16,12 @@ export type ProductWithImages = Prisma.ProductGetPayload<{
 export type ProductWithCategories = Prisma.ProductGetPayload<{
   include: {
     productCategories: { include: { category: true } };
+  };
+}>;
+
+type ProductWithoutImages = Prisma.ProductGetPayload<{
+  include: {
+    productImages: false;
   };
 }>;
 
@@ -71,11 +77,18 @@ export class ProductMapper {
         }
     }
     toCartProduct(entity: ProductWithImages): CartProductModel {
-        const model = new CartProductModel();
+        const model = new CartProductWithImagesModel();
         model.product_id = entity.product_id;
         model.product_name = entity.product_name;
         model.price = Number(entity.price);
         model.images = entity.productImages ? entity.productImages.map(img => img.image) : [];
+        return model;
+    }
+    toCartProductWithoutImages(entity: ProductWithoutImages): CartProductModel {
+        const model = new CartProductModel();
+        model.product_id = entity.product_id;
+        model.product_name = entity.product_name;
+        model.price = Number(entity.price);
         return model;
     }
     toModelWithCategory(productWithCategories: ProductWithCategories): ProductModel {
@@ -99,6 +112,16 @@ export class ProductMapper {
         model.state = productWithCategoriesAndImages.state;
         model.categories = productWithCategoriesAndImages.productCategories.map((category) => category.category.category_name);
         model.images = productWithCategoriesAndImages.productImages.map((img) => img.image);
+        return model;
+    }
+    toModelWithoutProductImages(entity: ProductWithoutImages): ProductModel {
+        const model = new ProductModel();
+        model.product_id = entity.product_id;
+        model.product_name = entity.product_name;
+        model.description = entity.description;
+        model.price = Number(entity.price);
+        model.stock = entity.stock;
+        model.state = entity.state;
         return model;
     }
 }

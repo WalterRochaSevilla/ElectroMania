@@ -5,3 +5,10 @@ export class CartDetailsResponseModel {
     quantity: number
     total: number
 }
+
+export class CartDetailsResponseWithProductImagesModel {
+    product: ProductModel
+    quantity: number
+    total: number
+}
+

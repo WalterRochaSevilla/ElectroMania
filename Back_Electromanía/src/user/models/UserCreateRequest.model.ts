@@ -41,4 +41,12 @@ export class UserCreateRequestModel {
         type: String
     })
     social_reason: string;
+
+    @IsString()
+    @ApiProperty({
+        title: 'phone',
+        description: 'Telefono del usuario',
+        type: String
+    })
+    phone: string;
 }
