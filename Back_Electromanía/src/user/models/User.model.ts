@@ -54,4 +54,10 @@ export class UserModel {
         enum: ['ADMIN', 'USER']
     })
     role: string;
+    @ApiProperty({
+        title: 'Telefono',
+        description: 'Telefono del usuario',
+        type: String
+    })
+    phone: string;
 }

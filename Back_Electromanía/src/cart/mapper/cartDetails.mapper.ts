@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { OrderItem, Prisma } from '@prisma/client';
 import { CartDetailsResponseModel } from '../models/cartDetails.model';
 import { CreateCartRequestDto } from '../dto/createCartRequest.dto';
 import { ProductMapper } from '../../product/mapper/Product.mapper';
@@ -11,6 +11,12 @@ type CartDetailEntity = Prisma.CartDetailsGetPayload<{
       }
     };
   };
+}>;
+
+type CartDetailsWithoutProductImages = Prisma.CartDetailsGetPayload<{
+  include: {
+    product: true;
+  }
 }>;
 
 export class CartDetailsMapper {
@@ -27,7 +33,27 @@ export class CartDetailsMapper {
     model.total = entity.quantity * Number(entity.unit_price);
     return model;
   }
+  toModelWithoutProductImages(entity: CartDetailsWithoutProductImages): CartDetailsResponseModel {
+    const model = new CartDetailsResponseModel();
+    model.product = this.productMapper.toModelWithoutProductImages(entity.product);
+    model.quantity = entity.quantity;
+    model.total = entity.quantity * Number(entity.unit_price);
+    return model;
+  }
 
+  toOrderItem(entity: CartDetailsResponseModel):Prisma.OrderItemCreateWithoutOrderInput {
+    return {
+      quantity: entity.quantity,
+      unit_price: entity.product.price,
+      total: entity.total,
+      product: {
+        connect: {
+          product_id: entity.product.product_id,
+        },
+      },
+      product_name: entity.product.product_name
+    }
+  }
 //   // ✅ Create DTO → Prisma input
 //   toEntity(
 //     dto: CreateCartRequestDto,

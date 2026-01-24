@@ -5,7 +5,7 @@ CREATE TYPE "CartState" AS ENUM ('ACTIVE', 'INACTIVE', 'COMPLETED');
 CREATE TYPE "ProductState" AS ENUM ('AVAILABLE', 'UNAVAILABLE', 'OUT_OF_STOCK');
 
 -- CreateEnum
-CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'USER');
+CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'USER', 'EMPLOYED');
 
 -- CreateEnum
 CREATE TYPE "UserState" AS ENUM ('ACTIVE', 'INACTIVE');
@@ -32,6 +32,9 @@ CREATE TABLE "users" (
     "nit_ci" VARCHAR(15) NOT NULL,
     "social_reason" VARCHAR(100) NOT NULL,
     "state" "UserState" NOT NULL DEFAULT 'ACTIVE',
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "phone_number" TEXT NOT NULL,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("uuid")
 );
@@ -230,7 +233,8 @@ ALTER TABLE "payments" ADD CONSTRAINT "payments_order_id_fkey" FOREIGN KEY ("ord
 -- AddForeignKey
 ALTER TABLE "invoices" ADD CONSTRAINT "invoices_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "orders"("order_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
-INSERT INTO "users" ("uuid","name","email","password","role","nit_ci","social_reason","state") VALUES ('da51d1ae-039d-4ca2-a7aa-50644cdf2917','Administrador','admin@admin.com','$2b$12$cGW69lT1JN.vc5O61N8RMOTA6wIz003kyP2m/o31LdpqRidVpBn2e','ADMIN','12712123','Admin','ACTIVE');
+INSERT INTO "users" ("uuid","name","email","password","role","nit_ci","social_reason","state","phone_number","updated_at") 
+VALUES ('da51d1ae-039d-4ca2-a7aa-50644cdf2917','Administrador','admin@admin.com','$2b$12$cGW69lT1JN.vc5O61N8RMOTA6wIz003kyP2m/o31LdpqRidVpBn2e','ADMIN','12712123','Admin','ACTIVE','+5917787672',current_timestamp);
 
 -- =========================
 -- CATEGORÍAS

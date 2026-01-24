@@ -26,7 +26,9 @@ export class UserMapper implements Mapper<UserModel, User,Prisma.UserCreateInput
             email: model.email,
             password: model.password,
             nit_ci: model.nit_ci,
-            social_reason: model.social_reason
+            social_reason: model.social_reason,
+            phone_number: model.phone,
+            updated_at: new Date(),
         };
     }
     toRegisterUserModel(entity: User): UserRegisterResponseModel {
@@ -45,7 +47,9 @@ export class UserMapper implements Mapper<UserModel, User,Prisma.UserCreateInput
             password: model.password,
             nit_ci: model.nit_ci,
             social_reason: model.social_reason,
-            role: "ADMIN"
+            role: "ADMIN",
+            updated_at: new Date(),
+            phone_number: model.phone
         };
     }
     toJwtPayloadModel(entity: User): UserJwtPayloadModel {

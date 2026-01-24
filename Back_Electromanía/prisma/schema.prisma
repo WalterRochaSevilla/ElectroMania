@@ -30,6 +30,7 @@ enum ProductState {
 enum UserRole {
   ADMIN
   USER
+  EMPLOYED
 }
 
 enum UserState {
@@ -74,6 +75,9 @@ model User {
   nit_ci        String     @db.VarChar(15)
   social_reason String     @db.VarChar(100)
   state         UserState  @default(ACTIVE)
+  created_at    DateTime   @default(now())
+  updated_at    DateTime
+  phone_number  String
 
   carts         Cart[]
   userOrders    UserOrder[]

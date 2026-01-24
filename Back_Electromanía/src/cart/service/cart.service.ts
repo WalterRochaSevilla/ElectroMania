@@ -29,7 +29,18 @@ export class CartService {
                 data: {
                     user_uuid: user.uuid,
                     created_at: new Date()
-                }
+                },
+                include: {
+                    cartDetails: {
+                        include: {
+                            product: {
+                                include: {
+                                    productImages: true
+                                }
+                            }
+                        },
+                    },
+                },
             })
         }catch(error){
             return Promise.reject(error);
@@ -37,7 +48,6 @@ export class CartService {
     }
     async getCartByUser(token: string) {
         const user = await this.authService.getUserFromToken(token);
-
         const cart = await this.prisma.cart.findFirst({
             where: { 
                 user_uuid: user.uuid,
@@ -56,7 +66,7 @@ export class CartService {
         },
         });
         if(!cart){
-            return this.createCart(token);
+            return this.cartMapper.toModel(await this.createCart(token));
         }
         return this.cartMapper.toModel(cart);
     }
@@ -247,12 +257,7 @@ export class CartService {
         let updateData;
         if(cartUpdateRequest.state){
             updateData = {
-                state: cartUpdateRequest.state,
-                total: cartUpdateRequest.total
-            } as Prisma.CartUpdateInput
-        }else{
-            updateData = {
-                total: cartUpdateRequest.total
+                state: cartUpdateRequest.state
             } as Prisma.CartUpdateInput
         }
         return this.prisma.cart.update({
