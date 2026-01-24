@@ -83,6 +83,7 @@ describe('AuthService', () => {
       password: 'Password#3101#',
       nit_ci: '1234567121',
       social_reason: 'pruebas',
+      phone: '1234567121',
     };
 
     (userService.registerUser as jest.Mock).mockResolvedValue({
