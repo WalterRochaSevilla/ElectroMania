@@ -22,29 +22,30 @@ export class CartService {
         private readonly cartMapper: CartMapper
     ){}
 
-    async createCart(token:string ){
-        try{
-            const user = await this.authService.getUserFromToken(token);
-            return this.prisma.cart.create({
-                data: {
-                    user_uuid: user.uuid,
-                    created_at: new Date()
+    async createCart(token:string, tx?:Prisma.TransactionClient ){
+        const user = await this.authService.getUserFromToken(token);
+        const prisma = tx? tx : this.prisma
+        return prisma.cart.create({
+            data: {
+                user:{
+                    connect: {
+                        uuid: user.uuid
+                    }
                 },
-                include: {
-                    cartDetails: {
-                        include: {
-                            product: {
-                                include: {
-                                    productImages: true
-                                }
+                created_at: new Date()
+            },
+            include: {
+                cartDetails: {
+                    include: {
+                        product: {
+                            include: {
+                                productImages: true
                             }
-                        },
+                        }
                     },
                 },
-            })
-        }catch(error){
-            return Promise.reject(error);
-        }
+            },
+        })
     }
     async getCartByUser(token: string) {
         const user = await this.authService.getUserFromToken(token);
@@ -104,7 +105,8 @@ export class CartService {
         return this.checkCartDetail(activeCart.cart_id, addProductRequest);
     }
 
-    async createCartDetail(cart_id: number, addProductRequest:AddProductToCartRequestDto) {
+    async createCartDetail(cart_id: number, addProductRequest:AddProductToCartRequestDto,tx?:Prisma.TransactionClient) {
+        const prisma = tx? tx : this.prisma
         const product = await this.productService.getProductById(addProductRequest.productId);
         const cartDetails = {
             quantity: addProductRequest.quantity,
@@ -122,27 +124,46 @@ export class CartService {
         } as Prisma.CartDetailsCreateInput
         await this.productService.discountStock(
             addProductRequest.productId,
-            addProductRequest.quantity
+            addProductRequest.quantity,
+            prisma
         )
-        return this.prisma.cartDetails.create({
+        return prisma.cartDetails.create({
             data: cartDetails
         })
     }
-    private async checkCartDetail(cart_id: number, addProductRequest:AddProductToCartRequestDto) {
-        const product = await this.productService.getProductById(addProductRequest.productId);
-        if(!product){
-            throw new NotFoundException('Product not found');
-        }
-        const cartDetail = await this.prisma.cartDetails.findFirst({
+    async checkCartDetail(cart_id: number, addProductRequest:AddProductToCartRequestDto,tx?:Prisma.TransactionClient) {
+        const prisma = tx? tx : this.prisma
+        const product = await this.productService.getProductById(addProductRequest.productId,prisma);
+        const cartDetail = await prisma.cartDetails.findFirst({
             where: {
                 cart_id: cart_id,
                 product_id: addProductRequest.productId
             },
         })
         if(!cartDetail){
-            return this.createCartDetail(cart_id, addProductRequest);
+            return this.createCartDetail(cart_id, addProductRequest,prisma);
         }
-        return this.addStockProductToCart(cartDetail.id, addProductRequest);
+        const cartDetails = await this.addStockProductToCart(cartDetail.id, addProductRequest,prisma);
+        const cart = await this.prisma.cart.findUnique({
+            where: {
+                cart_id: cart_id
+            },
+            include: {
+                cartDetails: {
+                    include: {
+                        product: {
+                            include: {
+                                productImages: true
+                            }
+                        }
+                    },
+                }
+            }
+        })
+        if(!cart){
+            return Promise.reject(new NotFoundException('Cart not found'));
+        }
+        return this.cartMapper.toModel(cart);
     }
     async checkUpdateCartDetail(token: string, request:UpdateCartDetailDto) {
         const activeCart = await this.getCartEntityByUser(token);
@@ -164,11 +185,8 @@ export class CartService {
             return this.minusStockProductToCart(cartDetail.id, request);
         }
     }
-    async addStockProductToCart(cardDetailId: number, addProductRequest:AddProductToCartRequestDto) {
-        const product = await this.productService.getProductById(addProductRequest.productId);
-        if(product.stock < addProductRequest.quantity){
-            throw new ForbiddenException('Product out of stock');
-        }
+    async addStockProductToCart(cardDetailId: number, addProductRequest:AddProductToCartRequestDto,tx?:Prisma.TransactionClient) {
+        const prisma = tx? tx : this.prisma
         const cartDetailUpdate:Prisma.CartDetailsUpdateInput = {
             quantity: {
                 increment: addProductRequest.quantity
@@ -176,15 +194,13 @@ export class CartService {
         }
         await this.productService.discountStock(
             addProductRequest.productId,
-            addProductRequest.quantity
+            addProductRequest.quantity,
+            prisma
         )
         return this.updateCartDetail(cardDetailId, cartDetailUpdate);
     }
-    async minusStockProductToCart(cartDetailId: number, minusProductRequest:MinusProductToCartRequestDto) {
-        const product = await this.productService.getProductById(minusProductRequest.productId);
-        if(product.stock < minusProductRequest.quantity){
-            throw new ForbiddenException('Product out of stock');
-        }
+    async minusStockProductToCart(cartDetailId: number, minusProductRequest:MinusProductToCartRequestDto,tx?:Prisma.TransactionClient) {
+        const prisma = tx? tx : this.prisma
         const cartDetailUpdate:Prisma.CartDetailsUpdateInput = {
             quantity: {
                 decrement: minusProductRequest.quantity
@@ -192,16 +208,21 @@ export class CartService {
         }
         await this.productService.addStock(
             minusProductRequest.productId,
-            minusProductRequest.quantity
+            minusProductRequest.quantity,
+            prisma
         )
         return this.updateCartDetail(cartDetailId, cartDetailUpdate);
     }
-    async updateCartDetail(cartDetailId: number,cartDetail:Prisma.CartDetailsUpdateInput){
-        return this.prisma.cartDetails.update({
+    async updateCartDetail(cartDetailId: number,cartDetail:Prisma.CartDetailsUpdateInput,tx?:Prisma.TransactionClient) {
+        const prisma = tx? tx : this.prisma
+        return prisma.cartDetails.update({
             where: {
                 id: cartDetailId
             },
-            data: cartDetail
+            data: cartDetail,
+            include: {
+                cart: true
+            }
         })
     }
     async deleteCartDetailById(cartDetailId: number) {

@@ -8,10 +8,11 @@ import { AuthModule } from '../auth/auth.module';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { CartMapper } from './mapper/cart.mapper';
+import { AddProductToCartUseCase } from './use-cases/add-product-to-cart.use-case';
 
 @Module({
     imports: [ProductModule, UserModule,AuthModule],
     controllers: [CartController],
-    providers: [CartService, RolesGuard,AuthGuard,PrismaService,CartMapper,]
+    providers: [CartService, RolesGuard,AuthGuard,PrismaService,CartMapper,AddProductToCartUseCase]
 })
 export class CartModule {}

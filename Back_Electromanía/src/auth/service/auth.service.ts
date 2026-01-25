@@ -8,6 +8,7 @@ import { PasswordService } from '../../common/utils/password.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserJwtPayloadModel } from '../models/user-jwt-payload.model';
 import { LoginResponseModel } from '../models/login-response.model';
+import config from '../../config/Configuration';
 
 @Injectable()
 export class AuthService {
@@ -27,6 +28,7 @@ export class AuthService {
         }
     }
     private async generateToken(user: UserJwtPayloadModel) {
+        console.log(config().jwtConstants.secret);
         return new LoginResponseModel(
             this.jwtService.sign({user}),
         );
@@ -56,6 +58,7 @@ export class AuthService {
         return this.userService.getUserByField('uuid', uuid);
     }
     async getUserFromToken(token: string){
+        const verify = await this.validateToken(token);
         return this.jwtService.decode(token).user;
     }
 

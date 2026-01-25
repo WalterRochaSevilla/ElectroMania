@@ -44,6 +44,7 @@ Thumbs.db
 .env
 .env.local
 .env*.local
+.dev.env
 
 # Configuración de Firebase (si usas Firebase)
 .firebase/
