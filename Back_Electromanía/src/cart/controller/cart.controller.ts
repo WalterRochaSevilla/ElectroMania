@@ -2,18 +2,17 @@ import { Body, Controller, Get, Headers, Post, UseGuards } from '@nestjs/common'
 import { CartService } from '../service/cart.service';
 import { RolesGuard } from '../../auth/guards/roles.guard';
 import { AuthGuard } from '../../auth/guards/auth.guard';
-import { Roles } from '../../auth/decorators/roles.decorator';
-import { UserRole } from '../../user/enums/UserRole.enum';
-import { CreateCartRequestDto } from '../dto/createCartRequest.dto';
-import { AddProductToCartRequestDto, MinusProductToCartRequestDto } from '../dto/addProductToCartRequest.dto';
 import { DeleteProductFromCartDto } from '../dto/delete-product-from-cart.dto';
 import { AddProductToCartUseCase } from '../use-cases/add-product-to-cart.use-case';
+import { UpdateCartDetailDto } from '../dto/update-cart-detail.dto';
+import { UpdateProductQuantityUseCase } from '../use-cases/update-product-quantity.use-case';
 
 @Controller('cart')
 export class CartController {
     constructor(
         private readonly cartService: CartService,
-        private readonly addProductToCartUseCase:AddProductToCartUseCase
+        private readonly addProductToCartUseCase:AddProductToCartUseCase,
+        private readonly updateCartDetails: UpdateProductQuantityUseCase
     ) {}
 
     @UseGuards(AuthGuard)
@@ -31,8 +30,8 @@ export class CartController {
 
     @UseGuards(AuthGuard)
     @Post("addProduct")
-    async addProductToCart(@Headers('authorization') token: string,@Body() addProductRequest:AddProductToCartRequestDto){
-        return this.addProductToCartUseCase.execute(token, addProductRequest);
+    async addProductToCart(@Headers('authorization') token: string,@Body() updateRequest:UpdateCartDetailDto){
+        return this.addProductToCartUseCase.execute(token, updateRequest);
     }
     @UseGuards(AuthGuard)
     @Post("deleteProduct")
@@ -40,14 +39,9 @@ export class CartController {
         return this.cartService.deleteCartDetail(token.replace('Bearer ', ''), deleteRequest);
     }
     @UseGuards(AuthGuard)
-    @Post("addStockProduct")
-    async addStockProductToCart(@Headers('authorization') token: string,@Body() addProduct:AddProductToCartRequestDto){
-        return 
-    }
-    @UseGuards(AuthGuard)
-    @Post("minusStockProduct")
-    async minusStockProductToCart(@Headers('authorization') token: string,@Body() minusProduct:MinusProductToCartRequestDto){
-        return this.cartService.checkUpdateCartDetail(token.replace('Bearer ', ''), minusProduct);
+    @Post("update")
+    async updateCartDetail(@Headers('authorization') token: string,@Body() addProduct:UpdateCartDetailDto){
+        return this.updateCartDetails.execute(token, addProduct);
     }
     
 }

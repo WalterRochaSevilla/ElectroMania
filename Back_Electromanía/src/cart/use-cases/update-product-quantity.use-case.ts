@@ -2,22 +2,18 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from '../../prisma/service/prisma.service';
 import { AuthService } from '../../auth/service/auth.service';
 import { ProductService } from '../../product/service/product.service';
-import { AddProductToCartRequestDto } from "../dto/addProductToCartRequest.dto";
-import { CartService } from '../service/cart.service';
-
+import { CartService } from "../service/cart.service";
+import { UpdateCartDetailDto } from "../dto/update-cart-detail.dto";
 
 @Injectable()
-export class AddProductToCartUseCase {
+export class UpdateProductQuantityUseCase {
   constructor(
-    private readonly prisma:PrismaService,
+    private readonly prisma: PrismaService,
     private readonly authService: AuthService,
     private readonly productService: ProductService,
     private readonly cartService: CartService
   ) {}
-  async execute(
-    token: string,
-    addProductRequest:AddProductToCartRequestDto
-  ){
+  async execute(token: string, request:UpdateCartDetailDto) {
     const toKenFormat = token.replace("Bearer ", "");
     const user = await this.authService.getUserFromToken(toKenFormat);
     return this.prisma.$transaction(async (tx) => {
@@ -30,7 +26,7 @@ export class AddProductToCartUseCase {
       if(!activeCart) {
         activeCart = await this.cartService.createCart(toKenFormat, tx);
       }
-      return this.cartService.checkCartDetail(activeCart.cart_id, addProductRequest, tx);
+      return this.cartService.checkUpdateCartDetail(activeCart.cart_id, request, tx);
     })
   }
 }
