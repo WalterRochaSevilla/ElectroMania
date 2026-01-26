@@ -41,7 +41,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (producto of productos; track producto.id) {
+            @for (producto of paginatedProducts; track producto.id) {
             <tr>
               <td class="id-col">{{ producto.id }}</td>
               <td>

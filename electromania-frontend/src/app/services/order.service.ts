@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Order, CreateOrderRequest, UpdateOrderStatusRequest, OrderSummary } from '../models';
+import { Order, UpdateOrderStatusRequest } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -10,32 +10,51 @@ import { Order, CreateOrderRequest, UpdateOrderStatusRequest, OrderSummary } fro
 export class OrderService {
   private http = inject(HttpClient);
 
-  async getAllOrders(): Promise<Order[]> {
-    return firstValueFrom(this.http.get<Order[]>(`${environment.API_DOMAIN}/orders`));
-  }
-
-  async getOrderById(id: number): Promise<Order> {
-    return firstValueFrom(this.http.get<Order>(`${environment.API_DOMAIN}/orders/${id}`));
-  }
-
+  /**
+   * Get all orders for the logged-in user
+   * Backend: GET /order
+   */
   async getMyOrders(): Promise<Order[]> {
-    return firstValueFrom(this.http.get<Order[]>(`${environment.API_DOMAIN}/orders/my-orders`));
+    return firstValueFrom(this.http.get<Order[]>(`${environment.API_DOMAIN}/order`));
   }
 
-  async createOrder(data: CreateOrderRequest): Promise<Order> {
-    return firstValueFrom(this.http.post<Order>(`${environment.API_DOMAIN}/orders`, data));
+  /**
+   * Get a specific order by ID
+   * Backend: GET /order/:id
+   */
+  async getOrderById(id: number): Promise<Order> {
+    return firstValueFrom(this.http.get<Order>(`${environment.API_DOMAIN}/order/${id}`));
   }
 
-  async updateOrderStatus(id: number, data: UpdateOrderStatusRequest): Promise<Order> {
-    return firstValueFrom(this.http.patch<Order>(`${environment.API_DOMAIN}/orders/${id}/status`, data));
+  /**
+   * Create an order from the user's current cart
+   * Backend: POST /order/register (uses cart, no body needed)
+   */
+  async createOrderFromCart(): Promise<Order> {
+    return firstValueFrom(this.http.post<Order>(`${environment.API_DOMAIN}/order/register`, {}));
   }
 
+  /**
+   * Update an order
+   * Backend: PATCH /order/:id
+   */
+  async updateOrder(id: number, data: UpdateOrderStatusRequest): Promise<Order> {
+    return firstValueFrom(this.http.patch<Order>(`${environment.API_DOMAIN}/order/${id}`, data));
+  }
+
+  /**
+   * Delete an order  
+   * Backend: DELETE /order/:id
+   */
+  async deleteOrder(id: number): Promise<void> {
+    await firstValueFrom(this.http.delete(`${environment.API_DOMAIN}/order/${id}`));
+  }
+
+  /**
+   * Cancel an order (convenience method)
+   */
   async cancelOrder(id: number): Promise<Order> {
-    return this.updateOrderStatus(id, { status: 'CANCELED' });
-  }
-
-  async getOrderSummary(): Promise<OrderSummary> {
-    return firstValueFrom(this.http.get<OrderSummary>(`${environment.API_DOMAIN}/orders/summary`));
+    return this.updateOrder(id, { status: 'CANCELED' });
   }
 
   getStatusLabel(status: string): string {
@@ -60,3 +79,4 @@ export class OrderService {
     return classes[status] || '';
   }
 }
+

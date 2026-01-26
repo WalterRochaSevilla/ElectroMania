@@ -46,7 +46,9 @@ export class ProductosAdminComponent implements OnInit {
         categoria: 'General',
         precio: p.price,
         stock: p.stock,
-        activo: p.state === 'AVAILABLE'
+        activo: p.state === 'AVAILABLE',
+        description: p.description,
+        images: p.images || []
       }));
     } catch {
       this.toast.error('Error al cargar productos');
@@ -59,6 +61,12 @@ export class ProductosAdminComponent implements OnInit {
 
   get stockBajoCount(): number {
     return this.productos.filter(p => p.stock <= 5).length;
+  }
+
+  get paginatedProducts(): ProductDisplay[] {
+    const start = (this.paginaActual - 1) * this.productosPorPagina;
+    const end = start + this.productosPorPagina;
+    return this.productos.slice(start, end);
   }
 
   ingresar() {
@@ -91,7 +99,8 @@ export class ProductosAdminComponent implements OnInit {
       descripcion: producto.description || '',
       price: producto.precio,
       stock: producto.stock,
-      categoria: producto.categoria
+      categoria: producto.categoria,
+      existingImages: producto.images || []
     };
     this.isEditing = true;
     this.isModalOpen = true;
@@ -111,8 +120,23 @@ export class ProductosAdminComponent implements OnInit {
           product_name: data.nombre,
           description: data.descripcion,
           price: data.price,
-          stock: data.stock
+          stock: data.stock,
+          image: data.imagen // Include image if a new one was selected
         });
+
+        // If user selected a different existing image as primary, re-add it to make it "newest"
+        if (data.selectedImageUrl && !data.imagen) {
+          const existingImages = data.existingImages || [];
+          const lastImage = existingImages[existingImages.length - 1];
+          if (data.selectedImageUrl !== lastImage) {
+            // Re-add the selected image URL - backend will delete old record first
+            await this.productosService.addProductImage({
+              name: data.nombre,
+              image_url: data.selectedImageUrl
+            });
+          }
+        }
+
         this.toast.success('Producto actualizado exitosamente');
         this.cargarProductos();
       } catch {
@@ -159,7 +183,17 @@ export class ProductosAdminComponent implements OnInit {
 
   async toggleActivo(producto: ProductDisplay) {
     const newState = !producto.activo;
-    producto.activo = newState;
+    const newStateBackend = newState ? 'AVAILABLE' : 'UNAVAILABLE';
+
+    try {
+      await this.productosService.updateProduct(producto.id!, {
+        state: newStateBackend
+      });
+      producto.activo = newState;
+      this.toast.success(`Producto ${newState ? 'activado' : 'desactivado'}`);
+    } catch {
+      this.toast.error('Error al cambiar el estado');
+    }
   }
 
   calcularValorTotal(): string {

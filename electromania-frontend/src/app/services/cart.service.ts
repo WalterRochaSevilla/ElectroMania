@@ -9,6 +9,7 @@ import { CartItem, CartTotals } from '../models';
 interface BackendCartProduct {
   product_id: number;
   product_name: string;
+  description: string;
   price: number;
   images: string[];
 }
@@ -131,7 +132,7 @@ export class CartService {
           id: d.product.product_id,
           nombre: d.product.product_name,
           precio: d.product.price,
-          descripcion: '',
+          descripcion: d.product.description || '',
           categoria: 'General',
           cantidad: d.quantity,
           imagen: d.product.images?.[0] || ''
@@ -204,7 +205,7 @@ export class CartService {
   }
 
   async removeItem(id: number): Promise<void> {
-    if(this.authService.isAuthenticated()){
+    if (this.authService.isAuthenticated()) {
       await firstValueFrom(this.http.post(`${environment.API_DOMAIN}/cart/deleteProduct`, {
         productId: id
       }))
@@ -227,23 +228,45 @@ export class CartService {
   }
 
   async increaseQuantity(id: number): Promise<void> {
-    const item = this.itemsSignal().find(i => i.id === id);
-    await firstValueFrom(this.http.post(`${environment.API_DOMAIN}/cart/addStockProduct`, {
-      productId: id,
-      quantity: 1
-    }))
-    if (item) {
-      this.updateQuantity(id, item.cantidad + 1);
+    if (this.authService.isAuthenticated()) {
+      try {
+        await firstValueFrom(this.http.post(`${environment.API_DOMAIN}/cart/addStockProduct`, {
+          productId: id,
+          quantity: 1
+        }));
+        await this.refreshCart();
+      } catch (error) {
+        console.error('Failed to increase quantity', error);
+      }
+    } else {
+      const item = this.itemsSignal().find(i => i.id === id);
+      if (item) {
+        this.updateQuantity(id, item.cantidad + 1);
+      }
     }
   }
 
   async decreaseQuantity(id: number): Promise<void> {
     const item = this.itemsSignal().find(i => i.id === id);
-    await firstValueFrom(this.http.post(`${environment.API_DOMAIN}/cart/minusStockProduct`, {
-      productId: id,
-      quantity: 1
-    }))
-    if (item) {
+    if (!item) return;
+
+    // If quantity will be 0 or less, remove the item
+    if (item.cantidad <= 1) {
+      await this.removeItem(id);
+      return;
+    }
+
+    if (this.authService.isAuthenticated()) {
+      try {
+        await firstValueFrom(this.http.post(`${environment.API_DOMAIN}/cart/minusStockProduct`, {
+          productId: id,
+          quantity: 1
+        }));
+        await this.refreshCart();
+      } catch (error) {
+        console.error('Failed to decrease quantity', error);
+      }
+    } else {
       this.updateQuantity(id, item.cantidad - 1);
     }
   }

@@ -246,3 +246,14 @@ model Invoice {
   @@index([invoice_number])
   @@map("invoices")
 }
+
+// ☁️ CLOUDFLARE USAGE
+model CloudflareUsage {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  size      Int
+  mimeType  String?
+  createdAt DateTime @default(now())
+
+  @@map("cloudflare_usage")
+}

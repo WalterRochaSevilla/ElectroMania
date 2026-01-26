@@ -54,5 +54,17 @@ export const routes: Routes = [
     path: 'detalle-producto/:id',
     loadComponent: () => import('./pages/detalle-producto/detalle-producto.component').then(m => m.DetalleProductoComponent),
   },
+  {
+    path: 'mis-pedidos',
+    loadComponent: () => import('./pages/mis-pedidos/mis-pedidos.component').then(m => m.MisPedidosComponent),
+  },
+  {
+    path: 'perfil',
+    loadComponent: () => import('./pages/perfil/perfil.component').then(m => m.PerfilComponent),
+  },
+  {
+    path: 'configuracion',
+    loadComponent: () => import('./pages/configuracion/configuracion.component').then(m => m.ConfiguracionComponent),
+  },
   { path: '**', redirectTo: '', pathMatch: 'full' },
 ];

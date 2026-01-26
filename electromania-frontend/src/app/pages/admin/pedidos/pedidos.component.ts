@@ -21,9 +21,9 @@ export class PedidosComponent implements OnInit {
   filteredOrders: Order[] = [];
   loading = true;
   backendReady = false;
-  
-  statusFilter: string = '';
-  searchTerm: string = '';
+
+  statusFilter = '';
+  searchTerm = '';
 
   statusOptions: { value: OrderStatus | '', label: string }[] = [
     { value: '', label: 'Todos los estados' },
@@ -41,11 +41,11 @@ export class PedidosComponent implements OnInit {
   async loadOrders() {
     this.loading = true;
     try {
-      this.orders = await this.orderService.getAllOrders();
+      this.orders = await this.orderService.getMyOrders();
       this.backendReady = true;
       this.applyFilters();
-    } catch (error: any) {
-      if (error?.status === 404) {
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'status' in error && (error as { status: number }).status === 404) {
         this.backendReady = false;
       } else {
         this.toast.error('Error al cargar los pedidos');
@@ -64,7 +64,7 @@ export class PedidosComponent implements OnInit {
 
     if (this.searchTerm.trim()) {
       const term = this.searchTerm.toLowerCase();
-      result = result.filter(o => 
+      result = result.filter(o =>
         o.order_id.toString().includes(term) ||
         o.user?.name?.toLowerCase().includes(term) ||
         o.user?.email?.toLowerCase().includes(term)
@@ -76,7 +76,7 @@ export class PedidosComponent implements OnInit {
 
   async updateStatus(order: Order, newStatus: OrderStatus) {
     try {
-      await this.orderService.updateOrderStatus(order.order_id, { status: newStatus });
+      await this.orderService.updateOrder(order.order_id, { status: newStatus });
       order.status = newStatus;
       this.toast.success(`Pedido #${order.order_id} actualizado a ${this.orderService.getStatusLabel(newStatus)}`);
     } catch {

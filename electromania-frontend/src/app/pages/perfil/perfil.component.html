@@ -1,0 +1,59 @@
+<main class="perfil-page">
+    <div class="container">
+        <header class="page-header">
+            <h1>Mi Perfil</h1>
+            <p class="subtitle">Información de tu cuenta</p>
+        </header>
+
+        @if (loading) {
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Cargando perfil...</p>
+        </div>
+        } @else if (user) {
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="avatar">
+                    <span class="avatar-initials">{{ user.name.charAt(0).toUpperCase() }}</span>
+                </div>
+                <div class="profile-name">
+                    <h2>{{ user.name }}</h2>
+                    <span class="role-badge" [class.admin]="user.role === 'ADMIN'">
+                        {{ getRoleLabel(user.role) }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="profile-details">
+                <div class="detail-group">
+                    <span class="detail-label">Correo Electrónico</span>
+                    <p>{{ user.email }}</p>
+                </div>
+
+                <div class="detail-group">
+                    <span class="detail-label">NIT / CI</span>
+                    <p>{{ user.nit_ci || 'No especificado' }}</p>
+                </div>
+
+                <div class="detail-group">
+                    <span class="detail-label">Razón Social</span>
+                    <p>{{ user.social_reason || 'No especificado' }}</p>
+                </div>
+            </div>
+
+            <div class="profile-notice">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="16" x2="12" y2="12" />
+                    <line x1="12" y1="8" x2="12.01" y2="8" />
+                </svg>
+                <span>Para modificar tu información, contacta al administrador.</span>
+            </div>
+        </div>
+        } @else {
+        <div class="error-state">
+            <p>No se pudo cargar la información del perfil.</p>
+        </div>
+        }
+    </div>
+</main>

@@ -74,7 +74,7 @@ export class DetalleProductoComponent implements OnInit {
       precio: p.price,
       stock: p.stock,
       descripcionCorta: p.description,
-      imagen: p.images?.[0] || '/placeholder.png',
+      imagen: p.images?.length ? p.images[p.images.length - 1] : '/placeholder.png',
       datasheet: 'https://pdf-datasheet.com',
       libreria: 'https://github.com',
       especificaciones: [

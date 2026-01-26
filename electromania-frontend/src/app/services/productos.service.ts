@@ -41,7 +41,22 @@ export class ProductosService {
   }
 
   async updateProduct(id: number | string, product: UpdateProductRequest): Promise<Product> {
-    return firstValueFrom(this.httpClient.put<Product>(`${environment.API_DOMAIN}/products/update/?id=${id}`, product));
+    // If image is included, use FormData for multipart upload
+    if (product.image) {
+      const formData = new FormData();
+      if (product.product_name) formData.append('product_name', product.product_name);
+      if (product.description) formData.append('description', product.description);
+      if (product.price !== undefined) formData.append('price', product.price.toString());
+      if (product.stock !== undefined) formData.append('stock', product.stock.toString());
+      if (product.state) formData.append('state', product.state);
+      formData.append('image', product.image);
+
+      return firstValueFrom(this.httpClient.put<Product>(`${environment.API_DOMAIN}/products/update/?id=${id}`, formData));
+    }
+
+    // Otherwise, send as JSON (without image field)
+    const { image: _image, ...jsonData } = product;
+    return firstValueFrom(this.httpClient.put<Product>(`${environment.API_DOMAIN}/products/update/?id=${id}`, jsonData));
   }
 
   async deleteProduct(id: number | string): Promise<void> {
@@ -109,7 +124,7 @@ export class ProductosService {
   async getLowStockProducts() {
     const products = await this.getAllProducts();
     const lowStockThreshold = 10;
-    
+
     return products
       .filter(p => p.stock <= lowStockThreshold)
       .map(p => ({

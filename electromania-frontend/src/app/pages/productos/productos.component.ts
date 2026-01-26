@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { ToastService } from '../../services/toast.service';
 import { CartService } from '../../services/cart.service';
 import { AuthService } from '../../services/auth.service';
+import { OrderService } from '../../services/order.service';
 
 const WHATSAPP_NUMBER = '59177418158';
 
@@ -20,6 +21,7 @@ export class ProductosComponent implements OnInit {
   private router = inject(Router);
   private toast = inject(ToastService);
   private authService = inject(AuthService);
+  private orderService = inject(OrderService);
   protected cartService = inject(CartService);
 
   readonly isAuthenticated = this.authService.isAuthenticated$;
@@ -106,21 +108,35 @@ export class ProductosComponent implements OnInit {
 
     this.procesando.set(true);
 
-    const whatsappMessage = this.generateWhatsAppMessage();
-    const whatsappUrl = this.generateWhatsAppUrl(whatsappMessage);
+    try {
+      // Create order in backend if authenticated
+      if (this.isAuthenticated()) {
+        const order = await this.orderService.createOrderFromCart();
+        this.numeroFactura.set(`PED-${order.order_id}`);
+      } else {
+        // For guests, generate a random reference number
+        this.numeroFactura.set(`PED-${Math.floor(10000 + Math.random() * 90000)}`);
+      }
 
-    window.open(whatsappUrl, '_blank');
+      const whatsappMessage = this.generateWhatsAppMessage();
+      const whatsappUrl = this.generateWhatsAppUrl(whatsappMessage);
 
-    this.numeroFactura.set(`PED-${Math.floor(10000 + Math.random() * 90000)}`);
-    this.mostrarModalExito.set(true);
-    this.procesando.set(false);
+      window.open(whatsappUrl, '_blank');
+
+      this.mostrarModalExito.set(true);
+    } catch (error) {
+      console.error('Error creating order:', error);
+      this.toast.error('Error al procesar el pedido');
+    } finally {
+      this.procesando.set(false);
+    }
   }
 
   private generateWhatsAppMessage(): string {
     const items = this.carrito();
     const totales = this.totals();
 
-    const productList = items.map(item => 
+    const productList = items.map(item =>
       `• ${item.nombre} x${item.cantidad} = Bs. ${(item.precio * item.cantidad).toFixed(2)}`
     ).join('\n');
 

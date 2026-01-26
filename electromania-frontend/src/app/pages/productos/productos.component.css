@@ -117,9 +117,16 @@
   transition: all 0.2s;
 }
 
-.btn-cantidad:hover {
+.btn-cantidad:hover:not(:disabled) {
   background: var(--bg-main);
   color: var(--brand-primary);
+}
+
+.btn-cantidad:disabled,
+.btn-cantidad.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .cantidad {

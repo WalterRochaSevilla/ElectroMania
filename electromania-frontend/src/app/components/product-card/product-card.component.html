@@ -11,10 +11,10 @@
     }
   </div>
 
-  <!-- IMAGE -->
+  <!-- IMAGE - Show most recent (last) image -->
   <div class="imagen-container">
     @if (product.images && product.images.length > 0) {
-      <img [src]="product.images[0]" [alt]="product.product_name" loading="lazy" (error)="handleImageError($event)">
+      <img [src]="product.images[product.images.length - 1]" [alt]="product.product_name" loading="lazy" (error)="handleImageError($event)">
     } @else {
       <div class="placeholder-image">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
