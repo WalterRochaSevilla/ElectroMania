@@ -22,13 +22,14 @@ export class AuthService {
     ) {}
     async validateToken(token: string) {
         try {
-            return this.jwtService.verify(token);
+            return this.jwtService.verify<UserJwtPayloadModel>(token,{
+                secret: config().jwtConstants.secret
+            });
         } catch (error) {
             return Promise.reject(error);
         }
     }
     private async generateToken(user: UserJwtPayloadModel) {
-        console.log(config().jwtConstants.secret);
         return new LoginResponseModel(
             this.jwtService.sign({user}),
         );

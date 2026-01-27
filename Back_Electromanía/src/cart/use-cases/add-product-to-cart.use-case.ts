@@ -4,33 +4,37 @@ import { AuthService } from '../../auth/service/auth.service';
 import { ProductService } from '../../product/service/product.service';
 import { AddProductToCartRequestDto } from "../dto/addProductToCartRequest.dto";
 import { CartService } from '../service/cart.service';
+import { GetActiveCartUseCase } from "./get-active-cart.use-case";
+import { CreateCartUseCase } from './create-cart.use-case';
+import { IncreaseQuantityUseCase } from "./increase-quantity.use-case";
 
 
 @Injectable()
 export class AddProductToCartUseCase {
   constructor(
     private readonly prisma:PrismaService,
-    private readonly authService: AuthService,
     private readonly productService: ProductService,
-    private readonly cartService: CartService
+    private readonly cartService: CartService,
+    private readonly getActiceCartUseCase: GetActiveCartUseCase,
+    private readonly createCartUseCase: CreateCartUseCase,
+    private readonly increaseQuantityUseCase:IncreaseQuantityUseCase
   ) {}
   async execute(
-    token: string,
+    userUuid: string,
     addProductRequest:AddProductToCartRequestDto
   ){
-    const toKenFormat = token.replace("Bearer ", "");
-    const user = await this.authService.getUserFromToken(toKenFormat);
     return this.prisma.$transaction(async (tx) => {
-      let activeCart = await tx.cart.findFirst({
-        where: {
-          user_uuid: user.uuid,
-          state: "ACTIVE",
-        }
-      })
+      let activeCart = await this.getActiceCartUseCase.execute(userUuid,tx);
       if(!activeCart) {
-        activeCart = await this.cartService.createCart(toKenFormat, tx);
+        activeCart = await this.cartService.createCart(userUuid, tx);
       }
-      return this.cartService.checkCartDetail(activeCart.cart_id, addProductRequest, tx);
+      const detail = await this.cartService.getCartDetailByCartAndProduct(activeCart.id,addProductRequest.productId)
+      if(!detail){
+        await this.cartService.createCartDetail(activeCart.id, addProductRequest, tx);
+      }else{
+        await this.increaseQuantityUseCase.execute(userUuid, addProductRequest, tx);
+      }
+      return await this.getActiceCartUseCase.execute(userUuid,tx);
     })
   }
 }

@@ -4,29 +4,26 @@ import { AuthService } from '../../auth/service/auth.service';
 import { ProductService } from '../../product/service/product.service';
 import { CartService } from "../service/cart.service";
 import { UpdateCartDetailDto } from "../dto/update-cart-detail.dto";
+import { IncreaseQuantityUseCase } from "./increase-quantity.use-case";
+import { DecreaseQuantityUseCase } from "./decrease-quantity.use-case";
+import { GetActiveCartUseCase } from "./get-active-cart.use-case";
 
 @Injectable()
 export class UpdateProductQuantityUseCase {
   constructor(
     private readonly prisma: PrismaService,
     private readonly authService: AuthService,
-    private readonly productService: ProductService,
-    private readonly cartService: CartService
+    private readonly increaseQuantityUseCase:IncreaseQuantityUseCase,
+    private readonly decreaseQuantityUseCase:DecreaseQuantityUseCase,
+    private readonly getActiceCartUseCase: GetActiveCartUseCase
   ) {}
-  async execute(token: string, request:UpdateCartDetailDto) {
-    const toKenFormat = token.replace("Bearer ", "");
-    const user = await this.authService.getUserFromToken(toKenFormat);
-    return this.prisma.$transaction(async (tx) => {
-      let activeCart = await tx.cart.findFirst({
-        where: {
-          user_uuid: user.uuid,
-          state: "ACTIVE",
-        }
-      })
-      if(!activeCart) {
-        activeCart = await this.cartService.createCart(toKenFormat, tx);
-      }
-      return this.cartService.checkUpdateCartDetail(activeCart.cart_id, request, tx);
-    })
+  async execute(userUuid: string, request:UpdateCartDetailDto) {
+    if(request.quantity < 0){
+      request.quantity = Math.abs(request.quantity);
+      await this.decreaseQuantityUseCase.execute(userUuid, request);
+    }else{
+      await this.increaseQuantityUseCase.execute(userUuid, request);
+    }
+    return await this.getActiceCartUseCase.execute(userUuid)
   }
 }

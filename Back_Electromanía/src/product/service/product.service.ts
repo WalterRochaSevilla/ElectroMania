@@ -89,6 +89,7 @@ export class ProductService {
             }
           }
         },
+        orderBy: { product_id: 'asc' }
       });
       if(products.length === 0){
         throw new NotFoundException('Products not found');

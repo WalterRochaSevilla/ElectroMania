@@ -39,7 +39,8 @@ export class OrderService {
   }
 
   async register(token: string) {
-    const modelCart= await this.cartService.getCartByUser(token);
+    const user = await this.authService.getUserFromToken(token);
+    const modelCart= await this.cartService.getActiveCartByUser(user.uuid);
     if(!modelCart){
       throw new NotFoundException('Cart not found');
     }

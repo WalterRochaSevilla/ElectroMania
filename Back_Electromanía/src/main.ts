@@ -37,7 +37,8 @@ async function bootstrap() {
     })
   );
   app.enableCors({
-    origin: Configuration().webSiteDomain.url
+    origin: Configuration().webSiteDomain.url,
+    credentials: true
   });
   app.useGlobalPipes(new ValidationPipe({
     transform: true
