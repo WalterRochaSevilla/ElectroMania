@@ -129,26 +129,6 @@ export class CartService {
         }
         return this.updateCartDetail(cartDetail_id, options.data, prisma);
     }
-    async getCartEntityByUser(token: string) {
-        const user = await this.authService.getUserFromToken(token);
-        return this.prisma.cart.findFirst({
-            where: { 
-                user_uuid: user.uuid,
-                state: "ACTIVE"
-            },
-            include: {
-                cartDetails: {
-                include: {
-                    product: {
-                        include: {
-                            productImages: true
-                        }
-                    }
-                },
-            },
-        },
-        });
-    }
     async createCartDetail(cart_id: number, addProductRequest:AddProductToCartRequestDto,tx?:Prisma.TransactionClient) {
         const prisma = tx? tx : this.prisma
         const product = await this.productService.getProductById(addProductRequest.productId);
@@ -175,123 +155,6 @@ export class CartService {
             data: cartDetails
         })
     }
-    async checkCartDetail(cart_id: number, addProductRequest:AddProductToCartRequestDto,tx?:Prisma.TransactionClient) {
-        const prisma = tx? tx : this.prisma
-        const product = await this.productService.getProductById(addProductRequest.productId,prisma);
-        const cartDetail = await prisma.cartDetails.findFirst({
-            where: {
-                cart_id: cart_id,
-                product_id: addProductRequest.productId
-            },
-        })
-        if(!cartDetail){
-            return this.createCartDetail(cart_id, addProductRequest,prisma);
-        }
-        await this.checkUpdateCartDetail(cart_id, addProductRequest,prisma);
-        const cart = await this.prisma.cart.findUnique({
-            where: {
-                cart_id: cart_id
-            },
-            include: {
-                cartDetails: {
-                    include: {
-                        product: {
-                            include: {
-                                productImages: true
-                            }
-                        }
-                    },
-                }
-            }
-        })
-        if(!cart){
-            return Promise.reject(new NotFoundException('Cart not found'));
-        }
-        return this.cartMapper.toModel(cart);
-    }
-    async checkUpdateCartDetail(cart_id: number, request:UpdateCartDetailDto,tx?:Prisma.TransactionClient) {
-        const prisma = tx? tx : this.prisma
-        let activeCart = await prisma.cart.findFirst({
-            where: {
-                cart_id: cart_id,
-                state: "ACTIVE",
-            },
-            include: {
-                cartDetails: {
-                    include: {
-                        product: {
-                            include: {
-                                productImages: true
-                            }
-                        }
-                    },
-                }
-            }
-        });
-        if(!activeCart){
-            return Promise.reject(new NotFoundException('Cart not found'));
-        }
-        const cartDetail = await prisma.cartDetails.findFirst({
-            where: {
-                cart_id: activeCart.cart_id,
-                product_id: request.productId
-            },
-        })
-        if(!cartDetail){
-            return Promise.reject(new NotFoundException('Product not found in cart'));
-        }
-        let options:Prisma.CartDetailsUpdateArgs;
-        if(request.quantity < 0){
-            if(cartDetail.quantity < Math.abs(request.quantity)){
-                await this.deleteCartDetailById(cartDetail.id,prisma);
-                return this.cartMapper.toModel(activeCart);
-            }
-            options = {
-                where: {
-                    id: activeCart.cart_id,
-                    product_id: request.productId
-                },
-                data: {
-                    quantity: {
-                        decrement: Math.abs(request.quantity)
-                    }
-                }
-            }
-        }
-        else{
-            options = {
-                where: {
-                    id: activeCart.cart_id,
-                    product_id: request.productId
-                },
-                data: {
-                    quantity: {
-                        increment: request.quantity
-                    }
-                }
-            }
-            await this.productService.discountStock(request.productId, request.quantity,prisma);
-        }
-        await this.updateCartDetail(cartDetail.id, options.data,prisma);
-        activeCart = await prisma.cart.findFirst({
-            where: {
-                cart_id: activeCart.cart_id,
-                state: "ACTIVE",
-            },
-            include: {
-                cartDetails: {
-                    include: {
-                        product: {
-                            include: {
-                                productImages: true
-                            }
-                        }
-                    },
-                }
-            }
-        })
-        return activeCart? this.cartMapper.toModel(activeCart) : Promise.reject(new NotFoundException('Cart not found'));
-    }
     async updateCartDetail(cartDetailId: number,cartDetail:Prisma.CartDetailsUpdateInput,tx?:Prisma.TransactionClient,options?:Prisma.CartDetailsUpdateArgs) {
         const prisma = tx? tx : this.prisma
         return prisma.cartDetails.update({
@@ -315,38 +178,6 @@ export class CartService {
         return prisma.cartDetails.delete({
             where: {
                 id: cartDetailId
-            }
-        })
-    }
-    async deleteCartDetail(token :string,deleteProductRequest:DeleteProductFromCartDto,tx?:Prisma.TransactionClient) {
-        const prisma = tx? tx : this.prisma
-        const user = await this.authService.getUserFromToken(token);
-        let activeCart = await prisma.cart.findFirst({
-            where: {
-                user_uuid: user.uuid,
-                state: "ACTIVE",
-            }
-        })
-        if(!activeCart){
-            return Promise.reject(new NotFoundException('Cart not found'));
-        }
-        const cartDetail = await prisma.cartDetails.findFirst({
-            where: {
-                cart_id: activeCart.cart_id,
-                product_id: deleteProductRequest.productId
-            },
-        })
-        if(!cartDetail){
-            return Promise.reject(new NotFoundException('Product not found in cart'));
-        }
-        await this.productService.addStock(
-            deleteProductRequest.productId,
-            cartDetail.quantity,
-            prisma
-        )
-        return prisma.cartDetails.delete({
-            where: {
-                id: cartDetail.id
             }
         })
     }
