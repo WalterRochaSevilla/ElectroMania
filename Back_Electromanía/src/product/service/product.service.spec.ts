@@ -1,73 +1,166 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductService } from './product.service';
 import { PrismaService } from '../../prisma/service/prisma.service';
+import { ProductMapper } from '../mapper/Product.mapper';
+import { ProductImageMapper } from '../mapper/ProductImage.mapper';
+import { PageProductMapper } from '../mapper/PageProduct.mapper';
 import { CreateProductRequestModel } from '../model/CreateProductRequest.model';
+import { NotFoundException, ForbiddenException } from '@nestjs/common';
 
-describe('ProductService', () => {
+describe('ProductService (unit)', () => {
   let service: ProductService;
+  let prismaMock: any;
+
+  const mockProductEntity = {
+    product_id: 1,
+    product_name: 'prueba',
+    description: 'prueba',
+    price: 100,
+    stock: 10,
+    state: true,
+    productImages: [],
+    productCategories: [],
+  };
+
+  const mockProductModel = {
+    product_id: 1,
+    product_name: 'prueba',
+    description: 'prueba',
+    price: 100,
+    stock: 10,
+    state: true,
+    images: [],
+    categories: [],
+  };
 
   beforeEach(async () => {
+    // Mock completo de PrismaService
+    prismaMock = {
+      product: {
+        create: jest.fn().mockResolvedValue(mockProductEntity),
+        findMany: jest.fn().mockResolvedValue([mockProductEntity]),
+        findUnique: jest.fn().mockResolvedValue(mockProductEntity),
+        update: jest.fn().mockResolvedValue(mockProductEntity),
+        delete: jest.fn().mockResolvedValue(mockProductEntity),
+      },
+      productImage: {
+        create: jest.fn().mockResolvedValue({}),
+        deleteMany: jest.fn().mockResolvedValue({}),
+      },
+      $transaction: jest.fn().mockImplementation(async (fn) => fn(prismaMock)),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ProductService,PrismaService],
+      providers: [
+        ProductService,
+        ProductMapper,
+        ProductImageMapper,
+        PageProductMapper,
+        { provide: PrismaService, useValue: prismaMock },
+      ],
     }).compile();
 
     service = module.get<ProductService>(ProductService);
-    const prisma = module.get(PrismaService);
-    await prisma.cartDetails.deleteMany();
-    await prisma.cart.deleteMany();
-    await prisma.productCategory.deleteMany();
-    await prisma.productImage.deleteMany();
-    await prisma.category.deleteMany();
-    await prisma.product.deleteMany();
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
-  it("Deberia obtener todos los productos", async () => {
-    const newProduct = await service.createProduct({
+
+  it('should create a product', async () => {
+    const dto: CreateProductRequestModel = {
       product_name: 'prueba',
       description: 'prueba',
       price: 100,
-      stock: 10
-    } as CreateProductRequestModel)
-    const products = await service.getAllProducts();
-    expect(products.length).toBeGreaterThan(0);
+      stock: 10,
+    };
+    const result = await service.createProduct(dto);
+    expect(result.product_id).toBe(1);
+    expect(prismaMock.product.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.any(Object),
+        include: expect.any(Object),
+      }),
+    );
   });
-  it("Deberia obtener un producto valido", async () => {
-    const newProduct = await service.createProduct({
-      product_name: 'prueba',
-      description: 'prueba',
-      price: 100,
-      stock: 10
-    } as CreateProductRequestModel)
-    const products = await service.getAllProducts();
-    expect(products[0].product_id).toBe(newProduct.product_id);
+
+  it('should get all products', async () => {
+    const result = await service.getAllProducts();
+    expect(result).toHaveLength(1);
+    expect(result[0].product_name).toBe('prueba');
   });
-  it("Deberia crear un producto", async () => {
-    const newProduct = await service.createProduct({
-      product_name: 'prueba',
-      description: 'prueba',
-      price: 100,
-      stock: 10
-    } as CreateProductRequestModel)
-    expect(newProduct).toBeDefined();
-  })
-  it("Deberia actualizar un producto", async () => {
-    const newProduct = await service.createProduct({
-      product_name: 'prueba',
-      description: 'prueba',
-      price: 100,
-      stock: 10
-    } as CreateProductRequestModel)
-    const searchProduct = await service.getFilterBy({product_id: newProduct.product_id});
-    const updateData: CreateProductRequestModel = {
-      product_name: 'prueba',
-      description: 'prueba',
-      price: 200,
-      stock: 8
-    }
-    const updatedProduct = await service.updateProduct(searchProduct[0].product_id, updateData);
-    expect(updatedProduct).toBeDefined();
-  })
+
+  it('should throw NotFoundException if getAllProducts returns empty', async () => {
+    prismaMock.product.findMany.mockResolvedValueOnce([]);
+    await expect(service.getAllProducts()).rejects.toThrow(NotFoundException);
+  });
+
+  it('should update a product', async () => {
+    const updateDto: Partial<CreateProductRequestModel> = { price: 200 };
+    const result = await service.updateProduct(1, updateDto);
+    expect(result.product_id).toBe(1);
+    expect(prismaMock.product.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { product_id: 1 },
+        data: expect.any(Object),
+        include: expect.any(Object),
+      }),
+    );
+  });
+
+  it('should delete a product', async () => {
+    const result = await service.deleteProduct(1);
+    expect(prismaMock.product.delete).toHaveBeenCalledWith({
+      where: { product_id: 1 },
+    });
+    expect(prismaMock.productImage.deleteMany).toHaveBeenCalledWith({
+      where: { product_id: 1 },
+    });
+  });
+
+  it('should get product by id', async () => {
+    const result = await service.getProductById(1);
+    expect(result.product_id).toBe(1);
+    expect(prismaMock.product.findUnique).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { product_id: 1 }, include: expect.any(Object) }),
+    );
+  });
+
+  it('should check stock', async () => {
+    const hasStock = await service.checkStock(1, 5);
+    expect(hasStock).toBe(true);
+    prismaMock.product.findUnique.mockResolvedValueOnce({ stock: 2 });
+    const lowStock = await service.checkStock(1, 1);
+    expect(lowStock).toBe(true);
+  });
+
+  it('should add stock', async () => {
+    await service.addStock(1, 5);
+    expect(prismaMock.product.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { product_id: 1 },
+        data: { stock: { increment: 5 } },
+      }),
+    );
+  });
+
+  it('should discount stock', async () => {
+    await service.discountStock(1, 5);
+    expect(prismaMock.product.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { product_id: 1 },
+        data: { stock: { decrement: 5 } },
+      }),
+    );
+  });
+
+  it('should throw ForbiddenException if stock insufficient', async () => {
+    prismaMock.product.findUnique.mockResolvedValueOnce({ stock: 2 });
+    await expect(service.discountStock(1, 5)).rejects.toThrow(ForbiddenException);
+  });
+
+  it('should throw NotFoundException if product not found for discountStock', async () => {
+    prismaMock.product.findUnique.mockResolvedValueOnce(null);
+    await expect(service.discountStock(1, 1)).rejects.toThrow(NotFoundException);
+  });
 });

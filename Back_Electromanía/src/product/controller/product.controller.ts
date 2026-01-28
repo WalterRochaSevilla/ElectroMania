@@ -12,13 +12,15 @@ import { UserRole } from '../../user/enums/UserRole.enum';
 import { ApiBody, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ProductModel } from '../model/Product.model';
 import { productMulterConfig } from '../../common/utils/multer/product-multer.config';
+import { RegisterProductUseCase } from '../use-cases/register-product.use-case';
 
 
 @Controller('products')
 @ApiTags('Products')
 export class ProductController {
     constructor(
-        private readonly productService: ProductService
+        private readonly productService: ProductService,
+        private readonly registerProductUseCase:RegisterProductUseCase
     ){}
 
     @Get("all")
@@ -185,9 +187,9 @@ export class ProductController {
     })
     @Post("register")
     @UseInterceptors(FileInterceptor('image', productMulterConfig)) 
-    registerProduct(@Body()product: CreateProductRequestModel, 
-    @UploadedFile() image: Express.Multer.File): Promise<ProductModule>{
-        return this.productService.createProduct(product,image);
+    async registerProduct(@Body()product: CreateProductRequestModel, 
+    @UploadedFile() image: Express.Multer.File): Promise<ProductModel>{
+        return this.registerProductUseCase.execute(product, image);
     }
     
     @Roles(UserRole.ADMIN)
@@ -227,7 +229,7 @@ export class ProductController {
             ]
         }
     })
-    registerProductImage(@Body()productImage: RegisterProductImageRequestModel): Promise<ProductModule>{
+    registerProductImage(@Body()productImage: RegisterProductImageRequestModel): Promise<ProductModel>{
         return this.productService.registerProductImage(productImage);
     }
 
