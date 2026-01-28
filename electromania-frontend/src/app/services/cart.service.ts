@@ -228,7 +228,7 @@ export class CartService {
 
   async increaseQuantity(id: number): Promise<void> {
     const item = this.itemsSignal().find(i => i.id === id);
-    await firstValueFrom(this.http.post(`${environment.API_DOMAIN}/cart/addStockProduct`, {
+    await firstValueFrom(this.http.post(`${environment.API_DOMAIN}/cart/update`, {
       productId: id,
       quantity: 1
     }))
@@ -239,9 +239,9 @@ export class CartService {
 
   async decreaseQuantity(id: number): Promise<void> {
     const item = this.itemsSignal().find(i => i.id === id);
-    await firstValueFrom(this.http.post(`${environment.API_DOMAIN}/cart/minusStockProduct`, {
+    await firstValueFrom(this.http.post(`${environment.API_DOMAIN}/cart/update`, {
       productId: id,
-      quantity: 1
+      quantity: -1
     }))
     if (item) {
       this.updateQuantity(id, item.cantidad - 1);

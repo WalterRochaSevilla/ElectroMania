@@ -43,11 +43,12 @@ export class OrderMapper {
     }
     toResponseModel(entity:OrderWithUserOrdersAndCart):OrderResponseModel{
         const response:OrderResponseModel = {
+            id:entity.order_id,
             uuid:entity.userOrders[0].user_uuid,
             total:Number(entity.total),
             status:entity.status,
             createdAt:entity.created_at,
-            CartResponseModel: this.cartMapper.toOrderModel(entity.cart)
+            cart: this.cartMapper.toOrderModel(entity.cart)
         }
         return response
     }

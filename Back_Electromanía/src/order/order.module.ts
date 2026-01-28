@@ -10,11 +10,17 @@ import { PrismaService } from '../prisma/service/prisma.service';
 import { CartService } from '../cart/service/cart.service';
 import { OrderMapper } from './mapper/order.mapper';
 import { CartMapper } from '../cart/mapper/cart.mapper';
+import { CreateOrderByCartUseCase } from './use-cases/create-order-by-cart.usecase';
+import { ProductService } from '../product/service/product.service';
+import { AuthService } from '../auth/service/auth.service';
+import { UserMapper } from '../user/mapper/User.mapper';
+import { PasswordService } from '../common/utils/password.service';
+import { JwtService } from '@nestjs/jwt';
 
 
 @Module({
   imports: [ProductModule, UserModule,AuthModule],
   controllers: [OrderController],
-  providers: [OrderService,RolesGuard,AuthGuard,PrismaService,CartService,OrderMapper,CartMapper],
+  providers: [OrderService,RolesGuard,AuthGuard,PrismaService,CartService,OrderMapper,CartMapper,CreateOrderByCartUseCase,ProductService,AuthService,UserMapper,PasswordService,JwtService],
 })
 export class OrderModule {}

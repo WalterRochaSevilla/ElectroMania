@@ -15,30 +15,14 @@ import config from '../../config/Configuration'
 
 @Injectable()
 export class ProductService {
-  private readonly productMapper = new ProductMapper();
-  private readonly productImageMapper = new ProductImageMapper();
-  private readonly pageProductMapper = new PageProductMapper();
+  constructor(private readonly prisma: PrismaService,
+    private readonly productMapper: ProductMapper,
+    private readonly productImageMapper: ProductImageMapper,
+    private readonly pageProductMapper: PageProductMapper
+  ) {}
 
-  constructor(private readonly prisma: PrismaService) {}
-
-  async createProduct(dto: CreateProductRequestModel, image?: Express.Multer.File): Promise<ProductModel> {
+  async createProduct(dto: CreateProductRequestModel, tx?: Prisma.TransactionClient): Promise<ProductModel> {
     const data = this.productMapper.toEntity(dto);
-    if (image) {
-      const tmpPath = image.path; // archivo temporal
-      const localDir = join(process.cwd(), 'uploads/products');
-      const { name } = parse(image.filename);
-      const localFile = join(localDir, `${name}.webp`);
-      const imagePath = `${config().apiDomain.url}/uploads/products/${name}.webp`;
-      data.productImages = {
-        create: [{ image: imagePath }]
-      };
-      await fs.mkdir(localDir, { recursive: true });
-      await sharp(tmpPath)
-        .resize(800, 800, { fit: 'inside' })
-        .webp({ quality: 75 })
-        .toFile(localFile);
-      await fs.unlink(tmpPath);
-    }
     const product = await this.prisma.product.create({
       data,
       include: {
@@ -50,9 +34,10 @@ export class ProductService {
   }
 
   async registerProductImage(
-    dto: RegisterProductImageRequestModel,
+    dto: RegisterProductImageRequestModel,tx?: Prisma.TransactionClient
   ): Promise<ProductModel> {
-    const product = await this.prisma.product.findUnique({
+    const prisma = tx? tx : this.prisma
+    const product = await prisma.product.findUnique({
       where: { product_name: dto.name },
       include: { productImages: true },
     });
@@ -62,9 +47,9 @@ export class ProductService {
     }
 
     const imageData = this.productImageMapper.toEntity(dto, product);
-    await this.prisma.productImage.create({ data: imageData });
+    await prisma.productImage.create({ data: imageData });
 
-    const updated = await this.prisma.product.findUnique({
+    const updated = await prisma.product.findUnique({
       where: { product_id: product.product_id },
       include: { productImages: true,
         productCategories: {
@@ -74,7 +59,6 @@ export class ProductService {
         }
       },
     });
-
     return this.productMapper.toModelWithCategoryAndImages(updated!);
   }
 
@@ -89,6 +73,7 @@ export class ProductService {
             }
           }
         },
+        orderBy: { product_id: 'asc' }
       });
       if(products.length === 0){
         throw new NotFoundException('Products not found');
@@ -174,8 +159,9 @@ export class ProductService {
       where: { product_id: productId },
     });
   }
-  async getProductById(productId: number): Promise<ProductModel> {
-    const product = await this.prisma.product.findUnique({
+  async getProductById(productId: number,tx?: Prisma.TransactionClient): Promise<ProductModel> {
+    const prisma = tx? tx : this.prisma
+    const product = await prisma.product.findUnique({
       where: { product_id: productId },
       include: { productImages: true,
         productCategories: {
@@ -196,22 +182,34 @@ export class ProductService {
       where:{ product_id: productId}
     }) != null
   }
-  async addStock(productId: number, quantity: number) {
-    if (quantity <= 0) return;
-    return this.prisma.product.update({
+
+  async checkStock(productId: number, quantity: number,tx?: Prisma.TransactionClient) {
+    const prisma = tx? tx : this.prisma
+    const product = await prisma.product.findUnique({
+      where: { product_id: productId },
+      select: { stock: true },
+    })
+    if(!product){
+      throw new NotFoundException('Product not found');
+    }
+    return product?.stock >= quantity
+  }
+
+  async addStock(productId: number, quantity: number,tx?: Prisma.TransactionClient) {
+    const prisma = tx? tx : this.prisma
+    return prisma.product.update({
       where: { product_id: productId },
       data: {
         stock: {
           increment: quantity,
         },
       },
-    });
+    });    
   }
-
-  async discountStock(productId: number, quantity: number) {
+  async discountStock(productId: number, quantity: number,tx?: Prisma.TransactionClient) {
+    const prisma = tx? tx : this.prisma
     if (quantity <= 0) return;
-
-    const product = await this.prisma.product.findUnique({
+    const product = await prisma.product.findUnique({
         where: { product_id: productId },
         select: { stock: true },
     });
@@ -224,7 +222,7 @@ export class ProductService {
         throw new ForbiddenException('Product out of stock');
     }
 
-    return this.prisma.product.update({
+    return prisma.product.update({
         where: { product_id: productId },
         data: {
             stock: {

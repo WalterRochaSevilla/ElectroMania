@@ -8,10 +8,17 @@ import { AuthModule } from '../auth/auth.module';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { CartMapper } from './mapper/cart.mapper';
+import { AddProductToCartUseCase } from './use-cases/add-product-to-cart.use-case';
+import { UpdateProductQuantityUseCase } from './use-cases/update-product-quantity.use-case';
+import { IncreaseQuantityUseCase } from './use-cases/increase-quantity.use-case';
+import { DecreaseQuantityUseCase } from './use-cases/decrease-quantity.use-case';
+import { GetActiveCartUseCase } from './use-cases/get-active-cart.use-case';
+import { RemoveProductFromCartUseCase } from './use-cases/remove-product-from-cart-use-case';
+import { CreateCartUseCase } from './use-cases/create-cart.use-case';
 
 @Module({
     imports: [ProductModule, UserModule,AuthModule],
     controllers: [CartController],
-    providers: [CartService, RolesGuard,AuthGuard,PrismaService,CartMapper,]
+    providers: [CartService, RolesGuard,AuthGuard,PrismaService,CartMapper,AddProductToCartUseCase,UpdateProductQuantityUseCase,IncreaseQuantityUseCase,DecreaseQuantityUseCase,GetActiveCartUseCase,RemoveProductFromCartUseCase,CreateCartUseCase]
 })
 export class CartModule {}
