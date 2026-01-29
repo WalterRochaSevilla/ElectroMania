@@ -17,17 +17,13 @@ export class RemoveProductFromCartUseCase {
   async execute(userUuid:string,request:DeleteProductFromCartDto,tx?:Prisma.TransactionClient) {
     let activeCart = await this.getActiveCartUseCase.execute(userUuid,tx);
     if(!activeCart) {
-      activeCart = await this.cartService.createCart(userUuid, tx);
+      throw new ForbiddenException('Cart not found');
     }
     const detail = await this.cartService.getCartDetailByCartAndProduct(activeCart.id, request.productId, tx);
     if(!detail){
       throw new ForbiddenException('Product not found in cart');
     }
-    await this.productService.addStock(
-      request.productId,
-      detail.quantity,
-      tx
-    )
+    await this.productService.releaseReservedStock(request.productId, detail.quantity, tx);
     return this.cartService.deleteCartDetailById(detail.id,tx);
   }
 }
