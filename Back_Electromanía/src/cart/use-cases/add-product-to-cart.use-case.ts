@@ -29,11 +29,7 @@ export class AddProductToCartUseCase {
         activeCart = await this.cartService.createCart(userUuid, tx);
       }
       const detail = await this.cartService.getCartDetailByCartAndProduct(activeCart.id,addProductRequest.productId)
-      if(!detail){
-        await this.cartService.createCartDetail(activeCart.id, addProductRequest, tx);
-      }else{
-        await this.increaseQuantityUseCase.execute(userUuid, addProductRequest, tx);
-      }
+      await this.increaseQuantityUseCase.execute(userUuid,addProductRequest,tx);
       return await this.getActiceCartUseCase.execute(userUuid,tx);
     })
   }

@@ -17,19 +17,21 @@ export class CategoryService {
     return await this.prisma.category.create({ data: category });
   }
 
-  async registerCategoryToProduct(registerProductCategory: RegisterProductCategoryDto) {
-    const category = await this.prisma.category.findUnique({
+  async registerCategoryToProduct(registerProductCategory: RegisterProductCategoryDto,tx?: Prisma.TransactionClient) {
+    const prisma = tx? tx : this.prisma
+    const category = await prisma.category.findUnique({
       where: { category_id: registerProductCategory.categoryId },
     });
     if (!category) {
       throw new NotFoundException('Category not found');
     }
     return await this.update(registerProductCategory.categoryId,
-      this.categoryMapper.toAddProduct(registerProductCategory)
+      this.categoryMapper.toAddProduct(registerProductCategory),prisma
     )
   }
-  async update(id: number, category: Prisma.CategoryUpdateInput) {
-    return await this.prisma.category.update({
+  async update(id: number, category: Prisma.CategoryUpdateInput,tx?: Prisma.TransactionClient) {
+    const prisma = tx? tx : this.prisma
+    return await prisma.category.update({
       where: { category_id: id },
       data: category,
     });

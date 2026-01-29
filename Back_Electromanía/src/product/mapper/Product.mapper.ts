@@ -40,7 +40,7 @@ export class ProductMapper {
         model.product_name = entity.product_name;
         model.description = entity.description;
         model.price = Number(entity.price);
-        model.stock = entity.stock;
+        model.stock = entity.stock_total-entity.stock_reserved;
         model.state = entity.state;
         return model;
     }
@@ -50,7 +50,7 @@ export class ProductMapper {
           product_name: model.product_name,
           description: model.description,
           price: model.price,
-          stock: model.stock
+          stock_total: model.stock
         }
         if(model.image){
           entity.productImages = {
@@ -73,7 +73,7 @@ export class ProductMapper {
             product_name: model.product_name,
             description: model.description,
             price: model.price,
-            stock: model.stock
+            stock_total: model.stock
         }
     }
     toCartProduct(entity: ProductWithImages): CartProductModel {
@@ -97,7 +97,7 @@ export class ProductMapper {
         model.product_name = productWithCategories.product_name;
         model.description = productWithCategories.description;
         model.price = Number(productWithCategories.price);
-        model.stock = productWithCategories.stock;
+        model.stock = productWithCategories.stock_total-productWithCategories.stock_reserved;
         model.state = productWithCategories.state;
         model.categories = productWithCategories.productCategories.map((category) => category.category.category_name);
         return model;
@@ -108,7 +108,7 @@ export class ProductMapper {
         model.product_name = productWithCategoriesAndImages.product_name;
         model.description = productWithCategoriesAndImages.description;
         model.price = Number(productWithCategoriesAndImages.price);
-        model.stock = productWithCategoriesAndImages.stock;
+        model.stock = productWithCategoriesAndImages.stock_total-productWithCategoriesAndImages.stock_reserved;
         model.state = productWithCategoriesAndImages.state;
         model.categories = productWithCategoriesAndImages.productCategories.map((category) => category.category.category_name);
         model.images = productWithCategoriesAndImages.productImages.map((img) => img.image);
@@ -120,7 +120,7 @@ export class ProductMapper {
         model.product_name = entity.product_name;
         model.description = entity.description;
         model.price = Number(entity.price);
-        model.stock = entity.stock;
+        model.stock = entity.stock_total-entity.stock_reserved;
         model.state = entity.state;
         return model;
     }
