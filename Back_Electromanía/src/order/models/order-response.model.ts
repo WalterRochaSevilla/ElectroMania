@@ -1,20 +1,17 @@
 import { CartResponseModel } from '../../cart/models/cart.model';
 
-export interface OrderItemResponse {
-    id: number;
-    product_id: number;
-    product_name: string;
-    unit_price: number;
-    quantity: number;
-    total: number;
+export interface OrderUserInfo {
+    uuid: string;
+    name: string;
+    email: string;
 }
 
 export class OrderResponseModel {
-    order_id: number;
+    id: number;
     uuid: string;
     total: number;
     status: string;
-    created_at: string;
-    items: OrderItemResponse[];
-    cart?: CartResponseModel;
+    createdAt: Date;
+    cart: CartResponseModel;
+    user?: OrderUserInfo;
 }

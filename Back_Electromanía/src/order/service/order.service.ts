@@ -19,14 +19,18 @@ export class OrderService {
     readonly authService: AuthService,
     readonly cartService: CartService,
     readonly orderMapper: OrderMapper
-  ) { }
-  create(createOrderDto: Prisma.OrderCreateInput) {
-    return this.prisma.order.create({
+  ) {}
+  create(createOrderDto: Prisma.OrderCreateInput, tx?:Prisma.TransactionClient) {
+    const prisma = tx ? tx : this.prisma;
+    return prisma.order.create({
       data: createOrderDto,
       include: {
-        userOrders: true,
-        orderItems: true,
-        cart: {
+        userOrders: {
+          include: {
+            user: true
+          }
+        },
+        cart:{
           include: {
             cartDetails: {
               include: {
@@ -39,41 +43,34 @@ export class OrderService {
     });
   }
 
-  async register(token: string) {
-    const modelCart = await this.cartService.getCartByUser(token);
-    if (!modelCart) {
-      throw new NotFoundException('Cart not found');
-    }
-    const dataCartUpdate: CartUpdateRequest = {
-      id: modelCart.id,
-      state: CartState.COMPLETED
-    }
+  async register(uuid: string,cart:CartResponseModel, tx?:Prisma.TransactionClient) {
     const request: CreateOrderDto = {
-      user_uuid: modelCart.userUUID,
-      cart: modelCart,
+      user_uuid: cart.userUUID,
+      cart: cart,
     };
-    await this.cartService.updateCart(modelCart.id, dataCartUpdate);
-    const order = await this.create(this.orderMapper.toRegisterEntity(request));
-    await this.saveOrderItems(modelCart, order);
+    const order = await this.create(this.orderMapper.toRegisterEntity(request), tx);
     return this.orderMapper.toResponseModel(order);
   }
 
-  async getByUser(token: string): Promise<OrderResponseModel[]> {
+  async getByUser(token: string):Promise<OrderResponseModel[]> {
     const user = await this.authService.getUserFromToken(token);
     const orders = await this.prisma.order.findMany({
-      where: {
+      where:{
         userOrders: {
-          some: {
+          some:{
             user_uuid: user.uuid
           }
         },
       },
       include: {
-        userOrders: true,
-        orderItems: true,
-        cart: {
+        userOrders: {
           include: {
-            cartDetails: {
+            user: true
+          }
+        },
+        cart: {
+          include:{
+            cartDetails:{
               include: {
                 product: true
               }
@@ -93,11 +90,12 @@ export class OrderService {
     return `This action updates a #${id} order`;
   }
 
-  async saveOrderItems(cartResponseModel: CartResponseModel, order: Order) {
+  async saveOrderItems(cartResponseModel:CartResponseModel, orderId: number, tx?:Prisma.TransactionClient){
+    const prisma = tx? tx : this.prisma
     cartResponseModel.details.map((detail) =>
-      this.prisma.orderItem.create({
+      prisma.orderItem.create({
         data: {
-          order_id: order.order_id,
+          order_id: orderId,
           product_id: detail.product.product_id,
           product_name: detail.product.product_name,
           unit_price: detail.product.price,

@@ -148,20 +148,6 @@ export class CloudflareR2Service implements OnModuleInit {
 
         await this.s3Client.send(command);
 
-        // Track in database to minimize Class A operations
-        await this.prisma.cloudflareUsage.upsert({
-            where: { key },
-            create: {
-                key,
-                size: buffer.length,
-                mimeType,
-            },
-            update: {
-                size: buffer.length,
-                mimeType,
-            },
-        });
-
         // Generate URL based on bucket type
         const url = bucket === 'assets'
             ? `${this.publicEndpoint}/${key}`
@@ -219,11 +205,6 @@ export class CloudflareR2Service implements OnModuleInit {
 
         await this.s3Client.send(command);
 
-        // Remove from database tracking
-        await this.prisma.cloudflareUsage.deleteMany({
-            where: { key },
-        });
-
         this.logger.log(`Deleted ${key} from ${bucketName}`);
     }
 
@@ -246,12 +227,24 @@ export class CloudflareR2Service implements OnModuleInit {
     }
 
     /**
-     * Get file metadata from database (avoids Class A operation)
+     * Get file metadata by checking if it exists in R2
      */
-    async getMetadata(key: string) {
-        return this.prisma.cloudflareUsage.findUnique({
-            where: { key },
-        });
+    async getMetadata(key: string, bucket: BucketType = 'assets') {
+        const bucketName = this.buckets[bucket];
+        try {
+            const command = new HeadObjectCommand({
+                Bucket: bucketName,
+                Key: key,
+            });
+            const response = await this.s3Client.send(command);
+            return {
+                key,
+                size: response.ContentLength,
+                mimeType: response.ContentType,
+            };
+        } catch {
+            return null;
+        }
     }
 
     /**

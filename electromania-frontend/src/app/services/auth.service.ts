@@ -1,18 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal, computed } from '@angular/core';
-import { environment } from '../../environments/environment';
 import { firstValueFrom } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { LoginRequest, LoginResponse, DecodedToken, RegisterUserRequest, UserInfo } from '../models';
-import { ROLES, isAdminRole } from '../constants';
+import { API, ROLES, isAdminRole, STORAGE_KEYS } from '../constants';
 import { StorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private http = inject(HttpClient);
-  private storageService = inject(StorageService);
+  private readonly http = inject(HttpClient);
+  private readonly storageService = inject(StorageService);
 
   private readonly _authState = signal<boolean>(false);
 
@@ -28,16 +27,16 @@ export class AuthService {
   }
 
   async registerUser(data: RegisterUserRequest): Promise<void> {
-    await firstValueFrom(this.http.post(`${environment.API_DOMAIN}/auth/register`, data));
+    await firstValueFrom(this.http.post(API.AUTH.REGISTER, data));
   }
 
   async login(data: LoginRequest): Promise<LoginResponse> {
     const response = await firstValueFrom(
-      this.http.post<LoginResponse>(`${environment.API_DOMAIN}/auth/login`, data)
+      this.http.post<LoginResponse>(API.AUTH.LOGIN, data)
     );
 
     if (response?.access_token) {
-      this.storageService.setItem('token', response.access_token);
+      this.storageService.setItem(STORAGE_KEYS.TOKEN, response.access_token);
       this._authState.set(true);
     }
     return response;
@@ -61,12 +60,12 @@ export class AuthService {
   }
 
   logout(): void {
-    this.storageService.removeItem('token');
+    this.storageService.removeItem(STORAGE_KEYS.TOKEN);
     this._authState.set(false);
   }
 
   getToken(): string | null {
-    return this.storageService.getItem('token');
+    return this.storageService.getItem(STORAGE_KEYS.TOKEN);
   }
 
   isAuthenticated(): boolean {

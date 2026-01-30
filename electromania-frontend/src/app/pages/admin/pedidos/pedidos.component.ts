@@ -1,21 +1,28 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { OrderService } from '../../../services/order.service';
 import { ToastService } from '../../../services/toast.service';
+import { LanguageService } from '../../../services/language.service';
+import { ModalService } from '../../../services/modal.service';
 import { AdminSidebarComponent } from '../../../components/admin-sidebar/admin-sidebar.component';
+import { ConfirmationModalComponent } from '../../../components/confirmation-modal/confirmation-modal.component';
 import { Order, OrderStatus } from '../../../models';
 
 @Component({
   selector: 'app-pedidos',
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminSidebarComponent],
+  imports: [CommonModule, FormsModule, AdminSidebarComponent, TranslateModule, ConfirmationModalComponent],
   templateUrl: './pedidos.component.html',
   styleUrl: './pedidos.component.css'
 })
 export class PedidosComponent implements OnInit {
   private orderService = inject(OrderService);
   private toast = inject(ToastService);
+  private languageService = inject(LanguageService);
+  private modalService = inject(ModalService);
+  private cdr = inject(ChangeDetectorRef);
 
   orders: Order[] = [];
   filteredOrders: Order[] = [];
@@ -40,6 +47,7 @@ export class PedidosComponent implements OnInit {
 
   async loadOrders() {
     this.loading = true;
+    this.cdr.markForCheck();
     try {
       this.orders = await this.orderService.getMyOrders();
       this.backendReady = true;
@@ -48,10 +56,11 @@ export class PedidosComponent implements OnInit {
       if (error && typeof error === 'object' && 'status' in error && (error as { status: number }).status === 404) {
         this.backendReady = false;
       } else {
-        this.toast.error('Error al cargar los pedidos');
+        this.toast.error(this.languageService.instant('ADMIN.ERROR_LOAD_ORDERS'));
       }
     } finally {
       this.loading = false;
+      this.cdr.markForCheck();
     }
   }
 
@@ -65,7 +74,7 @@ export class PedidosComponent implements OnInit {
     if (this.searchTerm.trim()) {
       const term = this.searchTerm.toLowerCase();
       result = result.filter(o =>
-        o.order_id.toString().includes(term) ||
+        o.id.toString().includes(term) ||
         o.user?.name?.toLowerCase().includes(term) ||
         o.user?.email?.toLowerCase().includes(term)
       );
@@ -76,25 +85,34 @@ export class PedidosComponent implements OnInit {
 
   async updateStatus(order: Order, newStatus: OrderStatus) {
     try {
-      await this.orderService.updateOrder(order.order_id, { status: newStatus });
+      await this.orderService.updateOrder(order.id, { status: newStatus });
       order.status = newStatus;
-      this.toast.success(`Pedido #${order.order_id} actualizado a ${this.orderService.getStatusLabel(newStatus)}`);
+      this.toast.success(this.languageService.instant('ADMIN.ORDER_UPDATED', { id: order.id, status: this.orderService.getStatusLabel(newStatus) }));
     } catch {
-      this.toast.error('Error al actualizar el estado');
+      this.toast.error(this.languageService.instant('ADMIN.ERROR_UPDATE_STATUS'));
     }
   }
 
   async cancelOrder(order: Order) {
-    if (!confirm(`¿Está seguro de cancelar el pedido #${order.order_id}? El stock será restaurado.`)) {
+    const confirmed = await this.modalService.confirm({
+      title: this.languageService.instant('ADMIN.CANCEL_ORDER_TITLE'),
+      message: this.languageService.instant('ADMIN.CANCEL_ORDER_CONFIRM', { id: order.id }),
+      confirmText: this.languageService.instant('ADMIN.CANCEL'),
+      cancelText: this.languageService.instant('COMMON.CANCEL'),
+      type: 'danger'
+    });
+
+    if (!confirmed) {
       return;
     }
 
     try {
-      await this.orderService.cancelOrder(order.order_id);
+      await this.orderService.cancelOrder(order.id);
       order.status = 'CANCELED';
-      this.toast.success(`Pedido #${order.order_id} cancelado. Stock restaurado.`);
+      this.cdr.markForCheck();
+      this.toast.success(this.languageService.instant('ADMIN.ORDER_CANCELED', { id: order.id }));
     } catch {
-      this.toast.error('Error al cancelar el pedido');
+      this.toast.error(this.languageService.instant('ADMIN.ERROR_CANCEL_ORDER'));
     }
   }
 

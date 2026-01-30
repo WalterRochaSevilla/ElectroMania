@@ -8,19 +8,19 @@
             <div class="registro-wrapper">
                 <div class="registro-card">
                     <div class="registro-header">
-                        <h2>Crear Cuenta</h2>
-                        <p class="subtitle">Datos necesarios para facturación (Ley Boliviana)</p>
+                        <h2>{{ 'REGISTER.TITLE' | translate }}</h2>
+                        <p class="subtitle">{{ 'REGISTER.SUBTITLE' | translate }}</p>
                     </div>
 
                     <div class="registro-body">
                         <!-- NIT -->
                         <div class="campo-formulario">
                             <label for="nit">
-                                NIT
-                                <span class="ejemplo">Ej: 1234567</span>
+                                {{ 'REGISTER.NIT' | translate }}
+                                <span class="ejemplo">{{ 'REGISTER.NIT_EXAMPLE' | translate }}</span>
                             </label>
                             <div class="input-contenedor">
-                                <input type="text" id="nit" [(ngModel)]="nit" placeholder="Ingrese su NIT"
+                                <input type="text" id="nit" [(ngModel)]="nit" [placeholder]="'REGISTER.NIT_PLACEHOLDER' | translate"
                                     (input)="formatearNIT()" maxlength="20" />
                             </div>
                         </div>
@@ -28,30 +28,30 @@
                         <!-- RAZÓN SOCIAL / APELLIDO -->
                         <div class="campo-formulario">
                             <label for="razonSocial">
-                                RAZÓN SOCIAL / APELLIDO
-                                <span class="ejemplo">Ej: Juan Pérez</span>
+                                {{ 'REGISTER.SOCIAL_REASON' | translate }}
+                                <span class="ejemplo">{{ 'REGISTER.SOCIAL_REASON_EXAMPLE' | translate }}</span>
                             </label>
                             <div class="input-contenedor">
                                 <input type="text" id="razonSocial" [(ngModel)]="razonSocial"
-                                    placeholder="Ingrese razón social o apellido" />
+                                    [placeholder]="'REGISTER.SOCIAL_REASON_PLACEHOLDER' | translate" />
                             </div>
                         </div>
 
                         <!-- CORREO ELECTRÓNICO -->
                         <div class="campo-formulario">
                             <label for="email">
-                                CORREO ELECTRÓNICO
+                                {{ 'REGISTER.EMAIL' | translate }}
                             </label>
                             <div class="input-contenedor">
-                                <input type="email" id="email" [(ngModel)]="email" placeholder="tu@email.com" />
+                                <input type="email" id="email" [(ngModel)]="email" [placeholder]="'REGISTER.EMAIL_PLACEHOLDER' | translate" />
                             </div>
                         </div>
 
                         <!-- CONTRASEÑA -->
                         <div class="campo-formulario">
                             <label for="password">
-                                CONTRASEÑA
-                                <span class="hint">Mínimo 6 caracteres</span>
+                                {{ 'REGISTER.PASSWORD' | translate }}
+                                <span class="hint">{{ 'REGISTER.PASSWORD_HINT' | translate }}</span>
                             </label>
                             <app-password-input
                                 inputId="password"
@@ -63,7 +63,7 @@
                         <!-- REPETIR CONTRASEÑA -->
                         <div class="campo-formulario">
                             <label for="confirmPassword">
-                                CONFIRMAR CONTRASEÑA
+                                {{ 'REGISTER.CONFIRM_PASSWORD' | translate }}
                             </label>
                             <app-password-input
                                 inputId="confirmPassword"
@@ -78,7 +78,7 @@
                                 <input type="checkbox" [(ngModel)]="aceptaTerminos" />
                                 <span class="checkmark"></span>
                                 <span class="checkbox-text">
-                                    Acepto los <button type="button" class="enlace-terminos">términos y condiciones</button>
+                                    {{ 'REGISTER.TERMS_ACCEPT' | translate }} <button type="button" class="enlace-terminos">{{ 'REGISTER.TERMS_LINK' | translate }}</button>
                                 </span>
                             </label>
                         </div>
@@ -86,14 +86,14 @@
                         <!-- BOTÓN REGISTRARSE -->
                         <button class="btn-registrarse" routerLink="/login" [disabled]="!formularioValido()"
                             (click)="registrar()">
-                            Registrarse
+                            {{ 'REGISTER.SUBMIT' | translate }}
                         </button>
 
                         <!-- ENLACE VOLVER AL LOGIN -->
                         <div class="registro-footer">
                             <p>
                                 <button type="button" class="enlace-volver" (click)="volverAlLogin()">
-                                    ← Volver al Login
+                                    {{ 'REGISTER.BACK_TO_LOGIN' | translate }}
                                 </button>
                             </p>
                         </div>

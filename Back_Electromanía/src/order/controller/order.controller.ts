@@ -3,15 +3,21 @@ import { OrderService } from '../service/order.service';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { UpdateOrderDto } from '../dto/update-order.dto';
 import { AuthGuard } from '../../auth/guards/auth.guard';
+import { CreateOrderByCartUseCase } from '../use-cases/create-order-by-cart.usecase';
+import { AuthService } from '../../auth/service/auth.service';
 
 @Controller('order')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(private readonly orderService: OrderService,
+    private readonly authService: AuthService,
+    private readonly createOrderByCart:CreateOrderByCartUseCase
+  ) {}
 
   @UseGuards(AuthGuard)
   @Post('register')
-  register(@Headers('authorization') token: string) {
-    return this.orderService.register(token.replace('Bearer ', ''));
+  async register(@Headers('authorization') token: string) {
+    const user = await  this.authService.getUserFromToken(token.replace('Bearer ', ''));
+    return this.createOrderByCart.execute(user.uuid);
   }
 
   @UseGuards(AuthGuard)

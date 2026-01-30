@@ -3,7 +3,7 @@
 
   <div class="main-content">
     <header class="top-bar">
-      <h2>Dashboard Administrativo</h2>
+      <h2>{{ 'ADMIN.DASHBOARD_TITLE' | translate }}</h2>
     </header>
 
     <div class="dashboard-grid">
@@ -18,10 +18,10 @@
               </svg>
             </div>
             <div class="stat-info">
-              <h3>Ingresos Totales</h3>
+              <h3>{{ 'ADMIN.TOTAL_REVENUE' | translate }}</h3>
               <div class="value">Bs. {{ stats.totalRevenue | number:'1.2-2' }}</div>
               <div class="trend positive">
-                <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> {{ stats.revenueChange }}%</span> vs mes anterior
+                <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> {{ stats.revenueChange }}%</span> {{ 'ADMIN.VS_PREV_MONTH' | translate }}
               </div>
             </div>
           </div>
@@ -34,9 +34,9 @@
                 </svg>
               </div>
               <div class="stat-info">
-                <h3>Stock Crítico</h3>
-                <div class="value">{{ stats.lowStockCount }} Productos</div>
-                <div class="trend negative">Requiere atención</div>
+                <h3>{{ 'ADMIN.CRITICAL_STOCK' | translate }}</h3>
+                <div class="value">{{ stats.lowStockCount }} {{ 'ADMIN.PRODUCTS' | translate }}</div>
+                <div class="trend negative">{{ 'ADMIN.REQUIRES_ATTENTION' | translate }}</div>
               </div>
             </div>
 
@@ -47,9 +47,9 @@
                 </svg>
               </div>
               <div class="stat-info">
-                <h3>Sistema</h3>
+                <h3>{{ 'ADMIN.SYSTEM' | translate }}</h3>
                 <div class="value text-success">{{ stats.systemStatus }}</div>
-                <div class="trend">Versión 1.0.0</div>
+                <div class="trend">{{ 'ADMIN.VERSION' | translate }} 1.0.0</div>
               </div>
             </div>
           </div>
@@ -59,11 +59,11 @@
             <!-- REVENUE CHART -->
             <div class="chart-card large">
               <div class="card-header">
-                <h3>Tendencia de Ventas</h3>
+                <h3>{{ 'ADMIN.SALES_TREND' | translate }}</h3>
                 <select class="period-select" [(ngModel)]="periodoSeleccionado" (change)="updateRevenueChart()">
-                  <option value="7d">7 Días</option>
-                  <option value="30d">30 Días</option>
-                  <option value="90d">90 Días</option>
+                  <option value="7d">{{ 'ADMIN.DAYS_7' | translate }}</option>
+                  <option value="30d">{{ 'ADMIN.DAYS_30' | translate }}</option>
+                  <option value="90d">{{ 'ADMIN.DAYS_90' | translate }}</option>
                 </select>
               </div>
               <div class="chart-wrapper">
@@ -75,7 +75,7 @@
             <!-- TOP SELLING CHART -->
             <div class="chart-card">
               <div class="card-header">
-                <h3>Más Vendidos</h3>
+                <h3>{{ 'ADMIN.TOP_SELLING' | translate }}</h3>
               </div>
               <div class="chart-wrapper">
                 <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType">
@@ -91,17 +91,17 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
-              <span>Alerta de Stock / Vencidos</span>
+              <span>{{ 'ADMIN.STOCK_ALERT' | translate }}</span>
             </h3>
               <div class="table-responsive">
                 <table class="dashboard-table">
                   <thead>
                     <tr>
                       <th>ID</th>
-                      <th>Producto</th>
-                      <th>Stock Actual</th>
-                      <th>Estado</th>
-                      <th>Acción</th>
+                      <th>{{ 'ADMIN.PRODUCT' | translate }}</th>
+                      <th>{{ 'ADMIN.CURRENT_STOCK' | translate }}</th>
+                      <th>{{ 'ADMIN.STATE' | translate }}</th>
+                      <th>{{ 'ADMIN.ACTION' | translate }}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -116,7 +116,7 @@
                           </span>
                         </td>
                         <td>
-                          <button class="btn-action" (click)="reabastecer(prod.id)">Reabastecer</button>
+                          <button class="btn-action" (click)="reabastecer(prod.id)">{{ 'ADMIN.RESTOCK' | translate }}</button>
                         </td>
                       </tr>
                     }

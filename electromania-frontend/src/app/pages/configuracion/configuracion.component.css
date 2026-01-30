@@ -84,6 +84,35 @@
     color: var(--text-secondary);
 }
 
+.language-select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-main);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    min-width: 140px;
+}
+
+.language-select:hover {
+    border-color: var(--border-hover);
+}
+
+.language-select:focus {
+    outline: none;
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 2px var(--brand-glow);
+}
+
+.language-select option {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    padding: 8px;
+}
+
 .setting-badge {
     padding: 4px 10px;
     border-radius: 12px;

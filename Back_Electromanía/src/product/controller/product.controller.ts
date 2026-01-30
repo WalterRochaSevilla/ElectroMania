@@ -12,27 +12,28 @@ import { UserRole } from '../../user/enums/UserRole.enum';
 import { ApiBody, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ProductModel } from '../model/Product.model';
 import { productMulterConfig } from '../../common/utils/multer/product-multer.config';
+import { RegisterProductUseCase } from '../use-cases/register-product.use-case';
 
 
 @Controller('products')
 @ApiTags('Products')
 export class ProductController {
     constructor(
-        private readonly productService: ProductService
-    ) { }
+        private readonly productService: ProductService,
+        private readonly registerProductUseCase:RegisterProductUseCase
+    ){}
 
     @Get("all")
-    @ApiOperation({
-        summary: 'Obtener todos los productos',
+    @ApiOperation({ 
+        summary: 'Obtener todos los productos', 
         description: 'Obtiene todos los productos',
-        tags: ['Products']
-    }
+        tags: ['Products']}
     )
     @ApiResponse(
         {
             status: 200,
             description: 'Productos obtenidos',
-            type: [ProductModel],
+            type:[ProductModel],
             example: [
                 {
                     "product_id": 1,
@@ -71,7 +72,7 @@ export class ProductController {
         status: 404,
         description: 'Products not found'
     })
-    getAllProducts(): Promise<ProductModel[]> {
+    getAllProducts(): Promise<ProductModel[]>{
         return this.productService.getAllProducts();
     }
 
@@ -81,7 +82,7 @@ export class ProductController {
         description: 'Obtiene los productos de una pagina dada',
         tags: ['Products']
     })
-    @ApiQuery({ name: "page", required: true, type: Number })
+    @ApiQuery({name:"page", required: true, type: Number})
     @ApiResponse({
         status: 200,
         description: 'Productos obtenidos',
@@ -129,17 +130,17 @@ export class ProductController {
             }
         }
     })
-    getPage(@Query("page") page: number): Promise<PageProductResponseModel> {
+    getPage(@Query("page") page: number): Promise<PageProductResponseModel>{
         return this.productService.getPageProduct(page);
     }
 
     @Roles(UserRole.ADMIN)
-    @UseGuards(AuthGuard, RolesGuard)
+    @UseGuards(AuthGuard,RolesGuard)
     @ApiOperation({
         summary: 'Registrar un producto',
         description: 'Registra un producto',
         tags: ['Products'],
-        requestBody: {
+        requestBody:{
             required: true,
             content: {
                 'application/json': {
@@ -185,14 +186,14 @@ export class ProductController {
         }
     })
     @Post("register")
-    @UseInterceptors(FileInterceptor('image', productMulterConfig))
-    registerProduct(@Body() product: CreateProductRequestModel,
-        @UploadedFile() image: Express.Multer.File): Promise<ProductModule> {
-        return this.productService.createProduct(product, image);
+    @UseInterceptors(FileInterceptor('image', productMulterConfig)) 
+    async registerProduct(@Body()product: CreateProductRequestModel, 
+    @UploadedFile() image: Express.Multer.File): Promise<ProductModel>{
+        return this.registerProductUseCase.execute(product, image);
     }
-
+    
     @Roles(UserRole.ADMIN)
-    @UseGuards(AuthGuard, RolesGuard)
+    @UseGuards(AuthGuard,RolesGuard)
     @Post("addImage")
     @ApiOperation({
         summary: 'Registrar una imagen a un producto',
@@ -228,12 +229,12 @@ export class ProductController {
             ]
         }
     })
-    registerProductImage(@Body() productImage: RegisterProductImageRequestModel): Promise<ProductModule> {
+    registerProductImage(@Body()productImage: RegisterProductImageRequestModel): Promise<ProductModel>{
         return this.productService.registerProductImage(productImage);
     }
 
     @Roles(UserRole.ADMIN)
-    @UseGuards(AuthGuard, RolesGuard)
+    @UseGuards(AuthGuard,RolesGuard)
     @ApiOperation({
         summary: 'Eliminar un producto',
         description: 'Elimina un producto',
@@ -260,13 +261,14 @@ export class ProductController {
     })
     // Delete product endpoint -> To need the id of the product
     @Delete('delete/:id')
-    async delete(@Param('id') id: string): Promise<{ message: string }> {
+    async delete(@Param('id') id: string): Promise<{ message: string }> 
+    {
         await this.productService.deleteProduct(Number(id));
         return { message: 'Producto eliminado correctamente' }; // suggested message for terminal output
     }
 
     @Roles(UserRole.ADMIN)
-    @UseGuards(AuthGuard, RolesGuard)
+    @UseGuards(AuthGuard,RolesGuard)
     @ApiOperation({
         summary: 'Actualizar un producto',
         description: 'Actualiza un producto',
@@ -320,12 +322,7 @@ export class ProductController {
         }
     })
     @Put('update/')
-    @UseInterceptors(FileInterceptor('image', productMulterConfig))
-    async update(
-        @Query('id') id: string,
-        @Body() dto: Partial<CreateProductRequestModel>,
-        @UploadedFile() image?: Express.Multer.File
-    ): Promise<ProductModel> {
-        return this.productService.updateProduct(Number(id), dto, image);
+    async update(@Query('id') id: string, @Body() dto: Partial<CreateProductRequestModel>): Promise<ProductModel> {
+        return this.productService.updateProduct(Number(id), dto);
     }
 }

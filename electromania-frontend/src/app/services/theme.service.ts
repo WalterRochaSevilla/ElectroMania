@@ -1,8 +1,9 @@
 import { Injectable, signal, computed, inject, PLATFORM_ID, afterNextRender } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { StorageService } from './storage.service';
+import { STORAGE_KEYS } from '../constants';
 
-const STORAGE_KEY = 'theme';
+const STORAGE_KEY = STORAGE_KEYS.THEME;
 
 @Injectable({
   providedIn: 'root'

@@ -1,18 +1,21 @@
-import { Component, inject, ChangeDetectionStrategy, signal, OnInit } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, signal, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { ToastService } from '../../services/toast.service';
 import { CartService } from '../../services/cart.service';
 import { AuthService } from '../../services/auth.service';
 import { OrderService } from '../../services/order.service';
-
-const WHATSAPP_NUMBER = '59177418158';
+import { LanguageService } from '../../services/language.service';
+import { ProductosService } from '../../services/productos.service';
+import { CONTACT, ROUTES } from '../../constants';
+import { Product } from '../../models';
 
 @Component({
   selector: 'app-productos',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './productos.component.html',
   styleUrls: ['./productos.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -22,6 +25,8 @@ export class ProductosComponent implements OnInit {
   private toast = inject(ToastService);
   private authService = inject(AuthService);
   private orderService = inject(OrderService);
+  private languageService = inject(LanguageService);
+  private productosService = inject(ProductosService);
   protected cartService = inject(CartService);
 
   readonly isAuthenticated = this.authService.isAuthenticated$;
@@ -37,9 +42,37 @@ export class ProductosComponent implements OnInit {
   procesando = signal(false);
   mostrarModalExito = signal(false);
   numeroFactura = signal('');
+  
+  // Store product stock info
+  private productStocks = signal<Map<number, number>>(new Map());
 
-  ngOnInit() {
+  async ngOnInit() {
     this.autoFillUserData();
+    await this.loadProductStocks();
+  }
+  
+  private async loadProductStocks() {
+    try {
+      const products = await this.productosService.getAllProducts();
+      const stockMap = new Map<number, number>();
+      products.forEach(p => {
+        if (p.product_id !== undefined) {
+          stockMap.set(p.product_id, p.stock);
+        }
+      });
+      this.productStocks.set(stockMap);
+    } catch {
+      console.error('Failed to load product stocks');
+    }
+  }
+  
+  getMaxStock(productId: number): number {
+    return this.productStocks().get(productId) ?? 999;
+  }
+  
+  isAtMaxStock(productId: number, currentQuantity: number): boolean {
+    const maxStock = this.getMaxStock(productId);
+    return currentQuantity >= maxStock;
   }
 
   private autoFillUserData() {
@@ -55,27 +88,31 @@ export class ProductosComponent implements OnInit {
   }
 
   irACatalogo() {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/', ROUTES.HOME]);
   }
 
   irACarrito() {
-    this.router.navigate(['/producto']);
+    this.router.navigate(['/', ROUTES.PRODUCTO]);
   }
 
   irALogin() {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/', ROUTES.LOGIN]);
   }
 
   volverATienda() {
     this.mostrarModalExito.set(false);
     this.cartService.clear();
-    this.router.navigate(['/home']);
+    this.router.navigate(['/', ROUTES.HOME]);
   }
 
-  async aumentarCantidad(index: number) {
-    const item = this.carrito().find(i => i.id === index);
+  async aumentarCantidad(productId: number) {
+    const item = this.carrito().find(i => i.id === productId);
     if (item) {
-      await this.cartService.increaseQuantity(item.id);
+      const maxStock = this.getMaxStock(productId);
+      if (item.cantidad >= maxStock) {
+        return; // Already at max
+      }
+      await this.cartService.increaseQuantity(item.id, maxStock);
     }
   }
 
@@ -97,12 +134,12 @@ export class ProductosComponent implements OnInit {
     if (this.procesando()) return;
 
     if (this.isEmpty()) {
-      this.toast.error('Tu carrito esta vacio');
+      this.toast.error(this.languageService.instant('CHECKOUT.EMPTY_CART'));
       return;
     }
 
     if (!this.nombreFactura() || !this.nitFactura()) {
-      this.toast.warning('Por favor completa los datos de facturación (Nombre y NIT/CI son obligatorios)');
+      this.toast.warning(this.languageService.instant('CHECKOUT.REQUIRED_FIELDS'));
       return;
     }
 
@@ -126,7 +163,7 @@ export class ProductosComponent implements OnInit {
       this.mostrarModalExito.set(true);
     } catch (error) {
       console.error('Error creating order:', error);
-      this.toast.error('Error al procesar el pedido');
+      this.toast.error(this.languageService.instant('CHECKOUT.ORDER_ERROR'));
     } finally {
       this.procesando.set(false);
     }
@@ -164,6 +201,6 @@ ${this.emailFactura() ? `📧 Email: ${this.emailFactura()}` : ''}
 
   private generateWhatsAppUrl(message: string): string {
     const encodedMessage = encodeURIComponent(message);
-    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+    return `https://wa.me/${CONTACT.WHATSAPP_NUMBER}?text=${encodedMessage}`;
   }
 }

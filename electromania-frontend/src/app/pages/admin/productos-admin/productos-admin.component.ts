@@ -1,21 +1,25 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { AdminSidebarComponent } from '../../../components/admin-sidebar/admin-sidebar.component';
 import { ProductosService } from '../../../services/productos.service';
 import { AuthService } from '../../../services/auth.service';
 import { ToastService } from '../../../services/toast.service';
 import { ModalService } from '../../../services/modal.service';
+import { LanguageService } from '../../../services/language.service';
 import { ProductFormModalComponent, ProductFormData } from '../../../components/product-form-modal/product-form-modal.component';
 import { ProductDisplay } from '../../../models';
 import { exportToCsv } from '../../../utils/export';
+import { INVENTORY } from '../../../constants';
 
 @Component({
   selector: 'app-productos-admin',
   standalone: true,
-  imports: [FormsModule, AdminSidebarComponent, ProductFormModalComponent],
+  imports: [FormsModule, AdminSidebarComponent, ProductFormModalComponent, TranslateModule],
   templateUrl: './productos-admin.component.html',
-  styleUrl: './productos-admin.component.css'
+  styleUrl: './productos-admin.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductosAdminComponent implements OnInit {
   private router = inject(Router);
@@ -23,15 +27,20 @@ export class ProductosAdminComponent implements OnInit {
   private authService = inject(AuthService);
   private toast = inject(ToastService);
   private modalService = inject(ModalService);
+  private languageService = inject(LanguageService);
+  private cdr = inject(ChangeDetectorRef);
 
   paginaActual = 1;
-  productosPorPagina = 10;
+  productosPorPagina = INVENTORY.ITEMS_PER_PAGE;
 
   isModalOpen = false;
   selectedProduct: ProductFormData | null = null;
   isEditing = false;
 
   productos: ProductDisplay[] = [];
+  totalPaginas = 0;
+  stockBajoCount = 0;
+  paginatedProducts: ProductDisplay[] = [];
 
   async ngOnInit() {
     await this.cargarProductos();
@@ -50,23 +59,23 @@ export class ProductosAdminComponent implements OnInit {
         description: p.description,
         images: p.images || []
       }));
+      this.updateDerivedState();
     } catch {
-      this.toast.error('Error al cargar productos');
+      this.toast.error(this.languageService.instant('ADMIN.ERROR_LOAD_PRODUCTS'));
     }
   }
 
-  get totalPaginas(): number {
-    return Math.ceil(this.productos.length / this.productosPorPagina);
+  private updateDerivedState(): void {
+    this.totalPaginas = Math.ceil(this.productos.length / this.productosPorPagina);
+    this.stockBajoCount = this.productos.filter(p => p.stock <= INVENTORY.LOW_STOCK_THRESHOLD).length;
+    this.updatePaginatedProducts();
+    this.cdr.markForCheck();
   }
 
-  get stockBajoCount(): number {
-    return this.productos.filter(p => p.stock <= 5).length;
-  }
-
-  get paginatedProducts(): ProductDisplay[] {
+  private updatePaginatedProducts(): void {
     const start = (this.paginaActual - 1) * this.productosPorPagina;
     const end = start + this.productosPorPagina;
-    return this.productos.slice(start, end);
+    this.paginatedProducts = this.productos.slice(start, end);
   }
 
   ingresar() {
@@ -137,10 +146,10 @@ export class ProductosAdminComponent implements OnInit {
           }
         }
 
-        this.toast.success('Producto actualizado exitosamente');
+        this.toast.success(this.languageService.instant('ADMIN.PRODUCT_UPDATED'));
         this.cargarProductos();
       } catch {
-        this.toast.error('Error al actualizar el producto');
+        this.toast.error(this.languageService.instant('ADMIN.ERROR_UPDATE_PRODUCT'));
       }
 
     } else {
@@ -152,10 +161,10 @@ export class ProductosAdminComponent implements OnInit {
           stock: data.stock,
           image: data.imagen
         });
-        this.toast.success('Producto creado exitosamente');
+        this.toast.success(this.languageService.instant('ADMIN.PRODUCT_CREATED'));
         this.cargarProductos();
       } catch {
-        this.toast.error('Error al crear el producto');
+        this.toast.error(this.languageService.instant('ADMIN.ERROR_CREATE_PRODUCT'));
       }
     }
   }
@@ -164,19 +173,19 @@ export class ProductosAdminComponent implements OnInit {
     if (!id) return;
 
     const confirmed = await this.modalService.confirm({
-      title: 'Eliminar Producto',
-      message: '¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.',
-      confirmText: 'Eliminar',
+      title: this.languageService.instant('ADMIN.DELETE_PRODUCT_TITLE'),
+      message: this.languageService.instant('ADMIN.CONFIRM_DELETE_PRODUCT'),
+      confirmText: this.languageService.instant('COMMON.DELETE'),
       type: 'danger'
     });
 
     if (confirmed) {
       try {
         await this.productosService.deleteProduct(id);
-        this.toast.success('Producto eliminado');
+        this.toast.success(this.languageService.instant('ADMIN.PRODUCT_DELETED'));
         this.cargarProductos();
       } catch {
-        this.toast.error('No se pudo eliminar el producto');
+        this.toast.error(this.languageService.instant('ADMIN.ERROR_DELETE_PRODUCT'));
       }
     }
   }
@@ -190,9 +199,9 @@ export class ProductosAdminComponent implements OnInit {
         state: newStateBackend
       });
       producto.activo = newState;
-      this.toast.success(`Producto ${newState ? 'activado' : 'desactivado'}`);
+      this.toast.success(this.languageService.instant(newState ? 'ADMIN.PRODUCT_ACTIVATED' : 'ADMIN.PRODUCT_DEACTIVATED'));
     } catch {
-      this.toast.error('Error al cambiar el estado');
+      this.toast.error(this.languageService.instant('ADMIN.ERROR_CHANGE_STATE'));
     }
   }
 
@@ -206,18 +215,20 @@ export class ProductosAdminComponent implements OnInit {
   exportarInventario() {
     exportToCsv(this.productos, 'inventario-electromania', [
       { key: 'id', label: 'ID' },
-      { key: 'nombre', label: 'Producto' },
-      { key: 'categoria', label: 'Categoría' },
-      { key: 'precio', label: 'Precio (Bs.)' },
-      { key: 'stock', label: 'Stock' },
-      { key: 'activo', label: 'Estado' }
+      { key: 'nombre', label: this.languageService.instant('ADMIN.PRODUCT') },
+      { key: 'categoria', label: this.languageService.instant('PRODUCTS.CATEGORY') },
+      { key: 'precio', label: this.languageService.instant('ADMIN.PRICE') + ' (Bs.)' },
+      { key: 'stock', label: this.languageService.instant('ADMIN.STOCK') },
+      { key: 'activo', label: this.languageService.instant('ADMIN.STATE') }
     ]);
-    this.toast.success('Inventario exportado');
+    this.toast.success(this.languageService.instant('ADMIN.INVENTORY_EXPORTED'));
   }
 
   cambiarPagina(pagina: number) {
     if (pagina >= 1 && pagina <= this.totalPaginas) {
       this.paginaActual = pagina;
+      this.updatePaginatedProducts();
+      this.cdr.markForCheck();
     }
   }
 }

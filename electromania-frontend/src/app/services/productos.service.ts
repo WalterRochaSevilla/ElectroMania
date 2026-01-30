@@ -1,30 +1,28 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { environment } from '../../environments/environment';
 import { Product, ProductCard, CreateProductRequest, UpdateProductRequest, PageProductResponse, Category, RegisterProductImageRequest } from '../models';
+import { API, INVENTORY } from '../constants';
 import { CategoryService } from './category.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductosService {
-  private httpClient = inject(HttpClient);
-  private categoryService = inject(CategoryService);
+  private readonly http = inject(HttpClient);
+  private readonly categoryService = inject(CategoryService);
 
   async getAllProducts(): Promise<Product[]> {
-    return firstValueFrom(this.httpClient.get<Product[]>(`${environment.API_DOMAIN}/products/all`));
+    return firstValueFrom(this.http.get<Product[]>(API.PRODUCTS.ALL));
   }
 
   async getProductsPage(page: number): Promise<PageProductResponse> {
-    return firstValueFrom(this.httpClient.get<PageProductResponse>(`${environment.API_DOMAIN}/products?page=${page}`));
+    return firstValueFrom(this.http.get<PageProductResponse>(API.PRODUCTS.PAGE(page)));
   }
 
-  async getProductById(id: number): Promise<Product> {
+  async getProductById(id: number): Promise<Product | null> {
     const products = await this.getAllProducts();
-    const product = products.find(p => p.product_id === id);
-    if (!product) throw new Error('Product not found');
-    return product;
+    return products.find(p => p.product_id === id) ?? null;
   }
 
   async createProduct(product: CreateProductRequest): Promise<Product> {
@@ -37,11 +35,10 @@ export class ProductosService {
     if (product.image) {
       formData.append('image', product.image);
     }
-    return firstValueFrom(this.httpClient.post<Product>(`${environment.API_DOMAIN}/products/register`, formData));
+    return firstValueFrom(this.http.post<Product>(API.PRODUCTS.REGISTER, formData));
   }
 
   async updateProduct(id: number | string, product: UpdateProductRequest): Promise<Product> {
-    // If image is included, use FormData for multipart upload
     if (product.image) {
       const formData = new FormData();
       if (product.product_name) formData.append('product_name', product.product_name);
@@ -51,20 +48,19 @@ export class ProductosService {
       if (product.state) formData.append('state', product.state);
       formData.append('image', product.image);
 
-      return firstValueFrom(this.httpClient.put<Product>(`${environment.API_DOMAIN}/products/update/?id=${id}`, formData));
+      return firstValueFrom(this.http.put<Product>(API.PRODUCTS.UPDATE(id), formData));
     }
 
-    // Otherwise, send as JSON (without image field)
     const { image: _image, ...jsonData } = product;
-    return firstValueFrom(this.httpClient.put<Product>(`${environment.API_DOMAIN}/products/update/?id=${id}`, jsonData));
+    return firstValueFrom(this.http.put<Product>(API.PRODUCTS.UPDATE(id), jsonData));
   }
 
   async deleteProduct(id: number | string): Promise<void> {
-    await firstValueFrom(this.httpClient.delete(`${environment.API_DOMAIN}/products/delete/${id}`));
+    await firstValueFrom(this.http.delete(API.PRODUCTS.DELETE(id)));
   }
 
   async addProductImage(data: RegisterProductImageRequest): Promise<Product> {
-    return firstValueFrom(this.httpClient.post<Product>(`${environment.API_DOMAIN}/products/addImage`, data));
+    return firstValueFrom(this.http.post<Product>(API.PRODUCTS.ADD_IMAGE, data));
   }
 
   toProductCard(product: Product): ProductCard {
@@ -123,17 +119,22 @@ export class ProductosService {
 
   async getLowStockProducts() {
     const products = await this.getAllProducts();
-    const lowStockThreshold = 10;
 
     return products
-      .filter(p => p.stock <= lowStockThreshold)
+      .filter(p => p.stock <= INVENTORY.LOW_STOCK_THRESHOLD)
       .map(p => ({
         id: p.product_id ?? 0,
         name: p.product_name,
         stock: p.stock,
-        status: p.stock === 0 ? 'Agotado' : p.stock <= 3 ? 'Crítico' : 'Bajo'
+        status: this.getStockStatus(p.stock)
       }))
       .sort((a, b) => a.stock - b.stock)
-      .slice(0, 10);
+      .slice(0, INVENTORY.MAX_LOW_STOCK_ITEMS);
+  }
+
+  private getStockStatus(stock: number): 'Agotado' | 'Crítico' | 'Bajo' {
+    if (stock === INVENTORY.OUT_OF_STOCK_THRESHOLD) return 'Agotado';
+    if (stock <= INVENTORY.CRITICAL_STOCK_THRESHOLD) return 'Crítico';
+    return 'Bajo';
   }
 }

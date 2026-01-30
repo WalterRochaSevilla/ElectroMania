@@ -124,9 +124,17 @@
 
 .btn-cantidad:disabled,
 .btn-cantidad.disabled {
-  opacity: 0.3;
+  opacity: 0.4;
   cursor: not-allowed;
   pointer-events: none;
+  background: var(--slate-700);
+  color: var(--text-muted);
+}
+
+:host-context([data-theme='light']) .btn-cantidad:disabled,
+:host-context([data-theme='light']) .btn-cantidad.disabled {
+  background: var(--slate-200);
+  color: var(--text-muted);
 }
 
 .cantidad {

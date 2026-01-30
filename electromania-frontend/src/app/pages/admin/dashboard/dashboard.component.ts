@@ -4,9 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
+import { TranslateModule } from '@ngx-translate/core';
 import { ProductosService } from '../../../services/productos.service';
 import { AdminSidebarComponent } from '../../../components/admin-sidebar/admin-sidebar.component';
 import { ThemeService } from '../../../services/theme.service';
+import { LanguageService } from '../../../services/language.service';
 
 interface LowStockProduct {
   id: number;
@@ -18,7 +20,7 @@ interface LowStockProduct {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, BaseChartDirective, AdminSidebarComponent],
+  imports: [CommonModule, FormsModule, BaseChartDirective, AdminSidebarComponent, TranslateModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -26,6 +28,7 @@ export class DashboardComponent implements OnInit {
   private router = inject(Router);
   private productosService = inject(ProductosService);
   private themeService = inject(ThemeService);
+  private languageService = inject(LanguageService);
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
 

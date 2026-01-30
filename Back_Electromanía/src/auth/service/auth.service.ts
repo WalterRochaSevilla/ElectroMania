@@ -8,6 +8,7 @@ import { PasswordService } from '../../common/utils/password.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserJwtPayloadModel } from '../models/user-jwt-payload.model';
 import { LoginResponseModel } from '../models/login-response.model';
+import config from '../../config/Configuration';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +22,9 @@ export class AuthService {
     ) {}
     async validateToken(token: string) {
         try {
-            return this.jwtService.verify(token);
+            return this.jwtService.verify<UserJwtPayloadModel>(token,{
+                secret: config().jwtConstants.secret
+            });
         } catch (error) {
             return Promise.reject(error);
         }
@@ -56,6 +59,7 @@ export class AuthService {
         return this.userService.getUserByField('uuid', uuid);
     }
     async getUserFromToken(token: string){
+        const verify = await this.validateToken(token);
         return this.jwtService.decode(token).user;
     }
 

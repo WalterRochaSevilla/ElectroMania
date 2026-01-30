@@ -10,18 +10,16 @@ import Configuration from './config/Configuration';
 import { CartModule } from './cart/cart.module';
 import { CategoryModule } from './category/category.module';
 import { OrderModule } from './order/order.module';
-import { CloudflareR2Module } from './cloudflare-r2/cloudflare-r2.module';
 
 @Module({
   imports: [
-    CommonModule,
-    UserModule,
+        CommonModule, 
+        UserModule, 
     ConfigModule.forRoot({
       isGlobal: true,
       load: [Configuration],
       envFilePath: '.env',
     }),
-    CloudflareR2Module,
     ProductModule,
     AuthModule,
     CartModule,
@@ -30,7 +28,6 @@ import { CloudflareR2Module } from './cloudflare-r2/cloudflare-r2.module';
   ],
   controllers: [AppController],
   providers: [
-    AppService],
+         AppService],
 })
-export class AppModule { }
-
+export class AppModule {}

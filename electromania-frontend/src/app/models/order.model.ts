@@ -33,12 +33,41 @@ export interface Invoice {
   issued_at: string;
 }
 
+export interface CartDetail {
+  id: number;
+  quantity: number;
+  unitPrice: number;
+  total: number;
+  product: {
+    product_id: number;
+    product_name: string;
+    description: string;
+    price: number;
+    stock: number;
+    state: string;
+    images: string[];
+  };
+}
+
+export interface CartResponse {
+  id: number;
+  userUUID: string;
+  state: string;
+  createdAt: string;
+  details: CartDetail[];
+  subtotal: number;
+  total: number;
+}
+
 export interface Order {
-  order_id: number;
-  cart_id: number;
+  id: number;
+  order_id?: number; // alias for id
+  uuid: string;
   total: number;
   status: OrderStatus;
-  created_at: string;
+  createdAt: string;
+  created_at?: string; // alias for createdAt
+  cart: CartResponse;
   items?: OrderItem[];
   payment?: Payment;
   invoice?: Invoice;

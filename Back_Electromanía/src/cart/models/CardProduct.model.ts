@@ -1,7 +1,6 @@
 export class CartProductModel {
     product_id: number;
     product_name: string;
-    description: string;
     price: number;
 }
 

@@ -1,18 +1,24 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { OrderService } from '../../services/order.service';
+import { ModalService } from '../../services/modal.service';
+import { ConfirmationModalComponent } from '../../components/confirmation-modal/confirmation-modal.component';
 import { Order } from '../../models';
 
 @Component({
     selector: 'app-mis-pedidos',
     standalone: true,
-    imports: [CommonModule, RouterLink],
+    imports: [CommonModule, RouterLink, TranslateModule, ConfirmationModalComponent],
     templateUrl: './mis-pedidos.component.html',
     styleUrl: './mis-pedidos.component.css'
 })
 export class MisPedidosComponent implements OnInit {
     private orderService = inject(OrderService);
+    private translate = inject(TranslateService);
+    private modalService = inject(ModalService);
+    private cdr = inject(ChangeDetectorRef);
 
     orders: Order[] = [];
     loading = true;
@@ -23,12 +29,14 @@ export class MisPedidosComponent implements OnInit {
 
     async loadOrders() {
         this.loading = true;
+        this.cdr.markForCheck();
         try {
             this.orders = await this.orderService.getMyOrders();
         } catch {
             console.error('Error loading orders');
         } finally {
             this.loading = false;
+            this.cdr.markForCheck();
         }
     }
 
@@ -55,7 +63,15 @@ export class MisPedidosComponent implements OnInit {
     }
 
     async cancelOrder(orderId: number): Promise<void> {
-        if (!confirm('¿Estás seguro de que deseas cancelar este pedido?')) {
+        const confirmed = await this.modalService.confirm({
+            title: this.translate.instant('MY_ORDERS.CANCEL_TITLE'),
+            message: this.translate.instant('MY_ORDERS.CONFIRM_CANCEL'),
+            confirmText: this.translate.instant('MY_ORDERS.CANCEL'),
+            cancelText: this.translate.instant('COMMON.CANCEL'),
+            type: 'danger'
+        });
+
+        if (!confirmed) {
             return;
         }
 

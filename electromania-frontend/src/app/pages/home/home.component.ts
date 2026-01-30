@@ -1,30 +1,49 @@
 import { Component, OnInit, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { ProductosService } from '../../services/productos.service';
 import { CartService } from '../../services/cart.service';
 import { ToastService } from '../../services/toast.service';
+import { StorageService } from '../../services/storage.service';
+import { STORAGE_KEYS } from '../../constants';
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
 import { ProductCard } from '../../models';
+
+type SortOrder = 'relevancia' | 'precioAsc' | 'precioDesc' | 'nombre';
+
+interface SavedFilters {
+  busqueda?: string;
+  orden?: SortOrder;
+  categoria?: string;
+  precio?: string;
+  disponibilidad?: string;
+}
+
+const PRICE_FILTERS = {
+  LOW_MAX: 50,
+  MID_MAX: 100,
+} as const;
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule, ProductCardComponent],
+  imports: [FormsModule, ProductCardComponent, TranslateModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent implements OnInit {
-  router = inject(Router);
+  readonly router = inject(Router);
   private productosService = inject(ProductosService);
   private cartService = inject(CartService);
   private toast = inject(ToastService);
+  private storageService = inject(StorageService);
   private cdr = inject(ChangeDetectorRef);
 
   filtrosAvanzadosAbierto = false;
   busqueda = '';
-  orden = 'relevancia';
+  orden: SortOrder = 'relevancia';
   categoriaSeleccionada = '';
   precioSeleccionado = '';
   disponibilidadSeleccionada = '';
@@ -68,14 +87,14 @@ export class HomeComponent implements OnInit {
   }
 
   cargarFiltrosGuardados() {
-    const filtros = localStorage.getItem('electromania_filtros');
+    const filtros = this.storageService.getItem(STORAGE_KEYS.FILTERS);
     if (filtros) {
-      const data = JSON.parse(filtros);
-      this.busqueda = data.busqueda || '';
-      this.orden = data.orden || 'relevancia';
-      this.categoriaSeleccionada = data.categoria || '';
-      this.precioSeleccionado = data.precio || '';
-      this.disponibilidadSeleccionada = data.disponibilidad || '';
+      const data: SavedFilters = JSON.parse(filtros);
+      this.busqueda = data.busqueda ?? '';
+      this.orden = data.orden ?? 'relevancia';
+      this.categoriaSeleccionada = data.categoria ?? '';
+      this.precioSeleccionado = data.precio ?? '';
+      this.disponibilidadSeleccionada = data.disponibilidad ?? '';
     }
   }
 
@@ -87,7 +106,7 @@ export class HomeComponent implements OnInit {
       precio: this.precioSeleccionado,
       disponibilidad: this.disponibilidadSeleccionada
     };
-    localStorage.setItem('electromania_filtros', JSON.stringify(data));
+    this.storageService.setItem(STORAGE_KEYS.FILTERS, JSON.stringify(data));
   }
 
   async cargarCategorias() {
@@ -149,11 +168,11 @@ export class HomeComponent implements OnInit {
     // Price filter (using < for upper bounds to avoid boundary overlap)
     if (this.precioSeleccionado) {
       if (this.precioSeleccionado === '0-50') {
-        resultado = resultado.filter(p => p.price < 50);
+        resultado = resultado.filter(p => p.price < PRICE_FILTERS.LOW_MAX);
       } else if (this.precioSeleccionado === '50-100') {
-        resultado = resultado.filter(p => p.price >= 50 && p.price < 100);
+        resultado = resultado.filter(p => p.price >= PRICE_FILTERS.LOW_MAX && p.price < PRICE_FILTERS.MID_MAX);
       } else if (this.precioSeleccionado === '100+') {
-        resultado = resultado.filter(p => p.price >= 100);
+        resultado = resultado.filter(p => p.price >= PRICE_FILTERS.MID_MAX);
       }
     }
 

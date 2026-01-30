@@ -12,7 +12,7 @@
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-          <input type="text" placeholder="Buscar componentes..." [(ngModel)]="busqueda" (input)="buscarComponentes()">
+          <input type="text" [placeholder]="'HOME.SEARCH_PLACEHOLDER' | translate" [(ngModel)]="busqueda" (input)="buscarComponentes()">
           <!-- Clear Button -->
           @if (busqueda) {
             <button class="btn-clear" (click)="busqueda=''; buscarComponentes()">
@@ -33,7 +33,7 @@
             stroke-linecap="round" stroke-linejoin="round">
             <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path>
           </svg>
-          Filtros
+          {{ 'HOME.FILTERS' | translate }}
           @if (tieneFiltrosActivos) {
             <span class="filter-indicator"></span>
           }
@@ -46,10 +46,10 @@
           <div class="filters-grid">
             <!-- Filter Group: Categories -->
             <div class="filter-group">
-              <label for="category-filter">Categoría</label>
+              <label for="category-filter">{{ 'HOME.CATEGORY' | translate }}</label>
               <div class="custom-select-wrapper">
                 <select id="category-filter" [(ngModel)]="categoriaSeleccionada">
-                  <option value="">Todas</option>
+                  <option value="">{{ 'HOME.ALL' | translate }}</option>
                   @for (cat of categorias; track cat) {
                     <option [value]="cat">{{ cat }}</option>
                   }
@@ -58,41 +58,41 @@
             </div>
             <!-- Filter Group: Price -->
             <div class="filter-group">
-              <label for="price-filter">Precio</label>
+              <label for="price-filter">{{ 'HOME.PRICE' | translate }}</label>
               <div class="custom-select-wrapper">
                 <select id="price-filter" [(ngModel)]="precioSeleccionado">
-                  <option value="">Todos</option>
-                  <option value="0-50">Menos de 50 Bs.</option>
-                  <option value="50-100">50 - 100 Bs.</option>
-                  <option value="100+">Más de 100 Bs.</option>
+                  <option value="">{{ 'HOME.ALL_PRICES' | translate }}</option>
+                  <option value="0-50">{{ 'HOME.PRICE_UNDER_50' | translate }}</option>
+                  <option value="50-100">{{ 'HOME.PRICE_50_100' | translate }}</option>
+                  <option value="100+">{{ 'HOME.PRICE_OVER_100' | translate }}</option>
                 </select>
               </div>
             </div>
             <!-- Filter Group: Sort -->
             <div class="filter-group">
-              <label for="sort-select">Ordenar Por</label>
+              <label for="sort-select">{{ 'HOME.SORT_BY' | translate }}</label>
               <div class="custom-select-wrapper">
                 <select id="sort-select" [(ngModel)]="orden">
-                  <option value="relevancia">Relevancia</option>
-                  <option value="precioAsc">Precio: Menor a Mayor</option>
-                  <option value="precioDesc">Precio: Mayor a Menor</option>
+                  <option value="relevancia">{{ 'HOME.RELEVANCE' | translate }}</option>
+                  <option value="precioAsc">{{ 'HOME.SORT_PRICE_LOW' | translate }}</option>
+                  <option value="precioDesc">{{ 'HOME.SORT_PRICE_HIGH' | translate }}</option>
                 </select>
               </div>
             </div>
             <!-- Filter Group: Stock -->
             <div class="filter-group">
-              <label for="stock-filter">Disponibilidad</label>
+              <label for="stock-filter">{{ 'HOME.AVAILABILITY' | translate }}</label>
               <div class="custom-select-wrapper">
                 <select id="stock-filter" [(ngModel)]="disponibilidadSeleccionada">
-                  <option value="">Todos</option>
-                  <option value="in-stock">En Stock</option>
+                  <option value="">{{ 'HOME.ALL_PRICES' | translate }}</option>
+                  <option value="in-stock">{{ 'HOME.IN_STOCK' | translate }}</option>
                 </select>
               </div>
             </div>
           </div>
           <div class="filters-actions">
-            <button class="btn-reset" (click)="restablecerFiltros()">Restablecer</button>
-            <button class="btn-apply" (click)="aplicarFiltrosAvanzados()">Aplicar Filtros</button>
+            <button class="btn-reset" (click)="restablecerFiltros()">{{ 'HOME.RESET' | translate }}</button>
+            <button class="btn-apply" (click)="aplicarFiltrosAvanzados()">{{ 'HOME.APPLY_FILTERS' | translate }}</button>
           </div>
         </div>
       }
