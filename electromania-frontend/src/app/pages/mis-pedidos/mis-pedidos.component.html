@@ -1,0 +1,76 @@
+<app-confirmation-modal />
+<main class="mis-pedidos-page">
+    <div class="container">
+        <header class="page-header">
+            <h1>{{ 'MY_ORDERS.TITLE' | translate }}</h1>
+            <p class="subtitle">{{ 'MY_ORDERS.SUBTITLE' | translate }}</p>
+        </header>
+
+        @if (loading) {
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>{{ 'MY_ORDERS.LOADING' | translate }}</p>
+        </div>
+        } @else if (orders.length === 0) {
+        <div class="empty-state">
+            <div class="empty-icon">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+            </div>
+            <h3>{{ 'MY_ORDERS.NO_ORDERS' | translate }}</h3>
+            <p>{{ 'MY_ORDERS.NO_ORDERS_DESC' | translate }}</p>
+            <a routerLink="/home" class="btn-primary">{{ 'MY_ORDERS.VIEW_CATALOG' | translate }}</a>
+        </div>
+        } @else {
+        <div class="orders-list">
+            @for (order of orders; track order.id) {
+            <div class="order-card">
+                <div class="order-header">
+                    <div class="order-info">
+                        <span class="order-id">#{{ order.id }}</span>
+                        <span class="order-date">{{ formatDate(order.createdAt) }}</span>
+                    </div>
+                    <span class="status-badge" [class]="getStatusClass(order.status)">
+                        {{ getStatusLabel(order.status) }}
+                    </span>
+                </div>
+
+                <div class="order-items">
+                    @if (order.cart.details && order.cart.details.length > 0) {
+                    @for (detail of order.cart.details; track detail.product.product_id) {
+                    <div class="order-item">
+                        <span class="item-name">{{ detail.product.product_name }}</span>
+                        <span class="item-qty">x{{ detail.quantity }}</span>
+                        <span class="item-price">{{ formatCurrency(detail.total) }}</span>
+                    </div>
+                    }
+                    } @else {
+                    <p class="no-items">{{ 'MY_ORDERS.DETAILS_NOT_AVAILABLE' | translate }}</p>
+                    }
+                </div>
+
+                <div class="order-footer">
+                    @if (order.status === 'PENDING') {
+                    <button class="btn-cancel" (click)="cancelOrder(order.id)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="15" y1="9" x2="9" y2="15" />
+                            <line x1="9" y1="9" x2="15" y2="15" />
+                        </svg>
+                        {{ 'MY_ORDERS.CANCEL' | translate }}
+                    </button>
+                    }
+                    <div class="order-total">
+                        <span class="total-label">{{ 'MY_ORDERS.TOTAL' | translate }}:</span>
+                        <span class="total-amount">{{ formatCurrency(order.total) }}</span>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+        }
+    </div>
+</main>

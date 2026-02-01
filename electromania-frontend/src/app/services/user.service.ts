@@ -1,24 +1,24 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { environment } from '../../environments/environment';
 import { User, RegisterUserRequest } from '../models';
+import { API } from '../constants';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   async getAllUsers(): Promise<User[]> {
-    return firstValueFrom(this.http.get<User[]>(`${environment.API_DOMAIN}/users/all`));
+    return firstValueFrom(this.http.get<User[]>(API.USERS.ALL));
   }
 
   async getCurrentUser(): Promise<User> {
-    return firstValueFrom(this.http.get<User>(`${environment.API_DOMAIN}/users/get`));
+    return firstValueFrom(this.http.get<User>(API.USERS.GET));
   }
 
   async createUser(data: RegisterUserRequest): Promise<User> {
-    return firstValueFrom(this.http.post<User>(`${environment.API_DOMAIN}/auth/register`, data));
+    return firstValueFrom(this.http.post<User>(API.AUTH.REGISTER, data));
   }
 }

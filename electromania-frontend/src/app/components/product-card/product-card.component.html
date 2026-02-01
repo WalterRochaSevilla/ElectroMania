@@ -4,17 +4,17 @@
   <!-- BADGES -->
   <div class="badge-container">
     @if (isOffer) {
-    <span class="badge badge-offer">OFERTA</span>
+    <span class="badge badge-offer">{{ 'PRODUCT_CARD.OFFER' | translate }}</span>
     }
     @if (isFeatured) {
-    <span class="badge badge-featured">DESTACADO</span>
+    <span class="badge badge-featured">{{ 'PRODUCT_CARD.FEATURED' | translate }}</span>
     }
   </div>
 
-  <!-- IMAGE -->
+  <!-- IMAGE - Show most recent (last) image -->
   <div class="imagen-container">
     @if (product.images && product.images.length > 0) {
-      <img [src]="product.images[0]" [alt]="product.product_name" loading="lazy" (error)="handleImageError($event)">
+      <img [src]="product.images[product.images.length - 1]" [alt]="product.product_name" loading="lazy" (error)="handleImageError($event)">
     } @else {
       <div class="placeholder-image">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -55,7 +55,7 @@
         <circle cx="20" cy="21" r="1"></circle>
         <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
       </svg>
-      {{ isOffer ? 'Agregar Oferta' : 'Agregar' }}
+      {{ (isOffer ? 'PRODUCT_CARD.ADD_OFFER' : 'PRODUCT_CARD.ADD') | translate }}
     </button>
   </div>
 

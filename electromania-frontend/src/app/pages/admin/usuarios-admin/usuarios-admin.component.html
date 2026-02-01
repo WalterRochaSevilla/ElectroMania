@@ -3,16 +3,16 @@
 
   <div class="main-content">
     <header class="top-bar">
-      <h2>Gestión de Usuarios</h2>
+      <h2>{{ 'ADMIN.USER_MANAGEMENT' | translate }}</h2>
       <div class="header-actions">
         <button class="btn-primary" (click)="agregarUsuario()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
-          Nuevo Usuario
+          {{ 'ADMIN.CREATE_USER' | translate }}
         </button>
-        <input type="text" class="search-input" placeholder="Buscar usuario..." [(ngModel)]="busqueda" (input)="filtrarUsuarios()" />
+        <input type="text" class="search-input" [placeholder]="'ADMIN.SEARCH_USER' | translate" [(ngModel)]="busqueda" (input)="filtrarUsuarios()" />
       </div>
     </header>
 
@@ -21,11 +21,11 @@
       <table class="admin-table">
         <thead>
           <tr>
-            <th>USUARIO</th>
+            <th>{{ 'ADMIN.USERS' | translate | uppercase }}</th>
             <th>ROL</th>
             <th>NIT/CI</th>
-            <th>ESTADO</th>
-            <th>ACCIONES</th>
+            <th>{{ 'ADMIN.STATE' | translate | uppercase }}</th>
+            <th>{{ 'ADMIN.ACTIONS' | translate | uppercase }}</th>
           </tr>
         </thead>
         <tbody>
@@ -51,24 +51,24 @@
             <td>
               <span class="status-badge" [class.active]="usuario.estado === 'Activo'" [class.inactive]="usuario.estado === 'Inactivo'">
                 <span class="status-dot"></span>
-                {{ usuario.estado }}
+                {{ usuario.estado === 'Activo' ? ('ADMIN.ACTIVE' | translate) : ('ADMIN.INACTIVE' | translate) }}
               </span>
             </td>
             <td>
               <div class="actions-cell">
-                <button class="btn-icon edit" (click)="editarUsuario(usuario)" title="Editar">
+                <button class="btn-icon edit" (click)="editarUsuario(usuario)" [title]="'COMMON.EDIT' | translate">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                   </svg>
                 </button>
-                <button class="btn-icon delete" (click)="eliminarUsuario(usuario.id)" title="Eliminar">
+                <button class="btn-icon delete" (click)="eliminarUsuario(usuario.id)" [title]="'COMMON.DELETE' | translate">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="3 6 5 6 21 6"></polyline>
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                   </svg>
                 </button>
-                <button class="btn-icon toggle" (click)="toggleEstado(usuario)" [title]="usuario.estado === 'Activo' ? 'Desactivar' : 'Activar'">
+                <button class="btn-icon toggle" (click)="toggleEstado(usuario)" [title]="usuario.estado === 'Activo' ? ('ADMIN.INACTIVE' | translate) : ('ADMIN.ACTIVE' | translate)">
                   @if (usuario.estado === 'Activo') {
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <circle cx="12" cy="12" r="10"></circle>
@@ -81,7 +81,7 @@
                     </svg>
                   }
                 </button>
-                <button class="btn-icon reset" (click)="resetPassword(usuario)" title="Resetear Contraseña">
+                <button class="btn-icon reset" (click)="resetPassword(usuario)" [title]="'ADMIN.RESET_PASSWORD' | translate">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
                   </svg>
@@ -98,23 +98,23 @@
     <div class="table-footer">
       <div class="filter-buttons">
         <button class="btn-filter" [class.active]="filtroRol === 'all'" (click)="aplicarFiltroRol('all')">
-          Todos
+          {{ 'ADMIN.FILTER_ALL' | translate }}
         </button>
         <button class="btn-filter" [class.active]="filtroRol === 'Admin'" (click)="aplicarFiltroRol('Admin')">
-          Administradores
+          {{ 'ADMIN.FILTER_ADMIN' | translate }}
         </button>
         <button class="btn-filter" [class.active]="filtroRol === 'Vendedor'" (click)="aplicarFiltroRol('Vendedor')">
-          Vendedores
+          {{ 'ADMIN.FILTER_SELLER' | translate }}
         </button>
         <button class="btn-filter" [class.active]="filtroRol === 'Cliente'" (click)="aplicarFiltroRol('Cliente')">
-          Clientes
+          {{ 'ADMIN.FILTER_CLIENT' | translate }}
         </button>
       </div>
 
       <div class="summary">
-        <span>Total: <strong>{{ usuarios.length }}</strong></span>
-        <span>Activos: <strong class="text-success">{{ contarActivos() }}</strong></span>
-        <span>Inactivos: <strong class="text-danger">{{ contarInactivos() }}</strong></span>
+        <span>{{ 'ADMIN.TOTAL' | translate }}: <strong>{{ usuarios.length }}</strong></span>
+        <span>{{ 'ADMIN.ACTIVES' | translate }}: <strong class="text-success">{{ contarActivos() }}</strong></span>
+        <span>{{ 'ADMIN.INACTIVES' | translate }}: <strong class="text-danger">{{ contarInactivos() }}</strong></span>
       </div>
     </div>
   </div>

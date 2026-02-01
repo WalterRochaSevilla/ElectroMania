@@ -19,4 +19,4 @@ const envFilePath = path.join(__dirname, 'src', 'environments', 'environment.ts'
 
 // Escribir el contenido en el archivo
 fs.writeFileSync(envFilePath, envFileContent.trim());
-console.log(`✅ Archivo de entorno generado: ${envFilePath}`);
+console.log(`Archivo de entorno generado: ${envFilePath}`);

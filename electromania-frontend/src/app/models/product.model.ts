@@ -24,6 +24,7 @@ export interface UpdateProductRequest {
   price?: number;
   stock?: number;
   state?: ProductState;
+  image?: File;
 }
 
 export interface ProductDisplay {
@@ -34,6 +35,7 @@ export interface ProductDisplay {
   stock: number;
   activo: boolean;
   description?: string;
+  images?: string[];
 }
 
 export interface ProductCard {

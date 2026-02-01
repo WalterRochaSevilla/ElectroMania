@@ -1,0 +1,75 @@
+<main class="configuracion-page">
+    <div class="container">
+        <header class="page-header">
+            <h1>{{ 'SETTINGS.TITLE' | translate }}</h1>
+            <p class="subtitle">{{ 'SETTINGS.SUBTITLE' | translate }}</p>
+        </header>
+
+        <div class="settings-card">
+            <div class="settings-section">
+                <h3>{{ 'SETTINGS.PREFERENCES' | translate }}</h3>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="setting-label">{{ 'SETTINGS.THEME' | translate }}</span>
+                        <span class="setting-description">{{ 'SETTINGS.THEME_DESC' | translate }}</span>
+                    </div>
+                    <span class="setting-value">{{ 'SETTINGS.THEME_AUTO' | translate }}</span>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="setting-label">{{ 'SETTINGS.LANGUAGE' | translate }}</span>
+                        <span class="setting-description">{{ 'SETTINGS.LANGUAGE_DESC' | translate }}</span>
+                    </div>
+                    <select 
+                        class="language-select"
+                        [ngModel]="currentLang"
+                        (ngModelChange)="onLanguageChange($event)">
+                        @for (lang of availableLanguages; track lang.code) {
+                            <option [value]="lang.code">{{ lang.name }}</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>{{ 'SETTINGS.NOTIFICATIONS' | translate }}</h3>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="setting-label">{{ 'SETTINGS.EMAIL_NOTIFICATIONS' | translate }}</span>
+                        <span class="setting-description">{{ 'SETTINGS.EMAIL_NOTIFICATIONS_DESC' | translate }}</span>
+                    </div>
+                    <span class="setting-badge coming-soon">{{ 'COMMON.COMING_SOON' | translate }}</span>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="setting-label">{{ 'SETTINGS.WHATSAPP' | translate }}</span>
+                        <span class="setting-description">{{ 'SETTINGS.WHATSAPP_DESC' | translate }}</span>
+                    </div>
+                    <span class="setting-badge active">{{ 'COMMON.ACTIVE' | translate }}</span>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>{{ 'SETTINGS.SECURITY' | translate }}</h3>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="setting-label">{{ 'SETTINGS.CHANGE_PASSWORD' | translate }}</span>
+                        <span class="setting-description">{{ 'SETTINGS.CHANGE_PASSWORD_DESC' | translate }}</span>
+                    </div>
+                    <span class="setting-badge coming-soon">{{ 'COMMON.COMING_SOON' | translate }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-notice">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+            <span>{{ 'SETTINGS.MORE_OPTIONS' | translate }}</span>
+        </div>
+    </div>
+</main>

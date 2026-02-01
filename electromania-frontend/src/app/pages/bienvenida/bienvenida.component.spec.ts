@@ -64,18 +64,16 @@ describe('BienvenidaComponent', () => {
 
   it('debe calcular correctamente el precio con descuento', () => {
     const productoConDescuento = {
-      id: 1,
-      nombre: 'Test',
-      precio: 100,
-      imagen: '',
-      descripcion: '',
-      categoria: '',
+      product_id: 1,
+      product_name: 'Test',
+      price: 100,
+      description: '',
       stock: 10,
-      oferta: true,
-      descuento: 20
+      images: [],
+      isOffer: true
     };
     
     const precio = component.getPrecioConDescuento(productoConDescuento);
-    expect(precio).toBe(80);
+    expect(precio).toBe(85);
   });
 });

@@ -5,6 +5,7 @@ export interface Category {
 
 export interface CreateCategoryRequest {
   name: string;
+  description: string;
 }
 
 export interface RegisterProductCategoryRequest {
