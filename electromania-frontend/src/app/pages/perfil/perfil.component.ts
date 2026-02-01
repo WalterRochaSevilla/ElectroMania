@@ -45,7 +45,7 @@ export class PerfilComponent implements OnInit {
     }
 
     getRoleLabel(role: string): string {
-        return role === 'ADMIN'
+        return role.toLowerCase() === 'admin'
             ? this.translate.instant('PROFILE.ADMIN')
             : this.translate.instant('PROFILE.CLIENT');
     }

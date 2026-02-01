@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy, signal, OnInit, computed } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -10,7 +10,6 @@ import { OrderService } from '../../services/order.service';
 import { LanguageService } from '../../services/language.service';
 import { ProductosService } from '../../services/productos.service';
 import { CONTACT, ROUTES } from '../../constants';
-import { Product } from '../../models';
 
 @Component({
   selector: 'app-productos',
@@ -149,7 +148,7 @@ export class ProductosComponent implements OnInit {
       // Create order in backend if authenticated
       if (this.isAuthenticated()) {
         const order = await this.orderService.createOrderFromCart();
-        this.numeroFactura.set(`PED-${order.order_id}`);
+        this.numeroFactura.set(`PED-${order.id ?? order.order_id}`);
       } else {
         // For guests, generate a random reference number
         this.numeroFactura.set(`PED-${Math.floor(10000 + Math.random() * 90000)}`);

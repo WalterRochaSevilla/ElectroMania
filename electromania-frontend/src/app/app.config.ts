@@ -23,7 +23,7 @@ function initializeTranslations(): () => Promise<void> {
   
   let savedLang = 'es';
   if (isPlatformBrowser(platformId)) {
-    savedLang = localStorage.getItem('electromania_language') || 'es';
+    savedLang = localStorage.getItem('electromania_lang') || 'es';
   }
   
   translate.use(savedLang);
