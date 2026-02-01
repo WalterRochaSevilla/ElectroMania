@@ -1,41 +1,40 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { Order, CreateOrderRequest, UpdateOrderStatusRequest, OrderSummary } from '../models';
+import { Order, UpdateOrderStatusRequest } from '../models';
+import { API } from '../constants';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
-  async getAllOrders(): Promise<Order[]> {
-    return firstValueFrom(this.http.get<Order[]>(`${environment.API_DOMAIN}/orders`));
+  async getMyOrders(): Promise<Order[]> {
+    return firstValueFrom(this.http.get<Order[]>(API.ORDER.BASE));
   }
 
   async getOrderById(id: number): Promise<Order> {
-    return firstValueFrom(this.http.get<Order>(`${environment.API_DOMAIN}/orders/${id}`));
+    return firstValueFrom(this.http.get<Order>(API.ORDER.BY_ID(id)));
   }
 
-  async getMyOrders(): Promise<Order[]> {
-    return firstValueFrom(this.http.get<Order[]>(`${environment.API_DOMAIN}/orders/my-orders`));
+  async createOrderFromCart(): Promise<Order> {
+    return firstValueFrom(this.http.post<Order>(API.ORDER.REGISTER, {}));
   }
 
-  async createOrder(data: CreateOrderRequest): Promise<Order> {
-    return firstValueFrom(this.http.post<Order>(`${environment.API_DOMAIN}/orders`, data));
+  async updateOrder(id: number, data: UpdateOrderStatusRequest): Promise<Order> {
+    return firstValueFrom(this.http.patch<Order>(API.ORDER.BY_ID(id), data));
   }
 
-  async updateOrderStatus(id: number, data: UpdateOrderStatusRequest): Promise<Order> {
-    return firstValueFrom(this.http.patch<Order>(`${environment.API_DOMAIN}/orders/${id}/status`, data));
+  async deleteOrder(id: number): Promise<void> {
+    await firstValueFrom(this.http.delete(API.ORDER.BY_ID(id)));
   }
 
+  /**
+   * Cancel an order (convenience method)
+   */
   async cancelOrder(id: number): Promise<Order> {
-    return this.updateOrderStatus(id, { status: 'CANCELED' });
-  }
-
-  async getOrderSummary(): Promise<OrderSummary> {
-    return firstValueFrom(this.http.get<OrderSummary>(`${environment.API_DOMAIN}/orders/summary`));
+    return this.updateOrder(id, { status: 'CANCELED' });
   }
 
   getStatusLabel(status: string): string {
@@ -60,3 +59,4 @@ export class OrderService {
     return classes[status] || '';
   }
 }
+

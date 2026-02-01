@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { PasswordInputComponent } from '../password-input/password-input.component';
 import { isValidEmail, isValidNIT, isValidPassword, formatNIT } from '../../utils/validators';
 
@@ -9,6 +10,7 @@ export interface UserFormData {
   nombre: string;
   email: string;
   password: string;
+  phone: string;
   nitCi: string;
   socialReason: string;
   rol: 'Admin' | 'Cliente';
@@ -17,14 +19,14 @@ export interface UserFormData {
 @Component({
   selector: 'app-user-form-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, PasswordInputComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, PasswordInputComponent],
   template: `
     @if (isVisible) {
-      <div class="modal-overlay" (click)="onHandleCancel()" (keyup.escape)="onHandleCancel()" tabindex="0" role="button" aria-label="Cerrar modal">
+      <div class="modal-overlay" (click)="onHandleCancel()" (keyup.escape)="onHandleCancel()" tabindex="0" role="button" [attr.aria-label]="'COMMON.CLOSE' | translate">
         <div class="modal-content" (click)="$event.stopPropagation()" (keyup)="null" role="dialog" aria-modal="true" tabindex="-1">
           
           <div class="modal-header">
-            <h3>{{ user ? 'Editar Usuario' : 'Nuevo Usuario' }}</h3>
+            <h3>{{ (user ? 'USER_MODAL.EDIT_USER' : 'USER_MODAL.NEW_USER') | translate }}</h3>
             <button class="close-btn" (click)="onHandleCancel()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
@@ -34,57 +36,65 @@ export interface UserFormData {
             <div class="modal-body">
               
               <div class="form-group">
-                <label for="nombre">Nombre Completo</label>
-                <input type="text" id="nombre" name="nombre" [(ngModel)]="formData.nombre" required placeholder="Ej: Juan Pérez">
+                <label for="nombre">{{ 'USER_MODAL.FULL_NAME' | translate }}</label>
+                <input type="text" id="nombre" name="nombre" [(ngModel)]="formData.nombre" required [placeholder]="'USER_MODAL.FULL_NAME_PLACEHOLDER' | translate">
               </div>
 
               <div class="form-group">
-                <label for="email">Correo Electrónico</label>
-                <input type="email" id="email" name="email" [(ngModel)]="formData.email" required placeholder="usuario@ejemplo.com">
+                <label for="email">{{ 'USER_MODAL.EMAIL' | translate }}</label>
+                <input type="email" id="email" name="email" [(ngModel)]="formData.email" required [placeholder]="'USER_MODAL.EMAIL_PLACEHOLDER' | translate">
                 @if (formData.email && !isEmailValid) {
-                  <span class="error-text">Ingrese un correo válido</span>
+                  <span class="error-text">{{ 'USER_MODAL.EMAIL_INVALID' | translate }}</span>
                 }
               </div>
 
               @if (!user) {
                 <div class="form-group">
-                  <label for="password">Contraseña</label>
-                  <app-password-input inputId="password" [(ngModel)]="formData.password" name="password" placeholder="Mínimo 6 caracteres"></app-password-input>
+                  <label for="password">{{ 'USER_MODAL.PASSWORD' | translate }}</label>
+                  <app-password-input inputId="password" [(ngModel)]="formData.password" name="password" [placeholder]="'USER_MODAL.PASSWORD_PLACEHOLDER' | translate"></app-password-input>
                   @if (formData.password && !isPasswordValid) {
-                    <span class="error-text">Mínimo 6 caracteres</span>
+                    <span class="error-text">{{ 'USER_MODAL.PASSWORD_MIN' | translate }}</span>
                   }
                 </div>
               }
 
+              <div class="form-group">
+                <label for="phone">{{ 'USER_MODAL.PHONE' | translate }}</label>
+                <input type="tel" id="phone" name="phone" [(ngModel)]="formData.phone" required [placeholder]="'USER_MODAL.PHONE_PLACEHOLDER' | translate">
+                @if (formData.phone && formData.phone.length < 7) {
+                  <span class="error-text">{{ 'USER_MODAL.PHONE_MIN' | translate }}</span>
+                }
+              </div>
+
               <div class="form-row">
                 <div class="form-group">
-                  <label for="nitCi">NIT/CI</label>
-                  <input type="text" id="nitCi" name="nitCi" [ngModel]="formData.nitCi" (ngModelChange)="onNitChange($event)" required placeholder="12345678">
+                  <label for="nitCi">{{ 'USER_MODAL.NIT_CI' | translate }}</label>
+                  <input type="text" id="nitCi" name="nitCi" [ngModel]="formData.nitCi" (ngModelChange)="onNitChange($event)" required [placeholder]="'USER_MODAL.NIT_CI_PLACEHOLDER' | translate">
                   @if (formData.nitCi && !isNitValid) {
-                    <span class="error-text">NIT inválido (7-15 dígitos)</span>
+                    <span class="error-text">{{ 'USER_MODAL.NIT_INVALID' | translate }}</span>
                   }
                 </div>
 
                 <div class="form-group">
-                  <label for="rol">Rol</label>
+                  <label for="rol">{{ 'USER_MODAL.ROLE' | translate }}</label>
                   <select id="rol" name="rol" [(ngModel)]="formData.rol">
-                    <option value="Cliente">Cliente</option>
-                    <option value="Admin">Administrador</option>
+                    <option value="Cliente">{{ 'USER_MODAL.ROLE_CLIENT' | translate }}</option>
+                    <option value="Admin">{{ 'USER_MODAL.ROLE_ADMIN' | translate }}</option>
                   </select>
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="socialReason">Razón Social</label>
-                <input type="text" id="socialReason" name="socialReason" [(ngModel)]="formData.socialReason" placeholder="Empresa S.R.L. (opcional)">
+                <label for="socialReason">{{ 'USER_MODAL.SOCIAL_REASON' | translate }}</label>
+                <input type="text" id="socialReason" name="socialReason" [(ngModel)]="formData.socialReason" [placeholder]="'USER_MODAL.SOCIAL_REASON_PLACEHOLDER' | translate">
               </div>
 
             </div>
 
             <div class="modal-footer">
-              <button type="button" class="btn-cancel" (click)="onHandleCancel()">Cancelar</button>
+              <button type="button" class="btn-cancel" (click)="onHandleCancel()">{{ 'COMMON.CANCEL' | translate }}</button>
               <button type="submit" class="btn-save" [disabled]="!isFormValid">
-                {{ user ? 'Guardar Cambios' : 'Crear Usuario' }}
+                {{ (user ? 'COMMON.SAVE_CHANGES' : 'USER_MODAL.CREATE_USER') | translate }}
               </button>
             </div>
           </form>
@@ -285,9 +295,14 @@ export class UserFormModalComponent implements OnChanges {
     return this.user !== null || isValidPassword(this.formData.password);
   }
 
+  get isPhoneValid(): boolean {
+    return this.formData.phone.trim().length >= 7;
+  }
+
   get isFormValid(): boolean {
     const baseValid = this.formData.nombre.trim() !== '' &&
       this.isEmailValid &&
+      this.isPhoneValid &&
       this.isNitValid;
 
     if (this.user) {
@@ -309,6 +324,7 @@ export class UserFormModalComponent implements OnChanges {
       nombre: '',
       email: '',
       password: '',
+      phone: '',
       nitCi: '',
       socialReason: '',
       rol: 'Cliente'

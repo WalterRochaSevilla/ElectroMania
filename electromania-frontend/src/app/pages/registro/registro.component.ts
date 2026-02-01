@@ -1,8 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
+import { LanguageService } from '../../services/language.service';
 import { RegisterUserRequest } from '../../models';
 import { PasswordInputComponent } from '../../components/password-input/password-input.component';
 import { isValidEmail, isValidNIT, isValidPassword, passwordsMatch, formatNIT } from '../../utils/validators';
@@ -10,7 +12,7 @@ import { isValidEmail, isValidNIT, isValidPassword, passwordsMatch, formatNIT } 
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [FormsModule, RouterLink, PasswordInputComponent],
+  imports: [FormsModule, RouterLink, PasswordInputComponent, TranslateModule],
   templateUrl: './registro.component.html',
   styleUrls: ['./registro.component.css']
 })
@@ -18,10 +20,12 @@ export class RegistroComponent {
   private router = inject(Router);
   private authService = inject(AuthService);
   private toast = inject(ToastService);
+  private languageService = inject(LanguageService);
 
   nit = '';
   razonSocial = '';
   email = '';
+  phone = '';
   contrasena = '';
   confirmarContrasena = '';
   aceptaTerminos = false;
@@ -38,6 +42,7 @@ export class RegistroComponent {
     return isValidNIT(this.nit) &&
       this.razonSocial.trim().length > 0 &&
       isValidEmail(this.email) &&
+      this.phone.trim().length >= 7 &&
       isValidPassword(this.contrasena) &&
       passwordsMatch(this.contrasena, this.confirmarContrasena) &&
       this.aceptaTerminos;
@@ -45,7 +50,7 @@ export class RegistroComponent {
 
   async registrar() {
     if (!this.formularioValido()) {
-      this.toast.error('Formulario inválido. Por favor complete todos los campos correctamente.');
+      this.toast.error(this.languageService.instant('REGISTER.FORM_INVALID'));
       return;
     }
 
@@ -54,7 +59,8 @@ export class RegistroComponent {
       name: this.razonSocial,
       password: this.contrasena,
       nit_ci: this.nit,
-      social_reason: this.razonSocial
+      social_reason: this.razonSocial,
+      phone: this.phone
     };
 
     try {
@@ -64,15 +70,15 @@ export class RegistroComponent {
       try {
         await this.authService.login({ email: this.email, password: this.contrasena });
         this.clearSensitiveData();
-        this.toast.success('¡Registro exitoso! Bienvenido a Electromania.');
+        this.toast.success(this.languageService.instant('REGISTER.SUCCESS_WELCOME'));
         this.router.navigate(['/bienvenida']);
       } catch {
         this.clearSensitiveData();
-        this.toast.success('Registro exitoso! Ahora puedes iniciar sesión.');
+        this.toast.success(this.languageService.instant('REGISTER.SUCCESS'));
         this.volverAlLogin();
       }
     } catch {
-      this.toast.error('Error en el registro. Por favor intente nuevamente.');
+      this.toast.error(this.languageService.instant('REGISTER.ERROR'));
     }
   }
 

@@ -1,0 +1,85 @@
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { OrderService } from '../../services/order.service';
+import { ModalService } from '../../services/modal.service';
+import { ConfirmationModalComponent } from '../../components/confirmation-modal/confirmation-modal.component';
+import { Order } from '../../models';
+
+@Component({
+    selector: 'app-mis-pedidos',
+    standalone: true,
+    imports: [CommonModule, RouterLink, TranslateModule, ConfirmationModalComponent],
+    templateUrl: './mis-pedidos.component.html',
+    styleUrl: './mis-pedidos.component.css'
+})
+export class MisPedidosComponent implements OnInit {
+    private orderService = inject(OrderService);
+    private translate = inject(TranslateService);
+    private modalService = inject(ModalService);
+    private cdr = inject(ChangeDetectorRef);
+
+    orders: Order[] = [];
+    loading = true;
+
+    async ngOnInit() {
+        await this.loadOrders();
+    }
+
+    async loadOrders() {
+        this.loading = true;
+        this.cdr.markForCheck();
+        try {
+            this.orders = await this.orderService.getMyOrders();
+        } catch {
+            console.error('Error loading orders');
+        } finally {
+            this.loading = false;
+            this.cdr.markForCheck();
+        }
+    }
+
+    getStatusLabel(status: string): string {
+        return this.orderService.getStatusLabel(status);
+    }
+
+    getStatusClass(status: string): string {
+        return this.orderService.getStatusClass(status);
+    }
+
+    formatDate(dateString: string): string {
+        return new Date(dateString).toLocaleDateString('es-BO', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    formatCurrency(amount: number): string {
+        return `Bs. ${amount.toFixed(2)}`;
+    }
+
+    async cancelOrder(orderId: number): Promise<void> {
+        const confirmed = await this.modalService.confirm({
+            title: this.translate.instant('MY_ORDERS.CANCEL_TITLE'),
+            message: this.translate.instant('MY_ORDERS.CONFIRM_CANCEL'),
+            confirmText: this.translate.instant('MY_ORDERS.CANCEL'),
+            cancelText: this.translate.instant('COMMON.CANCEL'),
+            type: 'danger'
+        });
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            await this.orderService.cancelOrder(orderId);
+            await this.loadOrders();
+        } catch {
+            console.error('Error canceling order');
+        }
+    }
+}

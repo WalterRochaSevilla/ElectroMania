@@ -1,11 +1,13 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../services/auth.service';
 import { ToastService } from '../../../services/toast.service';
 import { ModalService } from '../../../services/modal.service';
 import { UserService } from '../../../services/user.service';
+import { LanguageService } from '../../../services/language.service';
 import { UserDisplay, User } from '../../../models';
 import { UserFormModalComponent, UserFormData } from '../../../components/user-form-modal/user-form-modal.component';
 import { AdminSidebarComponent } from '../../../components/admin-sidebar/admin-sidebar.component';
@@ -13,7 +15,7 @@ import { AdminSidebarComponent } from '../../../components/admin-sidebar/admin-s
 @Component({
   selector: 'app-usuarios-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, UserFormModalComponent, AdminSidebarComponent],
+  imports: [CommonModule, FormsModule, UserFormModalComponent, AdminSidebarComponent, TranslateModule],
   templateUrl: './usuarios-admin.component.html',
   styleUrl: './usuarios-admin.component.css'
 })
@@ -23,6 +25,8 @@ export class UsuariosAdminComponent implements OnInit {
   private toast = inject(ToastService);
   private modalService = inject(ModalService);
   private userService = inject(UserService);
+  private languageService = inject(LanguageService);
+  private cdr = inject(ChangeDetectorRef);
 
   busqueda = '';
   filtroRol = 'all';
@@ -42,17 +46,19 @@ export class UsuariosAdminComponent implements OnInit {
 
   async cargarUsuarios() {
     this.loading = true;
+    this.cdr.markForCheck();
     try {
       const users = await this.userService.getAllUsers();
       this.rawUsers = users;
       this.usuarios = this.mapUsersToDisplay(users);
       this.usuariosFiltrados = [...this.usuarios];
     } catch {
-      this.toast.error('Error al cargar usuarios');
+      this.toast.error(this.languageService.instant('ADMIN.ERROR_LOAD_USERS'));
       this.usuarios = [];
       this.usuariosFiltrados = [];
     } finally {
       this.loading = false;
+      this.cdr.markForCheck();
     }
   }
 
@@ -61,7 +67,7 @@ export class UsuariosAdminComponent implements OnInit {
       id: index + 1,
       nombre: u.name,
       email: u.email,
-      rol: u.role === 'ADMIN' ? 'Admin' : 'Cliente',
+      rol: u.role === 'admin' ? 'Admin' : 'Cliente',
       nitCi: u.nit_ci,
       estado: 'Activo'
     }));
@@ -121,13 +127,15 @@ export class UsuariosAdminComponent implements OnInit {
   }
 
   editarUsuario(usuario: UserDisplay) {
+    const user = this.rawUsers.find(u => u.email === usuario.email);
     this.selectedUser = {
-      uuid: this.findUuidByEmail(usuario.email),
+      uuid: user?.uuid,
       nombre: usuario.nombre,
       email: usuario.email,
       password: '',
+      phone: user?.phone || '',
       nitCi: usuario.nitCi,
-      socialReason: '',
+      socialReason: user?.social_reason || '',
       rol: usuario.rol as 'Admin' | 'Cliente'
     };
     this.isEditing = true;
@@ -147,7 +155,7 @@ export class UsuariosAdminComponent implements OnInit {
     this.isModalOpen = false;
 
     if (this.isEditing) {
-      this.toast.info('La edición de usuarios no está disponible en el backend');
+      this.toast.info(this.languageService.instant('ADMIN.EDIT_NOT_AVAILABLE'));
     } else {
       try {
         await this.userService.createUser({
@@ -155,46 +163,47 @@ export class UsuariosAdminComponent implements OnInit {
           email: data.email,
           password: data.password,
           nit_ci: data.nitCi,
-          social_reason: data.socialReason
+          social_reason: data.socialReason,
+          phone: data.phone
         });
-        this.toast.success('Usuario creado exitosamente');
+        this.toast.success(this.languageService.instant('ADMIN.USER_CREATED'));
         await this.cargarUsuarios();
       } catch {
-        this.toast.error('Error al crear el usuario');
+        this.toast.error(this.languageService.instant('ADMIN.ERROR_CREATE_USER'));
       }
     }
   }
 
   async eliminarUsuario(id: number) {
     const confirmed = await this.modalService.confirm({
-      title: 'Eliminar Usuario',
-      message: '¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.',
-      confirmText: 'Eliminar',
+      title: this.languageService.instant('ADMIN.DELETE_USER_TITLE'),
+      message: this.languageService.instant('ADMIN.CONFIRM_DELETE_USER'),
+      confirmText: this.languageService.instant('COMMON.DELETE'),
       type: 'danger'
     });
 
     if (confirmed) {
       this.usuarios = this.usuarios.filter(u => u.id !== id);
       this.filtrarUsuarios();
-      this.toast.success('Usuario eliminado');
+      this.toast.success(this.languageService.instant('ADMIN.USER_DELETED'));
     }
   }
 
   toggleEstado(usuario: UserDisplay) {
     usuario.estado = usuario.estado === 'Activo' ? 'Inactivo' : 'Activo';
-    this.toast.info(`Usuario ${usuario.estado === 'Activo' ? 'activado' : 'desactivado'}`);
+    this.toast.info(this.languageService.instant(usuario.estado === 'Activo' ? 'ADMIN.USER_ACTIVATED' : 'ADMIN.USER_DEACTIVATED'));
   }
 
   async resetPassword(usuario: UserDisplay) {
     const confirmed = await this.modalService.confirm({
-      title: 'Resetear Contraseña',
-      message: `¿Resetear contraseña del usuario ${usuario.nombre}? Se enviará un correo con la nueva contraseña.`,
-      confirmText: 'Resetear',
+      title: this.languageService.instant('ADMIN.RESET_PASSWORD'),
+      message: this.languageService.instant('ADMIN.RESET_PASSWORD_CONFIRM', { name: usuario.nombre }),
+      confirmText: this.languageService.instant('ADMIN.RESET_PASSWORD'),
       type: 'warning'
     });
 
     if (confirmed) {
-      this.toast.success(`Se ha enviado un correo a ${usuario.email}`);
+      this.toast.success(this.languageService.instant('ADMIN.PASSWORD_RESET_SENT', { email: usuario.email }));
     }
   }
 }

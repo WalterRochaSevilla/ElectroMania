@@ -1,4 +1,4 @@
-export type UserRole = 'ADMIN' | 'USER';
+export type UserRole = 'admin' | 'user';
 export type UserState = 'ACTIVE' | 'INACTIVE';
 
 export interface User {
@@ -8,6 +8,7 @@ export interface User {
   nit_ci: string;
   social_reason: string;
   role: UserRole;
+  phone: string;
 }
 
 export interface UserDisplay {
@@ -25,4 +26,5 @@ export interface RegisterUserRequest {
   password: string;
   nit_ci: string;
   social_reason: string;
+  phone: string;
 }

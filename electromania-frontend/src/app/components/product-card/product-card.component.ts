@@ -1,11 +1,12 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { ProductCard } from '../../models';
 
 @Component({
     selector: 'app-product-card',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, TranslateModule],
     templateUrl: './product-card.component.html',
     styleUrls: ['./product-card.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush

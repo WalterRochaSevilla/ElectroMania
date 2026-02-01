@@ -4,11 +4,12 @@ import { ProductCardComponent } from '../../components/product-card/product-card
 import { ProductCard } from '../../models';
 import { ProductosService } from '../../services/productos.service';
 import { DraggableScrollDirective } from '../../directives/draggable-scroll.directive';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-bienvenida',
   standalone: true,
-  imports: [ProductCardComponent, DraggableScrollDirective],
+  imports: [ProductCardComponent, DraggableScrollDirective, TranslateModule],
   templateUrl: './bienvenida.component.html',
   styleUrls: ['./bienvenida.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush

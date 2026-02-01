@@ -1,14 +1,15 @@
 import { Injectable, signal, computed, inject, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { AuthService } from './auth.service';
 import { StorageService } from './storage.service';
-import { environment } from '../../environments/environment';
-import { firstValueFrom } from 'rxjs';
 import { CartItem, CartTotals } from '../models';
+import { API, INVENTORY, STORAGE_KEYS } from '../constants';
 
 interface BackendCartProduct {
   product_id: number;
   product_name: string;
+  description: string;
   price: number;
   images: string[];
 }
@@ -26,17 +27,16 @@ interface BackendCartResponse {
   total: number;
 }
 
-const STORAGE_KEY = 'carrito_electromania';
-const TAX_RATE = 0.13;
+const STORAGE_KEY = STORAGE_KEYS.CART;
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
-  private http = inject(HttpClient);
-  private authService = inject(AuthService);
-  private storageService = inject(StorageService);
-  private itemsSignal = signal<CartItem[]>([]);
+  private readonly http = inject(HttpClient);
+  private readonly authService = inject(AuthService);
+  private readonly storageService = inject(StorageService);
+  private readonly itemsSignal = signal<CartItem[]>([]);
 
   readonly items = this.itemsSignal.asReadonly();
 
@@ -44,7 +44,7 @@ export class CartService {
     const items = this.itemsSignal();
     const totalItems = items.reduce((sum, item) => sum + item.cantidad, 0);
     const subtotal = items.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
-    const impuestos = subtotal * TAX_RATE;
+    const impuestos = subtotal * INVENTORY.TAX_RATE;
     const total = subtotal + impuestos;
 
     return { totalItems, subtotal, impuestos, total };
@@ -91,16 +91,27 @@ export class CartService {
 
   private handleLogout(): void {
     this.itemsSignal.set([]);
-    // Guest cart starts fresh after logout
+  }
+
+  private async postAddProduct(productId: number, quantity: number): Promise<void> {
+    await firstValueFrom(this.http.post(API.CART.ADD_PRODUCT, { productId, quantity }));
+  }
+
+  /**
+   * Update quantity in backend - quantity is a DELTA (positive to add, negative to remove)
+   */
+  private async postUpdateQuantity(productId: number, delta: number): Promise<void> {
+    await firstValueFrom(this.http.post(API.CART.UPDATE, { productId, quantity: delta }));
+  }
+
+  private async postDeleteProduct(productId: number): Promise<void> {
+    await firstValueFrom(this.http.post(API.CART.DELETE_PRODUCT, { productId }));
   }
 
   private async mergeGuestCartToBackend(guestItems: CartItem[]): Promise<void> {
     for (const item of guestItems) {
       try {
-        await firstValueFrom(this.http.post(`${environment.API_DOMAIN}/cart/addProduct`, {
-          productId: item.id,
-          quantity: item.cantidad
-        }));
+        await this.postAddProduct(item.id, item.cantidad);
       } catch (error) {
         console.error('Failed to merge guest item to backend', error);
       }
@@ -124,14 +135,14 @@ export class CartService {
 
   private async loadFromBackend(): Promise<void> {
     try {
-      const cart = await firstValueFrom(this.http.get<BackendCartResponse>(`${environment.API_DOMAIN}/cart`));
+      const cart = await firstValueFrom(this.http.get<BackendCartResponse>(API.CART.BASE));
 
-      if (cart && cart.details && cart.details.length > 0) {
+      if (cart?.details?.length > 0) {
         const mappedItems: CartItem[] = cart.details.map((d: BackendCartDetails) => ({
           id: d.product.product_id,
           nombre: d.product.product_name,
           precio: d.product.price,
-          descripcion: '',
+          descripcion: d.product.description || '',
           categoria: 'General',
           cantidad: d.quantity,
           imagen: d.product.images?.[0] || ''
@@ -143,7 +154,7 @@ export class CartService {
     } catch (error) {
       console.error('Error loading cart from backend', error);
       try {
-        await firstValueFrom(this.http.post(`${environment.API_DOMAIN}/cart/create`, {}));
+        await firstValueFrom(this.http.post(API.CART.CREATE, {}));
         this.itemsSignal.set([]);
       } catch (e) {
         console.error('Error creating cart', e);
@@ -171,7 +182,6 @@ export class CartService {
     const currentItems = this.itemsSignal();
     const existingIndex = currentItems.findIndex(i => i.id === item.id);
 
-    // Optimistic UI Update (update Signal immediately)
     let updatedItems = [...currentItems];
     if (existingIndex >= 0) {
       updatedItems[existingIndex] = {
@@ -183,20 +193,11 @@ export class CartService {
     }
     this.itemsSignal.set(updatedItems);
 
-    // Persistence Logic
     if (this.authService.isAuthenticated()) {
       try {
-        await firstValueFrom(this.http.post(`${environment.API_DOMAIN}/cart/addProduct`, {
-          productId: item.id,
-          quantity: cantidad // Backend expects "quantity" to ADD, not total? 
-          // Wait, typical "add" endpoints add to existing. 
-          // If backend replaces, logic differs. I'll assume "add".
-        }));
-        // Optional: Reload from backend to ensure synchronization
-        // await this.refreshCart(); 
+        await this.postAddProduct(item.id, cantidad);
       } catch (error) {
         console.error('Failed to sync add to backend', error);
-        // Revert on failure? For now, keep local optimistic update.
       }
     } else {
       this.saveToStorage();
@@ -204,17 +205,15 @@ export class CartService {
   }
 
   async removeItem(id: number): Promise<void> {
-    if(this.authService.isAuthenticated()){
-      await firstValueFrom(this.http.post(`${environment.API_DOMAIN}/cart/deleteProduct`, {
-        productId: id
-      }))
+    if (this.authService.isAuthenticated()) {
+      await this.postDeleteProduct(id);
     }
-    this.refreshCart();
+    await this.refreshCart();
   }
 
-  updateQuantity(id: number, cantidad: number): void {
+  async updateQuantity(id: number, cantidad: number): Promise<void> {
     if (cantidad <= 0) {
-      this.removeItem(id);
+      await this.removeItem(id);
       return;
     }
 
@@ -223,28 +222,71 @@ export class CartService {
         item.id === id ? { ...item, cantidad } : item
       )
     );
-    this.saveToStorage();
+
+    if (!this.authService.isAuthenticated()) {
+      this.saveToStorage();
+    }
   }
 
-  async increaseQuantity(id: number): Promise<void> {
+  async increaseQuantity(id: number, maxStock?: number): Promise<void> {
     const item = this.itemsSignal().find(i => i.id === id);
-    await firstValueFrom(this.http.post(`${environment.API_DOMAIN}/cart/update`, {
-      productId: id,
-      quantity: 1
-    }))
-    if (item) {
-      this.updateQuantity(id, item.cantidad + 1);
+    if (!item) return;
+
+    // Check stock limit
+    if (maxStock !== undefined && item.cantidad >= maxStock) {
+      return;
+    }
+
+    const newQuantity = item.cantidad + 1;
+
+    // Update local state first
+    this.itemsSignal.update(items =>
+      items.map(i => i.id === id ? { ...i, cantidad: newQuantity } : i)
+    );
+
+    if (this.authService.isAuthenticated()) {
+      try {
+        await this.postUpdateQuantity(id, 1); // Delta of +1
+      } catch (error) {
+        console.error('Failed to increase quantity', error);
+        // Revert on error
+        this.itemsSignal.update(items =>
+          items.map(i => i.id === id ? { ...i, cantidad: item.cantidad } : i)
+        );
+      }
+    } else {
+      this.saveToStorage();
     }
   }
 
   async decreaseQuantity(id: number): Promise<void> {
     const item = this.itemsSignal().find(i => i.id === id);
-    await firstValueFrom(this.http.post(`${environment.API_DOMAIN}/cart/update`, {
-      productId: id,
-      quantity: -1
-    }))
-    if (item) {
-      this.updateQuantity(id, item.cantidad - 1);
+    if (!item) return;
+
+    if (item.cantidad <= 1) {
+      await this.removeItem(id);
+      return;
+    }
+
+    const newQuantity = item.cantidad - 1;
+
+    // Update local state first
+    this.itemsSignal.update(items =>
+      items.map(i => i.id === id ? { ...i, cantidad: newQuantity } : i)
+    );
+
+    if (this.authService.isAuthenticated()) {
+      try {
+        await this.postUpdateQuantity(id, -1); // Delta of -1
+      } catch (error) {
+        console.error('Failed to decrease quantity', error);
+        // Revert on error
+        this.itemsSignal.update(items =>
+          items.map(i => i.id === id ? { ...i, cantidad: item.cantidad } : i)
+        );
+      }
+    } else {
+      this.saveToStorage();
     }
   }
 

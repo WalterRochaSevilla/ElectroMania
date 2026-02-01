@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
- // Importante para directivas básicas
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-contactenos',
-  standalone: true, // <--- ASEGÚRATE DE QUE ESTO ESTÉ AQUÍ
-  imports: [],
+  standalone: true,
+  imports: [TranslateModule],
   templateUrl: './contactenos.component.html',
   styleUrls: ['./contactenos.component.css']
 })

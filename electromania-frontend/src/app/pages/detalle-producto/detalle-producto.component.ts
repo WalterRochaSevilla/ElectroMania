@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastService } from '../../services/toast.service';
 import { ProductosService } from '../../services/productos.service';
 import { CartService } from '../../services/cart.service';
@@ -25,7 +26,7 @@ interface ProductDetail {
 @Component({
   selector: 'app-detalle-producto',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './detalle-producto.component.html',
   styleUrl: './detalle-producto.component.css'
 })
@@ -35,6 +36,7 @@ export class DetalleProductoComponent implements OnInit {
   private toast = inject(ToastService);
   private productosService = inject(ProductosService);
   private cartService = inject(CartService);
+  private translate = inject(TranslateService);
 
   totalItems = 0;
   cantidadSeleccionada = 1;
@@ -56,6 +58,11 @@ export class DetalleProductoComponent implements OnInit {
     this.loading = true;
     try {
       const apiProduct = await this.productosService.getProductById(id);
+      if (!apiProduct) {
+        this.toast.error('Producto no encontrado');
+        this.router.navigate(['/home']);
+        return;
+      }
       this.producto = this.mapToProductDetail(apiProduct);
       this.actualizarMensajeStock();
     } catch {
@@ -74,7 +81,7 @@ export class DetalleProductoComponent implements OnInit {
       precio: p.price,
       stock: p.stock,
       descripcionCorta: p.description,
-      imagen: p.images?.[0] || '/placeholder.png',
+      imagen: p.images?.length ? p.images[p.images.length - 1] : '/placeholder.png',
       datasheet: 'https://pdf-datasheet.com',
       libreria: 'https://github.com',
       especificaciones: [
@@ -87,11 +94,11 @@ export class DetalleProductoComponent implements OnInit {
   actualizarMensajeStock() {
     if (!this.producto) return;
     if (this.producto.stock === 0) {
-      this.mensajeStock = 'Agotado temporalmente';
+      this.mensajeStock = this.translate.instant('PRODUCT_DETAIL.STOCK_OUT');
     } else if (this.producto.stock < 10) {
-      this.mensajeStock = `¡Solo quedan ${this.producto.stock} unidades!`;
+      this.mensajeStock = this.translate.instant('PRODUCT_DETAIL.STOCK_LOW', { count: this.producto.stock });
     } else {
-      this.mensajeStock = 'Disponible para envío inmediato';
+      this.mensajeStock = this.translate.instant('PRODUCT_DETAIL.STOCK_AVAILABLE');
     }
   }
 

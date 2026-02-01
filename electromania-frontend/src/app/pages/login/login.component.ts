@@ -1,15 +1,18 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
+import { LanguageService } from '../../services/language.service';
 import { LoginRequest } from '../../models';
+import { ROUTES, isAdminRole } from '../../constants';
 import { PasswordInputComponent } from '../../components/password-input/password-input.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, RouterLink, PasswordInputComponent],
+  imports: [FormsModule, RouterLink, PasswordInputComponent, TranslateModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -17,13 +20,14 @@ export class LoginComponent {
   private router = inject(Router);
   private authService = inject(AuthService);
   private toast = inject(ToastService);
+  private languageService = inject(LanguageService);
 
   mostrarFormLogin = false;
   email = '';
   contrasena = '';
 
   registro() {
-    this.router.navigate(['/registro']);
+    this.router.navigate(['/', ROUTES.REGISTRO]);
   }
 
   mostrarLogin() {
@@ -40,15 +44,15 @@ export class LoginComponent {
       await this.authService.login(credentials);
 
       const role = this.authService.getRole();
-      if (role === 'admin') {
-        this.router.navigate(['/dashboard']);
-        this.toast.success('Bienvenido Administrador');
+      if (isAdminRole(role)) {
+        this.router.navigate(['/', ROUTES.DASHBOARD]);
+        this.toast.success(this.languageService.instant('AUTH.WELCOME_ADMIN'));
       } else {
-        this.router.navigate(['/home']);
-        this.toast.success('Sesión iniciada correctamente');
+        this.router.navigate(['/', ROUTES.HOME]);
+        this.toast.success(this.languageService.instant('AUTH.LOGIN_SUCCESS'));
       }
     } catch {
-      this.toast.error('Error al iniciar sesión. Verifique sus credenciales.');
+      this.toast.error(this.languageService.instant('AUTH.LOGIN_ERROR'));
     }
   }
 }

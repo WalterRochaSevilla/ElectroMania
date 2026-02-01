@@ -6,12 +6,12 @@
             <div class="login-wrapper">
                 <div class="login-card">
                     <div class="login-header">
-                        <h2>Bienvenido</h2>
+                        <h2>{{ 'WELCOME.TITLE' | translate }}</h2>
                     </div>
                     <!-- FORMULARIO DE LOGIN -->
                     <div class="login-body">
                         <div class="campo-formulario">
-                            <label for="email">Correo Electrónico</label>
+                            <label for="email">{{ 'AUTH.EMAIL' | translate }}</label>
                             <div class="input-contenedor">
                                 <input type="email" id="email" [(ngModel)]="email"
                                     placeholder="admin@electromania.com" />
@@ -19,7 +19,7 @@
                         </div>
 
                         <div class="campo-formulario">
-                            <label for="password">Contraseña</label>
+                            <label for="password">{{ 'AUTH.PASSWORD' | translate }}</label>
                             <app-password-input
                                 inputId="password"
                                 placeholder="········"
@@ -28,13 +28,12 @@
                         </div>
 
                         <button class="btn-login" (click)="iniciarSesion()">
-                            Iniciar Sesión
+                            {{ 'AUTH.LOGIN' | translate }}
                         </button>
 
                         <div class="login-footer">
-                            <p>¿No tienes cuenta?
-                                <a class="enlace-registro" routerLink="/registro">Regístrate aquí</a>
-                                <!-- no funciona la navegacion -->
+                            <p>{{ 'AUTH.NO_ACCOUNT' | translate }}
+                                <a class="enlace-registro" routerLink="/registro">{{ 'AUTH.REGISTER' | translate }}</a>
                             </p>
                         </div>
                     </div>

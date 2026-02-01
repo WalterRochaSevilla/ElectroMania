@@ -1,16 +1,17 @@
+<app-confirmation-modal />
 <div class="admin-layout">
   <app-admin-sidebar />
 
   <main class="admin-content">
     <div class="page-header">
-      <h1>Gestión de Pedidos</h1>
-      <p class="subtitle">Seguimiento y control de órdenes</p>
+      <h1>{{ 'ADMIN.ORDER_MANAGEMENT' | translate }}</h1>
+      <p class="subtitle">{{ 'ADMIN.ORDER_TRACKING' | translate }}</p>
     </div>
 
     @if (loading) {
       <div class="loading-state">
         <div class="spinner"></div>
-        <p>Cargando pedidos...</p>
+        <p>{{ 'ADMIN.LOADING_ORDERS' | translate }}</p>
       </div>
     } @else if (!backendReady) {
       <div class="backend-pending">
@@ -21,41 +22,41 @@
             <line x1="12" y1="17" x2="12.01" y2="17"/>
           </svg>
         </div>
-        <h2>Módulo en Desarrollo</h2>
-        <p>El sistema de gestión de pedidos está siendo implementado.</p>
+        <h2>{{ 'ADMIN.MODULE_IN_DEV' | translate }}</h2>
+        <p>{{ 'ADMIN.ORDER_SYSTEM_PENDING' | translate }}</p>
         
         <div class="pending-details">
-          <h3>Funcionalidades Pendientes (Backend):</h3>
+          <h3>{{ 'ADMIN.PENDING_FEATURES' | translate }}</h3>
           <ul>
             <li>
               <code>GET /orders</code>
-              <span>Listar todos los pedidos</span>
+              <span>{{ 'ADMIN.LIST_ALL_ORDERS' | translate }}</span>
             </li>
             <li>
               <code>GET /orders/:id</code>
-              <span>Obtener detalle de pedido</span>
+              <span>{{ 'ADMIN.GET_ORDER_DETAIL' | translate }}</span>
             </li>
             <li>
               <code>POST /orders</code>
-              <span>Crear pedido desde carrito</span>
+              <span>{{ 'ADMIN.CREATE_ORDER' | translate }}</span>
             </li>
             <li>
               <code>PATCH /orders/:id/status</code>
-              <span>Actualizar estado (incluye restaurar stock si se cancela)</span>
+              <span>{{ 'ADMIN.UPDATE_ORDER_STATUS' | translate }}</span>
             </li>
             <li>
               <code>DELETE /cart/clear</code>
-              <span>Vaciar carrito y restaurar stock</span>
+              <span>{{ 'ADMIN.CLEAR_CART' | translate }}</span>
             </li>
             <li>
               <code>DELETE /cart/removeItem/:id</code>
-              <span>Eliminar item y restaurar stock</span>
+              <span>{{ 'ADMIN.REMOVE_CART_ITEM' | translate }}</span>
             </li>
           </ul>
         </div>
 
         <div class="pending-info">
-          <h3>Estados de Pedido:</h3>
+          <h3>{{ 'ADMIN.ORDER_STATUSES' | translate }}</h3>
           <div class="status-flow">
             <span class="status-badge status-pending">PENDING</span>
             <span class="arrow">→</span>
@@ -67,7 +68,7 @@
           </div>
           <div class="status-cancel">
             <span class="status-badge status-canceled">CANCELED</span>
-            <span class="note">(Restaura stock automáticamente)</span>
+            <span class="note">({{ 'ADMIN.RESTORE_STOCK_AUTO' | translate }})</span>
           </div>
         </div>
       </div>
@@ -76,7 +77,7 @@
         <div class="search-box">
           <input 
             type="text" 
-            placeholder="Buscar por ID o cliente..."
+            [placeholder]="'ADMIN.SEARCH_ORDER' | translate"
             [(ngModel)]="searchTerm"
             (input)="applyFilters()"
           />
@@ -90,7 +91,7 @@
 
       @if (filteredOrders.length === 0) {
         <div class="empty-state">
-          <p>No se encontraron pedidos</p>
+          <p>{{ 'ADMIN.NO_ORDERS_FOUND' | translate }}</p>
         </div>
       } @else {
         <div class="orders-table-container">
@@ -98,17 +99,17 @@
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Cliente</th>
-                <th>Total</th>
-                <th>Estado</th>
-                <th>Fecha</th>
-                <th>Acciones</th>
+                <th>{{ 'ADMIN.CLIENT' | translate }}</th>
+                <th>{{ 'ADMIN.TOTAL' | translate }}</th>
+                <th>{{ 'ADMIN.STATE' | translate }}</th>
+                <th>{{ 'ADMIN.DATE' | translate }}</th>
+                <th>{{ 'ADMIN.ACTIONS' | translate }}</th>
               </tr>
             </thead>
             <tbody>
-              @for (order of filteredOrders; track order.order_id) {
+              @for (order of filteredOrders; track order.id) {
                 <tr>
-                  <td class="order-id">#{{ order.order_id }}</td>
+                  <td class="order-id">#{{ order.id }}</td>
                   <td>
                     <div class="client-info">
                       <span class="client-name">{{ order.user?.name || 'N/A' }}</span>
@@ -121,26 +122,26 @@
                       {{ getStatusLabel(order.status) }}
                     </span>
                   </td>
-                  <td class="order-date">{{ formatDate(order.created_at) }}</td>
+                  <td class="order-date">{{ formatDate(order.createdAt) }}</td>
                   <td class="actions">
                     @if (order.status === 'PENDING') {
                       <button class="btn-action btn-confirm" (click)="updateStatus(order, 'PAID')">
-                        Confirmar Pago
+                        {{ 'ADMIN.CONFIRM_PAYMENT' | translate }}
                       </button>
                     }
                     @if (order.status === 'PAID') {
                       <button class="btn-action btn-ship" (click)="updateStatus(order, 'SHIPPED')">
-                        Marcar Enviado
+                        {{ 'ADMIN.MARK_SHIPPED' | translate }}
                       </button>
                     }
                     @if (order.status === 'SHIPPED') {
                       <button class="btn-action btn-deliver" (click)="updateStatus(order, 'DELIVERED')">
-                        Marcar Entregado
+                        {{ 'ADMIN.MARK_DELIVERED' | translate }}
                       </button>
                     }
                     @if (order.status !== 'CANCELED' && order.status !== 'DELIVERED') {
                       <button class="btn-action btn-cancel" (click)="cancelOrder(order)">
-                        Cancelar
+                        {{ 'ADMIN.CANCEL' | translate }}
                       </button>
                     }
                   </td>

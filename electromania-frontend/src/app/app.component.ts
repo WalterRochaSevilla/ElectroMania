@@ -1,10 +1,15 @@
-import { Component, HostListener, Renderer2, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { Component, HostListener, Renderer2, inject, OnInit, PLATFORM_ID, signal, ChangeDetectionStrategy } from '@angular/core';
 import { isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { Router, RouterOutlet, RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { ToastComponent } from './components/toast/toast.component';
 import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
 import { ThemeService } from './services/theme.service';
 import { AuthService } from './services/auth.service';
+import { ROUTES } from './constants';
+
+const SCROLL_THRESHOLD = 100;
+const THEME_TRANSITION_MS = 500;
 
 @Component({
   selector: 'app-root',
@@ -12,19 +17,21 @@ import { AuthService } from './services/auth.service';
   imports: [
     RouterOutlet,
     RouterModule,
+    TranslateModule,
     ToastComponent,
     ConfirmationModalComponent
   ],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit {
-  private router = inject(Router);
-  private renderer = inject(Renderer2);
-  private themeService = inject(ThemeService);
-  private platformId = inject(PLATFORM_ID);
-  private document = inject(DOCUMENT);
-  private authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly renderer = inject(Renderer2);
+  private readonly themeService = inject(ThemeService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly document = inject(DOCUMENT);
+  private readonly authService = inject(AuthService);
 
   readonly isAuthenticated = this.authService.isAuthenticated$;
   readonly currentUser = this.authService.currentUser;
@@ -48,7 +55,7 @@ export class AppComponent implements OnInit {
     this.scrollThrottle = true;
     requestAnimationFrame(() => {
       try {
-        this.isScrolled.set(window.scrollY > 100);
+        this.isScrolled.set(window.scrollY > SCROLL_THRESHOLD);
       } finally {
         this.scrollThrottle = false;
       }
@@ -76,7 +83,7 @@ export class AppComponent implements OnInit {
       this.renderer.addClass(this.document.body, 'theme-transition');
       setTimeout(() => {
         this.renderer.removeClass(this.document.body, 'theme-transition');
-      }, 500);
+      }, THEME_TRANSITION_MS);
     }
   }
 
@@ -110,7 +117,7 @@ export class AppComponent implements OnInit {
   logout() {
     this.authService.logout();
     this.dropdownOpen.set(false);
-    this.router.navigate(['/bienvenida']);
+    this.router.navigate(['/', ROUTES.BIENVENIDA]);
   }
 
   toggleThemeAndClose() {
