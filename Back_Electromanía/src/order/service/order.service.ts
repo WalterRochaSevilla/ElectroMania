@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { UpdateOrderDto } from '../dto/update-order.dto';
 import { PrismaService } from '../../prisma/service/prisma.service';
@@ -13,6 +13,7 @@ import { CartUpdateRequest } from '../../cart/models/CartUpdateRequest.model';
 
 @Injectable()
 export class OrderService {
+  logger = new Logger(OrderService.name);
   constructor(
     readonly prisma: PrismaService,
     readonly userService: UserService,
@@ -25,7 +26,11 @@ export class OrderService {
     return prisma.order.create({
       data: createOrderDto,
       include: {
-        userOrders: true,
+        userOrders: {
+          include: {
+            user: true
+          }
+        },
         cart:{
           include: {
             cartDetails: {
@@ -59,7 +64,11 @@ export class OrderService {
         },
       },
       include: {
-        userOrders: true,
+        userOrders: {
+          include: {
+            user: true
+          }
+        },
         cart: {
           include:{
             cartDetails:{
@@ -74,12 +83,92 @@ export class OrderService {
     return orders.map((o) => this.orderMapper.toResponseModel(o));
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
+  async getAll(){
+    const orders = await this.prisma.order.findMany({
+      include: {
+        userOrders: {
+          include: {
+            user: true
+          }
+        },
+        cart: {
+          include: {
+            cartDetails: {
+              include: {
+                product: true
+              }
+            }
+          }
+        }
+      }
+    });
+    return orders.map((o) => this.orderMapper.toResponseModel(o));
   }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
+  async getById(id: number) {
+    const order = await this.prisma.order.findUnique({
+      where: { order_id: id },
+      include: {
+        userOrders: {
+          include: {
+            user: true
+          }
+        },
+        cart: {
+          include: {
+            cartDetails: {
+              include: {
+                product: true
+              }
+            }
+          }
+        }
+      }
+    });
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+    return this.orderMapper.toResponseModel(order);
+  }
+
+
+  async getOrderForXML(id: number, tx?:Prisma.TransactionClient) {
+    const prisma = tx? tx : this.prisma
+    const order = await prisma.order.findUnique({
+      where: { order_id: id },
+      include: {
+        orderItems: true,
+        payment: {
+          where: {
+            order_id: id
+          }
+        },
+        cart:{
+          include:{
+            user:{
+              omit:{
+                password: true
+              }
+            }
+          }
+        }
+      }
+    })
+    if(!order){
+      throw new NotFoundException('Order not found')
+    }
+    this.logger.log(order)
+    return this.orderMapper.toOrderReceiptModel(order)
+  }
+
+  async update(id: number, updateOrderDto: UpdateOrderDto,tx?:Prisma.TransactionClient) {
+    const prisma = tx? tx : this.prisma
+    return prisma.order.update({
+      where: { order_id: id },
+      data: {
+        status: updateOrderDto.status
+      }
+    })
   }
 
   async saveOrderItems(cartResponseModel:CartResponseModel, orderId: number, tx?:Prisma.TransactionClient){

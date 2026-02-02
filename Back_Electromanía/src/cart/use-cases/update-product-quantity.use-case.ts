@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { PrismaService } from '../../prisma/service/prisma.service';
 import { AuthService } from '../../auth/service/auth.service';
 import { ProductService } from '../../product/service/product.service';
@@ -10,6 +10,7 @@ import { GetActiveCartUseCase } from "./get-active-cart.use-case";
 
 @Injectable()
 export class UpdateProductQuantityUseCase {
+  logger = new Logger('UpdateProductQuantityUseCase');
   constructor(
     private readonly prisma: PrismaService,
     private readonly authService: AuthService,
@@ -18,10 +19,13 @@ export class UpdateProductQuantityUseCase {
     private readonly getActiceCartUseCase: GetActiveCartUseCase
   ) {}
   async execute(userUuid: string, request:UpdateCartDetailDto) {
+
     if(request.quantity < 0){
+      this.logger.log('decrease')
       request.quantity = Math.abs(request.quantity);
       await this.decreaseQuantityUseCase.execute(userUuid, request);
     }else{
+      this.logger.log('increase')
       await this.increaseQuantityUseCase.execute(userUuid, request);
     }
     return await this.getActiceCartUseCase.execute(userUuid)

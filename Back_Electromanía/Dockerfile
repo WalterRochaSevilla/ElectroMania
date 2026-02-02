@@ -2,6 +2,16 @@ FROM node:20-alpine AS development
 
 WORKDIR /usr/src/app
 
+# Chromium + deps necesarias
+RUN apk add --no-cache \
+  chromium \
+  nss \
+  freetype \
+  harfbuzz \
+  ca-certificates \
+  ttf-freefont
+
+
 RUN mkdir -p /usr/src/app/uploads/tmp
 RUN mkdir -p /usr/src/app/uploads/products
 
@@ -17,6 +27,8 @@ RUN pnpm install --frozen-lockfile
 RUN pnpm prisma generate
 
 COPY . .
+
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 EXPOSE 3000
 

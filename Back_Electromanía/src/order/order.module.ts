@@ -19,11 +19,20 @@ import { JwtService } from '@nestjs/jwt';
 import { ProductMapper } from '../product/mapper/Product.mapper';
 import { ProductImageMapper } from '../product/mapper/ProductImage.mapper';
 import { PageProductMapper } from '../product/mapper/PageProduct.mapper';
+import { ConfirmPaymentForOrderUseCase } from './use-cases/confirm-payment-for-order.use-case';
+import { CancelOrderUseCase } from './use-cases/cancel-order.use-case';
+import { UpdateOrderStatusUseCase } from './use-cases/update-order-status.use-case';
+import { GenerateOrderXmlUseCase } from './use-cases/generate-order-xml.usecase';
+import { OrderReceiptService } from './service/order-receipt-html.service';
+import { PaymentService } from '../payment/service/payment.service';
+import { SendOrderReceiptUseCase } from './use-cases/send-order-receipt.use-case';
+import { OrderPdfService } from './service/order-pdf.service';
+import { MailService } from '../mail/service/mail.service';
 
 
 @Module({
   imports: [ProductModule, UserModule,AuthModule],
   controllers: [OrderController],
-  providers: [OrderService,RolesGuard,AuthGuard,PrismaService,CartService,OrderMapper,CartMapper,CreateOrderByCartUseCase,ProductService,AuthService,UserMapper,PasswordService,JwtService, ProductMapper,ProductImageMapper,PageProductMapper],
+  providers: [OrderService,RolesGuard,AuthGuard,PrismaService,CartService,OrderMapper,CartMapper,CreateOrderByCartUseCase,ProductService,AuthService,UserMapper,PasswordService,JwtService, ProductMapper,ProductImageMapper,PageProductMapper,ConfirmPaymentForOrderUseCase,CancelOrderUseCase,UpdateOrderStatusUseCase,GenerateOrderXmlUseCase,OrderReceiptService,PaymentService,SendOrderReceiptUseCase,OrderPdfService,MailService],
 })
 export class OrderModule {}
