@@ -22,7 +22,9 @@ export class IncreaseQuantityUseCase{
       if(!activeCart) {
         activeCart = await this.cartService.createCart(uuid, tx);
       }
+      this.logger.log("carro Activo");
       const product = await this.productService.getProductById(request.productId, tx);
+      this.logger.log("producto:",product);
       if(!product){
         throw new ForbiddenException('Product not found');
       }
