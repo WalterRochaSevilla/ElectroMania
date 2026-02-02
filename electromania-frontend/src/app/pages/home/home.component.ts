@@ -191,13 +191,14 @@ export class HomeComponent implements OnInit {
     this.productosFiltrados = resultado;
   }
 
-  agregarAlCarrito(producto: ProductCard) {
-    this.cartService.addItem({
+  async agregarAlCarrito(producto: ProductCard) {
+    await this.cartService.addItem({
       id: producto.product_id ?? 0,
       nombre: producto.product_name,
       descripcion: producto.description,
       precio: producto.price
     });
     this.toast.success(`${producto.product_name} agregado al carrito`);
+    this.cdr.markForCheck();
   }
 }

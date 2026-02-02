@@ -115,10 +115,10 @@ export class DetalleProductoComponent implements OnInit {
     }
   }
 
-  agregarAlCarrito() {
+  async agregarAlCarrito() {
     if (!this.producto) return;
 
-    this.cartService.addItem({
+    await this.cartService.addItem({
       id: this.producto.id,
       nombre: this.producto.nombre,
       descripcion: this.producto.descripcionCorta,
