@@ -67,7 +67,7 @@ export class UsuariosAdminComponent implements OnInit {
       id: index + 1,
       nombre: u.name,
       email: u.email,
-      rol: u.role === 'admin' ? 'Admin' : 'Cliente',
+      rol: u.role.toLowerCase() === 'admin' ? 'Admin' : 'Cliente',
       nitCi: u.nit_ci,
       estado: 'Activo'
     }));

@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy, signal, OnInit } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, ChangeDetectorRef, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -27,6 +27,7 @@ export class ProductosComponent implements OnInit {
   private languageService = inject(LanguageService);
   private productosService = inject(ProductosService);
   protected cartService = inject(CartService);
+  private cdr = inject(ChangeDetectorRef);
 
   readonly isAuthenticated = this.authService.isAuthenticated$;
   readonly currentUser = this.authService.currentUser;
@@ -112,6 +113,7 @@ export class ProductosComponent implements OnInit {
         return; // Already at max
       }
       await this.cartService.increaseQuantity(item.id, maxStock);
+      this.cdr.markForCheck();
     }
   }
 
@@ -119,13 +121,15 @@ export class ProductosComponent implements OnInit {
     const item = this.carrito().find(i => i.id === index);
     if (item) {
       await this.cartService.decreaseQuantity(item.id);
+      this.cdr.markForCheck();
     }
   }
 
-  eliminarProducto(product_id: number) {
+  async eliminarProducto(product_id: number) {
     const item = this.carrito().find(i => i.id === product_id);
     if (item) {
-      this.cartService.removeItem(item.id);
+      await this.cartService.removeItem(item.id);
+      this.cdr.markForCheck();
     }
   }
 

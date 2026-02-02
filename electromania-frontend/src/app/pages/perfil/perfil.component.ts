@@ -49,4 +49,8 @@ export class PerfilComponent implements OnInit {
             ? this.translate.instant('PROFILE.ADMIN')
             : this.translate.instant('PROFILE.CLIENT');
     }
+
+    isAdminRole(role: string): boolean {
+        return role.toLowerCase() === 'admin';
+    }
 }
