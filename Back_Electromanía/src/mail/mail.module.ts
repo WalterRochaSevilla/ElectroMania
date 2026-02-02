@@ -13,15 +13,6 @@ import { MailService } from './service/mail.service';
         const port = configService.get('mail.port');
         const user = configService.get('mail.user');
         const from = configService.get('mail.from');
-
-        console.log('[MAIL CONFIG]', {
-          host,
-          port,
-          user,
-          from,
-          hasPassword: !!configService.get('mail.password'),
-        });
-
         return {
           transport: {
             host,

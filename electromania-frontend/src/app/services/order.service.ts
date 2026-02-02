@@ -13,7 +13,7 @@ export class OrderService {
   private readonly languageService = inject(LanguageService);
 
   async getMyOrders(): Promise<Order[]> {
-    return firstValueFrom(this.http.get<Order[]>(API.ORDER.ALL));
+    return firstValueFrom(this.http.get<Order[]>(API.ORDER.BASE));
   }
 
   async getAllOrders(): Promise<Order[]> {

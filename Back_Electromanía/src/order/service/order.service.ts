@@ -157,7 +157,6 @@ export class OrderService {
     if(!order){
       throw new NotFoundException('Order not found')
     }
-    this.logger.log(order)
     return this.orderMapper.toOrderReceiptModel(order)
   }
 
