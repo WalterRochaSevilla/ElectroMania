@@ -70,7 +70,9 @@
     "OFFER": "SALE",
     "FEATURED": "FEATURED",
     "ADD": "Add",
-    "ADD_OFFER": "Add Sale Item"
+    "ADD_OFFER": "Add Sale Item",
+    "OUT_OF_STOCK": "Out of Stock",
+    "LOW_STOCK": "Low Stock"
   },
   "AUTH": {
     "LOGIN": "Login",

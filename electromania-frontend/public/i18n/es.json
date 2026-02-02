@@ -70,7 +70,9 @@
     "OFFER": "OFERTA",
     "FEATURED": "DESTACADO",
     "ADD": "Agregar",
-    "ADD_OFFER": "Agregar Oferta"
+    "ADD_OFFER": "Agregar Oferta",
+    "OUT_OF_STOCK": "Agotado",
+    "LOW_STOCK": "Últimas unidades"
   },
   "AUTH": {
     "LOGIN": "Iniciar Sesión",

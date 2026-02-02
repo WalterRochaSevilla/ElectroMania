@@ -197,6 +197,24 @@
     /* Pink/Rose for Featured */
 }
 
+.badge-out-of-stock {
+    background: #ef4444;
+    /* Red for Out of Stock */
+}
+
+.badge-low-stock {
+    background: #f59e0b;
+    /* Amber for Low Stock */
+}
+
+/* DISABLED BUTTON */
+.btn-action.disabled,
+.btn-action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--slate-600);
+}
+
 /* RESPONSIVE */
 @media (max-width: 600px) {
     .imagen-container {
