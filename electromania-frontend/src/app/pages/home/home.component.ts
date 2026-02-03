@@ -6,6 +6,7 @@ import { ProductosService } from '../../services/productos.service';
 import { CartService } from '../../services/cart.service';
 import { ToastService } from '../../services/toast.service';
 import { StorageService } from '../../services/storage.service';
+import { LanguageService } from '../../services/language.service';
 import { STORAGE_KEYS } from '../../constants';
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
 import { ProductCard } from '../../models';
@@ -39,6 +40,7 @@ export class HomeComponent implements OnInit {
   private cartService = inject(CartService);
   private toast = inject(ToastService);
   private storageService = inject(StorageService);
+  private languageService = inject(LanguageService);
   private cdr = inject(ChangeDetectorRef);
 
   filtrosAvanzadosAbierto = false;
@@ -75,7 +77,7 @@ export class HomeComponent implements OnInit {
       this.productos = this.productosService.toProductCards(data);
       this.aplicarFiltros();
     } catch {
-      this.toast.error('Error al cargar productos');
+      this.toast.error(this.languageService.instant('ERRORS.LOAD_PRODUCTS'));
     } finally {
       this.loading = false;
       this.cdr.markForCheck();

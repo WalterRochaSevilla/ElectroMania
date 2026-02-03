@@ -32,14 +32,16 @@ export class PedidosComponent implements OnInit {
   statusFilter = '';
   searchTerm = '';
 
-  statusOptions: { value: OrderStatus | '', label: string }[] = [
-    { value: '', label: 'Todos los estados' },
-    { value: 'PENDING', label: 'Pendiente' },
-    { value: 'PAID', label: 'Pagado' },
-    { value: 'SHIPPED', label: 'Enviado' },
-    { value: 'DELIVERED', label: 'Entregado' },
-    { value: 'CANCELED', label: 'Cancelado' }
-  ];
+  get statusOptions(): { value: OrderStatus | '', label: string }[] {
+    return [
+      { value: '', label: this.languageService.instant('ADMIN.ALL_STATUSES') },
+      { value: 'PENDING', label: this.languageService.instant('ORDERS.STATUS_PENDING') },
+      { value: 'PAID', label: this.languageService.instant('ORDERS.STATUS_PAID') },
+      { value: 'SHIPPED', label: this.languageService.instant('ORDERS.STATUS_SHIPPED') },
+      { value: 'DELIVERED', label: this.languageService.instant('ORDERS.STATUS_DELIVERED') },
+      { value: 'CANCELED', label: this.languageService.instant('ORDERS.STATUS_CANCELED') }
+    ];
+  }
 
   async ngOnInit() {
     await this.loadOrders();
@@ -49,7 +51,7 @@ export class PedidosComponent implements OnInit {
     this.loading = true;
     this.cdr.markForCheck();
     try {
-      this.orders = await this.orderService.getMyOrders();
+      this.orders = await this.orderService.getAllOrders();
       this.backendReady = true;
       this.applyFilters();
     } catch (error: unknown) {
@@ -87,6 +89,8 @@ export class PedidosComponent implements OnInit {
     try {
       await this.orderService.updateOrder(order.id, { status: newStatus });
       order.status = newStatus;
+      this.applyFilters();
+      this.cdr.markForCheck();
       this.toast.success(this.languageService.instant('ADMIN.ORDER_UPDATED', { id: order.id, status: this.orderService.getStatusLabel(newStatus) }));
     } catch {
       this.toast.error(this.languageService.instant('ADMIN.ERROR_UPDATE_STATUS'));

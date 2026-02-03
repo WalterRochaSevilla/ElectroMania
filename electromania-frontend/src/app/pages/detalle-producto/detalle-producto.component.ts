@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -37,6 +37,7 @@ export class DetalleProductoComponent implements OnInit {
   private productosService = inject(ProductosService);
   private cartService = inject(CartService);
   private translate = inject(TranslateService);
+  private cdr = inject(ChangeDetectorRef);
 
   totalItems = 0;
   cantidadSeleccionada = 1;
@@ -56,20 +57,23 @@ export class DetalleProductoComponent implements OnInit {
 
   async cargarDatosDelProducto(id: number) {
     this.loading = true;
+    this.cdr.markForCheck();
     try {
       const apiProduct = await this.productosService.getProductById(id);
       if (!apiProduct) {
-        this.toast.error('Producto no encontrado');
+        this.toast.error(this.translate.instant('PRODUCTS.NOT_FOUND'));
         this.router.navigate(['/home']);
         return;
       }
       this.producto = this.mapToProductDetail(apiProduct);
       this.actualizarMensajeStock();
-    } catch {
-      this.toast.error('Producto no encontrado');
+    } catch (error) {
+      console.error('Error loading product:', error);
+      this.toast.error(this.translate.instant('PRODUCTS.NOT_FOUND'));
       this.router.navigate(['/home']);
     } finally {
       this.loading = false;
+      this.cdr.markForCheck();
     }
   }
 
