@@ -368,7 +368,8 @@
     "DETAILS_NOT_AVAILABLE": "Details not available",
     "CONFIRM_CANCEL": "Are you sure you want to cancel this order?",
     "CANCEL_TITLE": "Cancel Order",
-    "VIEW_RECEIPT": "View Receipt"
+    "VIEW_RECEIPT": "View Receipt",
+    "RECEIPT_ERROR": "Error loading receipt"
   },
   "PROFILE": {
     "TITLE": "My Profile",

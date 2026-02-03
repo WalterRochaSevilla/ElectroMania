@@ -44,17 +44,17 @@ export class OrderService {
   }
 
   /**
-   * Get receipt for an order
+   * Get receipt HTML for an order
    */
   async getReceipt(orderId: number): Promise<Blob> {
-    return firstValueFrom(this.http.get(`${API.ORDER.RECEIPT}?orderId=${orderId}`, { responseType: 'blob' }));
+    return firstValueFrom(this.http.get(`${API.ORDER.RECEIPT}?id=${orderId}`, { responseType: 'blob' }));
   }
 
   /**
    * Send receipt via email
    */
-  async sendReceipt(orderId: number, email: string): Promise<void> {
-    await firstValueFrom(this.http.post(API.ORDER.RECEIPT_SEND, { orderId, email }));
+  async sendReceipt(orderId: number): Promise<void> {
+    await firstValueFrom(this.http.post(`${API.ORDER.RECEIPT_SEND}?id=${orderId}`, {}));
   }
 
   getStatusLabel(status: string): string {
