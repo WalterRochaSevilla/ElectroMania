@@ -367,7 +367,8 @@
     "VIEW_CATALOG": "Ver Catálogo",
     "DETAILS_NOT_AVAILABLE": "Detalles no disponibles",
     "CONFIRM_CANCEL": "¿Estás seguro de que deseas cancelar este pedido?",
-    "CANCEL_TITLE": "Cancelar Pedido"
+    "CANCEL_TITLE": "Cancelar Pedido",
+    "VIEW_RECEIPT": "Ver Recibo"
   },
   "PROFILE": {
     "TITLE": "Mi Perfil",

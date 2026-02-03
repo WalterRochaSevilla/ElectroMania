@@ -6,6 +6,7 @@ import { OrderService } from '../../services/order.service';
 import { ModalService } from '../../services/modal.service';
 import { ConfirmationModalComponent } from '../../components/confirmation-modal/confirmation-modal.component';
 import { Order } from '../../models';
+import { environment } from '../../../environments/environment';
 
 @Component({
     selector: 'app-mis-pedidos',
@@ -60,6 +61,15 @@ export class MisPedidosComponent implements OnInit {
 
     formatCurrency(amount: number): string {
         return `Bs. ${amount.toFixed(2)}`;
+    }
+
+    viewReceipt(orderId: number): void {
+        const receiptUrl = `${environment.API_DOMAIN}/order/receipt?id=${orderId}`;
+        window.open(receiptUrl, '_blank');
+    }
+
+    canViewReceipt(status: string): boolean {
+        return status === 'PAID' || status === 'SHIPPED' || status === 'DELIVERED';
     }
 
     async cancelOrder(orderId: number): Promise<void> {
