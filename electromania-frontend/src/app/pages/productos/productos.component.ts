@@ -9,6 +9,7 @@ import { AuthService } from '../../services/auth.service';
 import { OrderService } from '../../services/order.service';
 import { LanguageService } from '../../services/language.service';
 import { ProductosService } from '../../services/productos.service';
+import { UserService } from '../../services/user.service';
 import { CONTACT, ROUTES } from '../../constants';
 
 @Component({
@@ -27,6 +28,7 @@ export class ProductosComponent implements OnInit {
   private languageService = inject(LanguageService);
   private productosService = inject(ProductosService);
   protected cartService = inject(CartService);
+  private userService = inject(UserService);
   private cdr = inject(ChangeDetectorRef);
 
   readonly isAuthenticated = this.authService.isAuthenticated$;
@@ -47,7 +49,7 @@ export class ProductosComponent implements OnInit {
   private productStocks = signal<Map<number, number>>(new Map());
 
   async ngOnInit() {
-    this.autoFillUserData();
+    await this.autoFillUserData();
     await this.loadProductStocks();
   }
   
@@ -75,14 +77,30 @@ export class ProductosComponent implements OnInit {
     return currentQuantity >= maxStock;
   }
 
-  private autoFillUserData() {
-    const user = this.currentUser();
-    if (user) {
-      if (user.email) {
-        this.emailFactura.set(user.email);
+  private async autoFillUserData() {
+    if (!this.isAuthenticated()) return;
+    
+    try {
+      const user = await this.userService.getCurrentUser();
+      if (user) {
+        if (user.email) {
+          this.emailFactura.set(user.email);
+        }
+        if (user.social_reason) {
+          this.nombreFactura.set(user.social_reason);
+        } else if (user.name) {
+          this.nombreFactura.set(user.name);
+        }
+        if (user.nit_ci) {
+          this.nitFactura.set(user.nit_ci);
+        }
+        this.cdr.markForCheck();
       }
-      if (user.nombre) {
-        this.nombreFactura.set(user.nombre);
+    } catch {
+      // Fallback to JWT data if profile fetch fails
+      const jwtUser = this.currentUser();
+      if (jwtUser?.email) {
+        this.emailFactura.set(jwtUser.email);
       }
     }
   }

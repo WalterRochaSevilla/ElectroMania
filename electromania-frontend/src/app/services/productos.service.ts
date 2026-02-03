@@ -21,8 +21,13 @@ export class ProductosService {
   }
 
   async getProductById(id: number): Promise<Product | null> {
-    const products = await this.getAllProducts();
-    return products.find(p => p.product_id === id) ?? null;
+    try {
+      return await firstValueFrom(this.http.get<Product>(API.PRODUCTS.BY(id)));
+    } catch {
+      // Fallback to fetching all products if single endpoint fails
+      const products = await this.getAllProducts();
+      return products.find(p => p.product_id === id) ?? null;
+    }
   }
 
   async createProduct(product: CreateProductRequest): Promise<Product> {

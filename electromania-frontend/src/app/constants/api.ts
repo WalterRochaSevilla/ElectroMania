@@ -11,6 +11,7 @@ export const API = {
   PRODUCTS: {
     ALL: `${BASE}/products/all`,
     PAGE: (page: number) => `${BASE}/products?page=${page}`,
+    BY: (id: number) => `${BASE}/products/by?id=${id}`,
     REGISTER: `${BASE}/products/register`,
     UPDATE: (id: number | string) => `${BASE}/products/update/?id=${id}`,
     DELETE: (id: number | string) => `${BASE}/products/delete/${id}`,
@@ -28,8 +29,11 @@ export const API = {
   },
   ORDER: {
     BASE: `${BASE}/order`,
+    ALL: `${BASE}/order/all`,
     BY_ID: (id: number) => `${BASE}/order/${id}`,
     REGISTER: `${BASE}/order/register`,
+    RECEIPT: `${BASE}/order/receipt`,
+    RECEIPT_SEND: `${BASE}/order/receipt/send`,
   },
   CART: {
     BASE: `${BASE}/cart`,

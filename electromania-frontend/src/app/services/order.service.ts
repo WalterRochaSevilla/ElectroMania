@@ -3,15 +3,21 @@ import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Order, UpdateOrderStatusRequest } from '../models';
 import { API } from '../constants';
+import { LanguageService } from './language.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
   private readonly http = inject(HttpClient);
+  private readonly languageService = inject(LanguageService);
 
   async getMyOrders(): Promise<Order[]> {
     return firstValueFrom(this.http.get<Order[]>(API.ORDER.BASE));
+  }
+
+  async getAllOrders(): Promise<Order[]> {
+    return firstValueFrom(this.http.get<Order[]>(API.ORDER.ALL));
   }
 
   async getOrderById(id: number): Promise<Order> {
@@ -37,15 +43,30 @@ export class OrderService {
     return this.updateOrder(id, { status: 'CANCELED' });
   }
 
+  /**
+   * Get receipt for an order
+   */
+  async getReceipt(orderId: number): Promise<Blob> {
+    return firstValueFrom(this.http.get(`${API.ORDER.RECEIPT}?orderId=${orderId}`, { responseType: 'blob' }));
+  }
+
+  /**
+   * Send receipt via email
+   */
+  async sendReceipt(orderId: number, email: string): Promise<void> {
+    await firstValueFrom(this.http.post(API.ORDER.RECEIPT_SEND, { orderId, email }));
+  }
+
   getStatusLabel(status: string): string {
-    const labels: Record<string, string> = {
-      'PENDING': 'Pendiente',
-      'PAID': 'Pagado',
-      'SHIPPED': 'Enviado',
-      'DELIVERED': 'Entregado',
-      'CANCELED': 'Cancelado'
+    const keys: Record<string, string> = {
+      'PENDING': 'ORDERS.STATUS_PENDING',
+      'PAID': 'ORDERS.STATUS_PAID',
+      'SHIPPED': 'ORDERS.STATUS_SHIPPED',
+      'DELIVERED': 'ORDERS.STATUS_DELIVERED',
+      'CANCELED': 'ORDERS.STATUS_CANCELED'
     };
-    return labels[status] || status;
+    const key = keys[status];
+    return key ? this.languageService.instant(key) : status;
   }
 
   getStatusClass(status: string): string {

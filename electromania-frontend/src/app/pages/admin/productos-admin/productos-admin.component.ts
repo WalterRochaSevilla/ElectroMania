@@ -199,6 +199,7 @@ export class ProductosAdminComponent implements OnInit {
         state: newStateBackend
       });
       producto.activo = newState;
+      this.cdr.markForCheck();
       this.toast.success(this.languageService.instant(newState ? 'ADMIN.PRODUCT_ACTIVATED' : 'ADMIN.PRODUCT_DEACTIVATED'));
     } catch {
       this.toast.error(this.languageService.instant('ADMIN.ERROR_CHANGE_STATE'));
