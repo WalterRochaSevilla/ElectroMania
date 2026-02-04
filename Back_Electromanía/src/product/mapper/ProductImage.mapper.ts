@@ -16,7 +16,7 @@ export class ProductImageMapper
     model.product_name = entity.product.product_name;
     model.description = entity.product.description;
     model.price = Number(entity.product.price);
-    model.stock = entity.product.stock;
+    model.stock = entity.product.stock_total-entity.product.stock_reserved;
     model.state = entity.product.state;
     return model;
   }

@@ -16,11 +16,14 @@ import { AuthService } from '../auth/service/auth.service';
 import { UserMapper } from '../user/mapper/User.mapper';
 import { PasswordService } from '../common/utils/password.service';
 import { JwtService } from '@nestjs/jwt';
+import { ProductMapper } from '../product/mapper/Product.mapper';
+import { ProductImageMapper } from '../product/mapper/ProductImage.mapper';
+import { PageProductMapper } from '../product/mapper/PageProduct.mapper';
 
 
 @Module({
   imports: [ProductModule, UserModule,AuthModule],
   controllers: [OrderController],
-  providers: [OrderService,RolesGuard,AuthGuard,PrismaService,CartService,OrderMapper,CartMapper,CreateOrderByCartUseCase,ProductService,AuthService,UserMapper,PasswordService,JwtService],
+  providers: [OrderService,RolesGuard,AuthGuard,PrismaService,CartService,OrderMapper,CartMapper,CreateOrderByCartUseCase,ProductService,AuthService,UserMapper,PasswordService,JwtService, ProductMapper,ProductImageMapper,PageProductMapper],
 })
 export class OrderModule {}

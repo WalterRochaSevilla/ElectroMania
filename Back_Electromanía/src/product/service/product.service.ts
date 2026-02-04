@@ -8,10 +8,7 @@ import { CreateProductRequestModel } from '../model/CreateProductRequest.model';
 import { RegisterProductImageRequestModel } from '../model/RegisterProductImageRequest.model';
 import { PageProductResponseModel } from '../model/PageProductResponse.model';
 import { Prisma } from '@prisma/client';
-import { join, parse} from 'path';
-import * as sharp from 'sharp';
-import {promises as fs } from 'fs';
-import config from '../../config/Configuration'
+import { RegisterProductCategoryDto } from '../../category/dto/register-product-category.dto';
 
 @Injectable()
 export class ProductService {
@@ -177,22 +174,17 @@ export class ProductService {
     return this.productMapper.toModelWithCategoryAndImages(product);
   }
 
-  async productExist(productId:number): Promise<Boolean>{
-    return this.prisma.product.findUnique({
-      where:{ product_id: productId}
-    }) != null
-  }
-
   async checkStock(productId: number, quantity: number,tx?: Prisma.TransactionClient) {
     const prisma = tx? tx : this.prisma
     const product = await prisma.product.findUnique({
       where: { product_id: productId },
-      select: { stock: true },
+      select: { stock_total: true, stock_reserved: true },
     })
     if(!product){
       throw new NotFoundException('Product not found');
     }
-    return product?.stock >= quantity
+    const aviableStock = product.stock_total - product.stock_reserved
+    return aviableStock >= quantity
   }
 
   async addStock(productId: number, quantity: number,tx?: Prisma.TransactionClient) {
@@ -200,37 +192,76 @@ export class ProductService {
     return prisma.product.update({
       where: { product_id: productId },
       data: {
-        stock: {
+        stock_total: {
           increment: quantity,
         },
       },
     });    
+  }
+  async releaseReservedStock(productId: number, quantity: number,tx?: Prisma.TransactionClient) {
+    const prisma = tx? tx : this.prisma
+    return prisma.product.update({
+      where: { product_id: productId },
+      data: {
+        stock_reserved: {
+          decrement: quantity,
+        },
+        stock_total: {
+          increment: quantity,
+        }
+      },
+    });
+  }
+  async reserveStock(productId: number, quantity: number,tx?: Prisma.TransactionClient) {
+    const prisma = tx? tx : this.prisma
+    return prisma.product.update({
+      where: { product_id: productId },
+      data: {
+        stock_reserved: {
+          increment: quantity,
+        }
+      },
+    });
   }
   async discountStock(productId: number, quantity: number,tx?: Prisma.TransactionClient) {
     const prisma = tx? tx : this.prisma
     if (quantity <= 0) return;
     const product = await prisma.product.findUnique({
         where: { product_id: productId },
-        select: { stock: true },
+        select: { stock_total: true, stock_reserved: true },
     });
-
     if (!product) {
         throw new NotFoundException('Product not found');
     }
-
-    if (product.stock < quantity) {
+    const aviableStock = product.stock_total - product.stock_reserved;
+    if (product.stock_reserved < quantity) {
         throw new ForbiddenException('Product out of stock');
     }
 
     return prisma.product.update({
         where: { product_id: productId },
         data: {
-            stock: {
+            stock_total: {
+              decrement: quantity,
+            },
+            stock_reserved: {
               decrement: quantity,
             },
         },
       }
     );
   }
-
+  async assingCategory(request:RegisterProductCategoryDto,tx?: Prisma.TransactionClient) {
+    const prisma = tx? tx : this.prisma
+    return prisma.product.update({
+      where: { product_id: request.productId },
+      data: {
+        productCategories: {
+          create: {
+            category_id: request.categoryId,
+          },
+        },
+      },
+    });
+  }
 }
