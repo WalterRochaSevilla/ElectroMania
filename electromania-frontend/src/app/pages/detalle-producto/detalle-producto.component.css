@@ -54,8 +54,7 @@
 }
 
 [data-theme='light'] .imagen-card {
-  background: white;
-  /* Clean white bg for product images */
+  background: var(--bg-card);
 }
 
 /* COLUMN 2: INFO */
@@ -91,9 +90,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(16, 185, 129, 0.15);
-  /* Green tint */
-  color: #10b981;
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--color-success);
   padding: 6px 14px;
   border-radius: 50px;
   font-size: 0.9rem;
@@ -102,14 +100,12 @@
 
 .stock-badge.stock-bajo {
   background: rgba(245, 158, 11, 0.15);
-  /* Orange tint */
-  color: #f59e0b;
+  color: var(--color-warning);
 }
 
 .stock-badge.stock-agotado {
   background: rgba(239, 68, 68, 0.15);
-  /* Red tint */
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 .punto-estado {
@@ -220,7 +216,7 @@
 .btn-agregar:hover:not(:disabled) {
   background: var(--brand-hover);
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+  box-shadow: 0 10px 25px var(--brand-glow);
 }
 
 .btn-agregar:disabled {

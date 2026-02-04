@@ -91,7 +91,7 @@ import { AuthService } from '../../services/auth.service';
     }
 
     .nav-item:hover, .nav-item.active {
-      background: rgba(99, 102, 241, 0.1);
+      background: rgba(14, 165, 233, 0.1);
       color: var(--brand-primary);
     }
 

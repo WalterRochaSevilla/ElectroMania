@@ -51,7 +51,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
     .input-contenedor input:focus {
       border-color: var(--brand-primary);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
     }
 
     .btn-toggle-visibility {

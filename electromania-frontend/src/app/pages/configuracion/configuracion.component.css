@@ -122,12 +122,12 @@
 
 .setting-badge.coming-soon {
     background: rgba(251, 191, 36, 0.15);
-    color: #f59e0b;
+    color: var(--color-warning);
 }
 
 .setting-badge.active {
     background: rgba(34, 197, 94, 0.15);
-    color: #22c55e;
+    color: var(--color-success);
 }
 
 /* Info Notice */

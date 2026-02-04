@@ -104,17 +104,17 @@ import { ToastService } from '../../services/toast.service';
     }
 
     /* Types */
-    .toast.success { border-left: 4px solid #22c55e; }
-    .toast.success .toast-icon { color: #22c55e; }
+    .toast.success { border-left: 4px solid var(--color-success); }
+    .toast.success .toast-icon { color: var(--color-success); }
 
-    .toast.error { border-left: 4px solid #ef4444; }
-    .toast.error .toast-icon { color: #ef4444; }
+    .toast.error { border-left: 4px solid var(--color-danger); }
+    .toast.error .toast-icon { color: var(--color-danger); }
 
-    .toast.warning { border-left: 4px solid #f59e0b; }
-    .toast.warning .toast-icon { color: #f59e0b; }
+    .toast.warning { border-left: 4px solid var(--color-warning); }
+    .toast.warning .toast-icon { color: var(--color-warning); }
 
-    .toast.info { border-left: 4px solid #3b82f6; }
-    .toast.info .toast-icon { color: #3b82f6; }
+    .toast.info { border-left: 4px solid var(--color-info); }
+    .toast.info .toast-icon { color: var(--color-info); }
   `]
 })
 export class ToastComponent {

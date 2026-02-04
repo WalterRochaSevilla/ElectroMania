@@ -31,7 +31,7 @@
 }
 
 :host-context([data-theme='dark']) .imagen-container {
-    background: #f8fafc;
+    background: var(--slate-50);
 }
 
 .placeholder-image {
@@ -135,7 +135,7 @@
 /* OFFER VARIATION */
 .card-producto.is-offer .precio-container {
     /* Background removed to match standard cards */
-    border: 1px solid rgba(99, 102, 241, 0.4);
+    border: 1px solid rgba(14, 165, 233, 0.4);
 }
 
 .card-producto.is-offer .precio-final {
@@ -198,12 +198,12 @@
 }
 
 .badge-out-of-stock {
-    background: #ef4444;
+    background: var(--color-danger);
     /* Red for Out of Stock */
 }
 
 .badge-low-stock {
-    background: #f59e0b;
+    background: var(--color-warning);
     /* Amber for Low Stock */
 }
 

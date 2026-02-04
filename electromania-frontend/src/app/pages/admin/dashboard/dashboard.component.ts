@@ -93,12 +93,12 @@ export class DashboardComponent implements OnInit {
       {
         data: [],
         label: 'Ventas (Bs.)',
-        backgroundColor: 'rgba(99, 102, 241, 0.2)',
-        borderColor: '#6366f1',
+        backgroundColor: 'rgba(14, 165, 233, 0.2)',
+        borderColor: '#0ea5e9',
         pointBackgroundColor: '#fff',
-        pointBorderColor: '#6366f1',
+        pointBorderColor: '#0ea5e9',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(99, 102, 241, 0.8)',
+        pointHoverBorderColor: 'rgba(14, 165, 233, 0.8)',
         fill: 'origin',
         tension: 0.4
       }
@@ -150,10 +150,10 @@ export class DashboardComponent implements OnInit {
         data: [],
         label: 'Unidades Vendidas',
         backgroundColor: [
-          '#6366f1',
-          '#818cf8',
-          '#a5b4fc',
-          '#c7d2fe'
+          '#0ea5e9',
+          '#38bdf8',
+          '#7dd3fc',
+          '#bae6fd'
         ],
         borderRadius: 4
       }

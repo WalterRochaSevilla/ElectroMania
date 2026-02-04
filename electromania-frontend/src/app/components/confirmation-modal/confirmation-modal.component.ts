@@ -96,9 +96,9 @@ import { ModalService } from '../../services/modal.service';
     }
 
     /* Header Colors */
-    .modal-header.danger h3 { color: #ef4444; }
-    .modal-header.warning h3 { color: #f59e0b; }
-    .modal-header.info h3 { color: var(--brand-primary, #6366f1); }
+    .modal-header.danger h3 { color: var(--color-danger); }
+    .modal-header.warning h3 { color: var(--color-warning); }
+    .modal-header.info h3 { color: var(--brand-primary, #0ea5e9); }
 
     .close-btn {
       background: transparent;
@@ -166,14 +166,14 @@ import { ModalService } from '../../services/modal.service';
       color: white;
     }
 
-    .btn-confirm.danger { background: #ef4444; }
+    .btn-confirm.danger { background: var(--color-danger); }
     .btn-confirm.danger:hover { background: #dc2626; }
 
-    .btn-confirm.warning { background: #f59e0b; }
+    .btn-confirm.warning { background: var(--color-warning); }
     .btn-confirm.warning:hover { background: #d97706; }
 
-    .btn-confirm.info { background: var(--brand-primary, #6366f1); }
-    .btn-confirm.info:hover { background: var(--brand-primary-dark, #4f46e5); }
+    .btn-confirm.info { background: var(--brand-primary, #0ea5e9); }
+    .btn-confirm.info:hover { background: var(--brand-primary-dark, #0284c7); }
 
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
