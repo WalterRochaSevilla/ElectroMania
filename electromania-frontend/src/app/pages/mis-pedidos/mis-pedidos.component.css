@@ -229,6 +229,32 @@
     color: white;
 }
 
+.order-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn-receipt {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: transparent;
+    border: 1px solid var(--brand-primary);
+    color: var(--brand-primary);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-receipt:hover {
+    background: var(--brand-primary);
+    color: white;
+}
+
 .total-label {
     color: var(--text-muted);
     font-weight: 600;

@@ -6,6 +6,7 @@ import { OrderService } from '../../services/order.service';
 import { ModalService } from '../../services/modal.service';
 import { ConfirmationModalComponent } from '../../components/confirmation-modal/confirmation-modal.component';
 import { Order } from '../../models';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
     selector: 'app-mis-pedidos',
@@ -18,6 +19,7 @@ export class MisPedidosComponent implements OnInit {
     private orderService = inject(OrderService);
     private translate = inject(TranslateService);
     private modalService = inject(ModalService);
+    private toast = inject(ToastService);
     private cdr = inject(ChangeDetectorRef);
 
     orders: Order[] = [];
@@ -60,6 +62,22 @@ export class MisPedidosComponent implements OnInit {
 
     formatCurrency(amount: number): string {
         return `Bs. ${amount.toFixed(2)}`;
+    }
+
+    async viewReceipt(orderId: number): Promise<void> {
+        try {
+            const blob = await this.orderService.getReceipt(orderId);
+            const url = window.URL.createObjectURL(blob);
+            window.open(url, '_blank');
+            // Clean up the object URL after a delay
+            setTimeout(() => window.URL.revokeObjectURL(url), 1000);
+        } catch {
+            this.toast.error(this.translate.instant('MY_ORDERS.RECEIPT_ERROR'));
+        }
+    }
+
+    canViewReceipt(status: string): boolean {
+        return status === 'PAID' || status === 'SHIPPED' || status === 'DELIVERED';
     }
 
     async cancelOrder(orderId: number): Promise<void> {
