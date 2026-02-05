@@ -5,12 +5,13 @@
   background: var(--bg-card);
   border-radius: 16px;
   border: 1px solid var(--border-color);
-  overflow: hidden;
+  overflow-x: auto;
   margin-bottom: 24px;
 }
 
 .admin-table {
   width: 100%;
+  min-width: 800px;
   border-collapse: collapse;
 }
 

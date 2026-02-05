@@ -175,11 +175,12 @@
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 12px;
-  overflow: hidden;
+  overflow-x: auto;
 }
 
 .orders-table {
   width: 100%;
+  min-width: 750px;
   border-collapse: collapse;
 }
 
@@ -326,10 +327,6 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .main-content {
-    padding: 16px;
-  }
-
   .orders-table-container {
     overflow-x: auto;
   }
