@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "CartState" AS ENUM ('ACTIVE', 'INACTIVE', 'COMPLETED');
+CREATE TYPE "CartState" AS ENUM ('ACTIVE', 'RESERVED', 'CANCELED', 'EXPIRED', 'COMPLETED');
 
 -- CreateEnum
 CREATE TYPE "ProductState" AS ENUM ('AVAILABLE', 'UNAVAILABLE', 'OUT_OF_STOCK');
@@ -45,6 +45,7 @@ CREATE TABLE "cart" (
     "user_uuid" TEXT NOT NULL,
     "state" "CartState" NOT NULL DEFAULT 'ACTIVE',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "reserve_at" TIMESTAMP(3),
 
     CONSTRAINT "cart_pkey" PRIMARY KEY ("cart_id")
 );
@@ -66,7 +67,8 @@ CREATE TABLE "products" (
     "product_name" VARCHAR(50) NOT NULL,
     "description" VARCHAR(255) NOT NULL,
     "price" DECIMAL(10,2) NOT NULL,
-    "stock" INTEGER NOT NULL DEFAULT 0,
+    "stock_total" INTEGER NOT NULL DEFAULT 0,
+    "stock_reserved" INTEGER NOT NULL DEFAULT 0,
     "state" "ProductState" NOT NULL DEFAULT 'AVAILABLE',
 
     CONSTRAINT "products_pkey" PRIMARY KEY ("product_id")
@@ -159,7 +161,7 @@ CREATE TABLE "invoices" (
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
-CREATE INDEX "cart_user_uuid_state_idx" ON "cart"("user_uuid", "state");
+CREATE INDEX "cart_user_uuid_state_reserve_at_idx" ON "cart"("user_uuid", "state", "reserve_at");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "cart_details_cart_id_product_id_key" ON "cart_details"("cart_id", "product_id");
@@ -247,7 +249,7 @@ INSERT INTO categories (category_name, description) VALUES
 -- =========================
 -- PRODUCTOS
 -- =========================
-INSERT INTO products (product_name, description, price, stock) VALUES
+INSERT INTO products (product_name, description, price, stock_total) VALUES
 -- Componentes Pasivos
 ('Resistencia 220Ω', 'Resistencia 220 ohm 1/4W', 0.10, 1000),
 ('Capacitor 100uF', 'Capacitor electrolítico 100uF 25V', 0.25, 800),

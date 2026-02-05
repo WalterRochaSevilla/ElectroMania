@@ -146,11 +146,6 @@ export class CartService {
                 }
             }
         } as Prisma.CartDetailsCreateInput
-        await this.productService.discountStock(
-            addProductRequest.productId,
-            addProductRequest.quantity,
-            prisma
-        )
         return prisma.cartDetails.create({
             data: cartDetails
         })
@@ -182,14 +177,15 @@ export class CartService {
         })
     }
 
-    async updateCart(cartId: number,cartUpdateRequest:CartUpdateRequest){
+    async updateCart(cartId: number,cartUpdateRequest:CartUpdateRequest,tx?:Prisma.TransactionClient) {
+        const prisma = tx? tx : this.prisma
         let updateData;
         if(cartUpdateRequest.state){
             updateData = {
                 state: cartUpdateRequest.state
             } as Prisma.CartUpdateInput
         }
-        return this.prisma.cart.update({
+        return prisma.cart.update({
             where: {
                 cart_id: cartId
             },

@@ -18,20 +18,20 @@ export class DecreaseQuantityUseCase {
     ){}
     async execute(uuid: string, request:UpdateCartDetailDto, tx?:Prisma.TransactionClient) {
       const prisma = tx? tx : this.prisma
-        let activeCart = await this.cartService.getActiveCartByUser(uuid, tx);
-              if(!activeCart) {
-                activeCart = await this.cartService.createCart(uuid, tx);
-              }
-              const detail = await this.cartService.getCartDetailByCartAndProduct(activeCart.id, request.productId, tx);
-              if(!detail){
-                throw new ForbiddenException('Product not found in cart');
-              }else{
-                if(detail.quantity < request.quantity){
-                  return this.removeProductFromCartUseCase.execute(uuid, request, tx);
-                }
-                await this.cartService.decreaseQuantity(detail.id, request, tx);
-              }
-              await this.productService.addStock(request.productId, request.quantity, tx);
-              return true
+      let activeCart = await this.cartService.getActiveCartByUser(uuid, tx);
+      if(!activeCart) {
+        throw new ForbiddenException('Cart not found');
+      }
+      const detail = await this.cartService.getCartDetailByCartAndProduct(activeCart.id, request.productId, tx);
+      if(!detail){
+        throw new ForbiddenException('Product not found in cart');
+      }else{
+        if(detail.quantity < request.quantity){
+          return this.removeProductFromCartUseCase.execute(uuid,request, tx);
+        }
+        await this.cartService.decreaseQuantity(detail.id, request, tx);
+      }
+      await this.productService.releaseReservedStock(request.productId, request.quantity, tx);
+      return true
     }
 }

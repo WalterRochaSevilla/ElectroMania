@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, UseGuards, Delete, Put, UploadedFile, UseInterceptors, ParseFilePipe, FileTypeValidator } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards, Delete, Put, UploadedFile, UseInterceptors, ParseFilePipe, FileTypeValidator, Logger } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductService } from '../service/product.service';
 import { ProductModule } from '../product.module';
@@ -133,7 +133,11 @@ export class ProductController {
     getPage(@Query("page") page: number): Promise<PageProductResponseModel>{
         return this.productService.getPageProduct(page);
     }
-
+    @Get("by")
+    getProduct(@Query("id") id:number): Promise<ProductModel> {
+        
+        return this.productService.getProductById(id);
+    }
     @Roles(UserRole.ADMIN)
     @UseGuards(AuthGuard,RolesGuard)
     @ApiOperation({

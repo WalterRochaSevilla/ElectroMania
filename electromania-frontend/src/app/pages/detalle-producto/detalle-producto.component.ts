@@ -54,7 +54,7 @@ export class DetalleProductoComponent implements OnInit {
       await this.cargarDatosDelProducto(parseInt(idParam));
     }
   }
-
+  
   async cargarDatosDelProducto(id: number) {
     this.loading = true;
     this.cdr.markForCheck();

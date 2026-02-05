@@ -99,13 +99,8 @@ export class ProductosComponent implements OnInit {
     } catch {
       // Fallback to JWT data if profile fetch fails
       const jwtUser = this.currentUser();
-      if (jwtUser) {
-        if (jwtUser.email) {
-          this.emailFactura.set(jwtUser.email);
-        }
-        if (jwtUser.nombre) {
-          this.nombreFactura.set(jwtUser.nombre);
-        }
+      if (jwtUser?.email) {
+        this.emailFactura.set(jwtUser.email);
       }
     }
   }

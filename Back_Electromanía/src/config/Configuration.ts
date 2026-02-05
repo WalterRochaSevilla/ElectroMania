@@ -43,5 +43,12 @@ export default () => ({
             receipts: process.env.R2_PRIVATE_BUCKET_NAME || ''
         },
         publicUrl: process.env.R2_PUBLIC_ENDPOINT || ''
+    },
+    mail:{
+        host: process.env.MAIL_HOST || '',
+        port: process.env.MAIL_PORT || '',
+        user: process.env.MAIL_USER || '',
+        password: process.env.MAIL_PASSWORD || '',
+        from: process.env.MAIL_FROM || ''
     }
 })

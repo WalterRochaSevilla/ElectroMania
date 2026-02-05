@@ -9,6 +9,7 @@ export const API = {
     REGISTER: `${BASE}/auth/register`,
   },
   PRODUCTS: {
+    BY_ID:(id: number) => `${BASE}/products/by?id=${id}`,
     ALL: `${BASE}/products/all`,
     PAGE: (page: number) => `${BASE}/products?page=${page}`,
     BY: (id: number) => `${BASE}/products/by?id=${id}`,

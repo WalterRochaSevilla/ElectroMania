@@ -29,7 +29,6 @@ export class ProductosService {
       return products.find(p => p.product_id === id) ?? null;
     }
   }
-
   async createProduct(product: CreateProductRequest): Promise<Product> {
     const formData = new FormData();
     formData.append('product_name', product.product_name);

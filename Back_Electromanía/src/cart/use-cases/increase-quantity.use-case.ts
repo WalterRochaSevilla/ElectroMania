@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable, Logger } from "@nestjs/common";
 import { ProductService } from '../../product/service/product.service';
 import { CartService } from "../service/cart.service";
 import { UpdateCartDetailDto } from "../dto/update-cart-detail.dto";
@@ -9,6 +9,7 @@ import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class IncreaseQuantityUseCase{
+  logger = new Logger('IncreaseQuantityUseCase')
   constructor(
     private readonly prisma: PrismaService,
     private readonly authService: AuthService,
@@ -21,9 +22,9 @@ export class IncreaseQuantityUseCase{
       if(!activeCart) {
         activeCart = await this.cartService.createCart(uuid, tx);
       }
-      const product = await this.productService.checkStock(request.productId, request.quantity, tx);
+      const product = await this.productService.getProductById(request.productId, tx);
       if(!product){
-        throw new ForbiddenException('Product out of stock');
+        throw new ForbiddenException('Product not found');
       }
       const detail = await this.cartService.getCartDetailByCartAndProduct(activeCart.id, request.productId, tx);
       if(!detail){
@@ -31,7 +32,8 @@ export class IncreaseQuantityUseCase{
       }else{
         await this.cartService.increaseQuantity(detail.id, request, tx);
       }
-      await this.productService.discountStock(request.productId, request.quantity, tx);
+      await this.productService.reserveStock(request.productId, request.quantity, tx);
+      
       return true
   }
 }

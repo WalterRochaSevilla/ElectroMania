@@ -10,6 +10,7 @@ import Configuration from './config/Configuration';
 import { CartModule } from './cart/cart.module';
 import { CategoryModule } from './category/category.module';
 import { OrderModule } from './order/order.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { OrderModule } from './order/order.module';
     AuthModule,
     CartModule,
     CategoryModule,
-    OrderModule
+    OrderModule,
+    MailModule
   ],
   controllers: [AppController],
   providers: [
