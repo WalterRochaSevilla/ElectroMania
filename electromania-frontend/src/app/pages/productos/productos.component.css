@@ -174,8 +174,8 @@
 }
 
 .btn-eliminar:hover {
-  background: #fee2e2;
-  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--color-danger);
 }
 
 /* EMPTY STATE */
@@ -286,45 +286,6 @@
   animation: slideDown 0.3s ease;
 }
 
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.form-group label {
-  display: block;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--text-secondary);
-  margin-bottom: 6px;
-  text-transform: uppercase;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 10px 12px;
-  background: var(--bg-main);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  color: var(--text-primary);
-  font-family: inherit;
-  font-size: 0.95rem;
-  outline: none;
-  transition: all 0.2s;
-}
-
-.form-group input:focus {
-  border-color: var(--brand-primary);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-}
-
 .btn-pagar {
   width: 100%;
   margin-top: 24px;
@@ -352,7 +313,7 @@
 }
 
 .btn-whatsapp {
-  background: #25D366;
+  background: var(--color-whatsapp);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -360,7 +321,7 @@
 }
 
 .btn-whatsapp:hover:not(:disabled) {
-  background: #128C7E;
+  background: var(--color-whatsapp-hover);
 }
 
 .facturacion-titulo {
@@ -373,17 +334,6 @@
 /* =========================
    MODAL
 ========================= */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
 .modal-exito {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -411,8 +361,8 @@
 .modal-icon-wrapper {
   width: 80px;
   height: 80px;
-  background: #dcfce7;
-  color: #16a34a;
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--color-success);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -422,11 +372,11 @@
 
 .modal-icon-wrapper.whatsapp {
   background: rgba(37, 211, 102, 0.15);
-  color: #25D366;
+  color: var(--color-whatsapp);
 }
 
 :host-context([data-theme='dark']) .modal-icon-wrapper {
-  background: rgba(22, 163, 74, 0.2);
+  background: rgba(34, 197, 94, 0.2);
 }
 
 :host-context([data-theme='dark']) .modal-icon-wrapper.whatsapp {

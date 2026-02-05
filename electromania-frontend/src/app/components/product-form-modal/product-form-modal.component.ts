@@ -438,7 +438,7 @@ export interface ProductFormData {
       width: 24px;
       height: 24px;
       border-radius: 50%;
-      background: #ef4444;
+      background: var(--color-danger);
       border: none;
       color: white;
       cursor: pointer;

@@ -215,7 +215,7 @@ export interface UserFormData {
 
     input:focus, select:focus {
       outline: none;
-      border-color: var(--brand-primary, #6366f1);
+      border-color: var(--brand-primary, #0ea5e9);
     }
 
     .error-text {
@@ -260,11 +260,11 @@ export interface UserFormData {
     }
 
     .btn-save {
-      background: var(--brand-primary, #6366f1);
+      background: var(--brand-primary, #0ea5e9);
       color: white;
     }
     .btn-save:hover {
-      background: #4f46e5;
+      background: #0284c7;
     }
     .btn-save:disabled {
       opacity: 0.5;

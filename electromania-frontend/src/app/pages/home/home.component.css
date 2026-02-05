@@ -172,18 +172,6 @@
   animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .filters-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -217,7 +205,7 @@
 
 .custom-select-wrapper select:focus {
   border-color: var(--brand-primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
 }
 
 .filters-actions {
@@ -239,23 +227,6 @@
 
 .btn-reset:hover {
   color: var(--text-primary);
-}
-
-.btn-apply {
-  background: var(--brand-primary);
-  color: white;
-  border: none;
-  padding: 10px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: var(--shadow-glow);
-  transition: all 0.2s;
-}
-
-.btn-apply:hover {
-  background: var(--brand-hover);
-  transform: translateY(-2px);
 }
 
 /* =========================
@@ -316,7 +287,7 @@
 }
 
 [data-theme='dark'] .imagen-producto {
-  background: #f8fafc;
+  background: var(--slate-50);
 }
 
 .imagen-producto img {

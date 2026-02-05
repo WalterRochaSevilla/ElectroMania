@@ -38,16 +38,30 @@ body.no-scroll {
   --slate-900: #0f172a;
   --slate-950: #020617;
 
-  /* Primary Brand (Indigo/Blue) */
-  --primary-50: #eef2ff;
-  --primary-100: #e0e7ff;
-  --primary-500: #6366f1; /* Indigo */
-  --primary-600: #4f46e5;
-  --primary-700: #4338ca;
+  /* Primary Brand (Sky Blue) */
+  --primary-50: #f0f9ff;
+  --primary-100: #e0f2fe;
+  --primary-500: #0ea5e9; /* Sky */
+  --primary-600: #0284c7;
+  --primary-700: #0369a1;
 
   /* Cyan Accent (Tech highlights, reduced usage) */
   --accent-400: #22d3ee;
   --accent-500: #06b6d4;
+
+  /* Status Colors */
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+  --color-purple: #8b5cf6;
+
+  /* Brand Colors (third-party) */
+  --color-whatsapp: #25D366;
+  --color-whatsapp-hover: #128C7E;
+
+  /* Overlay */
+  --overlay-dark: rgba(0, 0, 0, 0.7);
 
   /* Semantic Variables */
   --bg-main: var(--slate-950);
@@ -63,13 +77,13 @@ body.no-scroll {
 
   --brand-primary: var(--primary-600);
   --brand-hover: var(--primary-500);
-  --brand-glow: rgba(79, 70, 229, 0.4);
+  --brand-glow: rgba(14, 165, 233, 0.4);
 
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
+  --shadow-glow: 0 0 20px rgba(14, 165, 233, 0.15);
 
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --nav-blur: blur(12px);
@@ -89,7 +103,7 @@ body.no-scroll {
   --border-hover: var(--slate-300);
 
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
-  --shadow-glow: 0 0 15px rgba(79, 70, 229, 0.1);
+  --shadow-glow: 0 0 15px rgba(14, 165, 233, 0.1);
 }
 
 /* UTILITIES */
