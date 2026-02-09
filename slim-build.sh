@@ -71,20 +71,14 @@ echo "Optimizando Frontend..."
 docker-slim build \
            --target electromania-frontend:latest \
            --tag electromania-frontend:slim \
-           --network electromania_app-network \
-           --env-file .prod.env \
            --http-probe=true \
-           --http-probe-cmd='GET:/health' \
-           --continue-after=20 \
+           --http-probe-cmd='GET:/' \
+           --continue-after=30 \
            --show-clogs \
-           --include-path=/app/node_modules \
-           --include-path=/app/dist \
-           --include-path=/app/prisma \
-           --include-path=/app/uploads \
-           --include-exe=/usr/local/bin/node \
-           --include-exe=/usr/bin/dumb-init \
-           --include-exe=/bin/sh \
-           --include-exe=/bin/nc
+           --include-path=/usr/share/nginx/html \
+           --include-path=/etc/nginx \
+           --include-exe=/usr/sbin/nginx \
+           --include-exe=/bin/sh
 
 echo ""
 echo "✅ Imagen optimizada creada: electromania-backend:slim"
