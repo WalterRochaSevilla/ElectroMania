@@ -1,11 +1,11 @@
 // src/orders/use-cases/send-order-receipt.usecase.ts
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { OrderService } from '../service/order.service';
-import { OrderPdfService } from '../service/order-pdf.service';
 import { OrderReceiptService } from '../service/order-receipt-html.service';
 import { MailService } from '../../mail/service/mail.service';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/service/prisma.service';
+import { PdfMakeService } from '../../common/utils/pdf/pdf-make.maker';
 
 @Injectable()
 export class SendOrderReceiptUseCase {
@@ -13,21 +13,19 @@ export class SendOrderReceiptUseCase {
   constructor(
     private readonly prisma: PrismaService,
     private readonly orderService: OrderService,
-    private readonly pdfService: OrderPdfService,
     private readonly receiptService: OrderReceiptService,
     private readonly mailService: MailService,
+    private readonly pdfMaker: PdfMakeService
   ) {}
 
   async execute(orderId: number, sendPdf: boolean = true,tx?:Prisma.TransactionClient) {
     const prisma = tx? tx : this.prisma
     const order = await this.orderService.getOrderForXML(orderId, prisma);
-    this.logger.log("order:",order);
     const userEmail = order.user.email;
     if (sendPdf) {
       // Generar PDF y enviar
-      const pdfBuffer = await this.pdfService.generatePdf(order);
       const htmlContent = this.receiptService.generateReceiptHtml(order);
-      
+      const pdfBuffer = await this.pdfMaker.generatePDF(order);
       await this.mailService.sendOrderReceipt(
         userEmail,
         order.order_id,

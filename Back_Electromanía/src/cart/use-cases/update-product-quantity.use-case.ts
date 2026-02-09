@@ -21,11 +21,9 @@ export class UpdateProductQuantityUseCase {
   async execute(userUuid: string, request:UpdateCartDetailDto) {
 
     if(request.quantity < 0){
-      this.logger.log('decrease')
       request.quantity = Math.abs(request.quantity);
       await this.decreaseQuantityUseCase.execute(userUuid, request);
     }else{
-      this.logger.log('increase')
       await this.increaseQuantityUseCase.execute(userUuid, request);
     }
     return await this.getActiceCartUseCase.execute(userUuid)

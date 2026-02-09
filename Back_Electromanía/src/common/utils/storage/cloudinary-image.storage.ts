@@ -24,11 +24,14 @@ export class CloudinaryImageStorage implements ImageStorage {
 
     try {
       await sharp(file.path)
-        .resize(800, 800, { fit: 'inside' })
+        .resize(800, 800, {
+          fit: 'inside',
+          withoutEnlargement: true
+        })
         .webp({ quality: 75 })
         .toFile(optimizedPath);
       const result = await cloudinary.uploader.upload(optimizedPath, {
-        folder,
+        folder:`electromania/${folder}`,
         resource_type: 'image',
       });
 
@@ -51,7 +54,9 @@ export class CloudinaryImageStorage implements ImageStorage {
   }
 
   private getOptimizedPath(originalPath: string): string {
-    const { dir, name } = parse(originalPath);
-    return join(dir, `${name}.webp`);
+    const { dir, name, ext } = parse(originalPath);
+    const timestamp = Date.now();
+    const random = Math.floor(Math.random() * 10000);
+    return join(dir, `${name}-${timestamp}-${random}.webp`);
   }
 }

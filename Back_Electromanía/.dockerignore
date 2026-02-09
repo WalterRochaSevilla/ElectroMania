@@ -1,7 +1,12 @@
 node_modules
 dist
-.git
-.env
-uploads
 coverage
-.vscode
+.git
+.gitignore
+*.log
+npm-debug.log
+pnpm-debug.log
+Dockerfile*
+docker-compose*.yml
+.env*
+uploads
