@@ -16,8 +16,6 @@ export class R2ImageStorage implements ImageStorage {
     const cf = config().cloudflare;
     this.publicUrl = cf.publicUrl;
     this.buckets = cf.buckets;
-
-    console.log(cf);
     this.s3 = new S3Client({
       region: 'auto',
       endpoint: cf.r2_endpoint,
@@ -89,7 +87,9 @@ export class R2ImageStorage implements ImageStorage {
   }
 
   private getOptimizedPath(originalPath: string): string {
-    const { dir, name } = parse(originalPath);
-    return join(dir, `${name}.webp`);
+    const { dir, name, ext } = parse(originalPath);
+    const timestamp = Date.now();
+    const random = Math.floor(Math.random() * 10000);
+    return join(dir, `${name}-${timestamp}-${random}.webp`);
   }
 }

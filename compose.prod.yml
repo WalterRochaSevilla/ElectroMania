@@ -1,0 +1,74 @@
+services:
+  migrate:
+    image: electromania-backend:latest
+    container_name: electromania-migrate
+    env_file: .prod.env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=${MIGRATIONS_URL}
+    command: sh -c "npx prisma migrate deploy"
+    networks:
+      - app-network
+    profiles:
+      - migrate
+
+  backend:
+    image: electromania-backend:slim
+    container_name: electromania-backend-slim
+    restart: unless-stopped
+    env_file: .prod.env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=${CONNECT_URL}
+    ports:
+      - "3000:3000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+        required: false
+    volumes:
+      - uploads_data:/app/uploads:rw
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  frontend:
+    image: electromania-frontend:slim
+    container_name: electromania-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+volumes:
+  uploads_data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

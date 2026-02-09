@@ -37,7 +37,13 @@ async function bootstrap() {
     })
   );
   app.enableCors({
-    origin: Configuration().webSiteDomain.url,
+    origin: [
+      Configuration().webSiteDomain.url,
+      Configuration().webSiteDomain.url + ':' + Configuration().webSiteDomain.port,
+      "http://localhost",
+      "http://localhost:80"
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
   });
   app.useGlobalPipes(new ValidationPipe({

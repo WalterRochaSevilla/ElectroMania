@@ -45,6 +45,8 @@ Thumbs.db
 .env.local
 .env*.local
 .dev.env
+.prod.env
+
 
 # Configuración de Firebase (si usas Firebase)
 .firebase/
@@ -53,3 +55,7 @@ Thumbs.db
 src/environments/environment.local.ts
 
 Back_Electromania/uploads/products
+
+
+# Reports
+slim.report.json

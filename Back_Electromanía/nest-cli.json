@@ -3,6 +3,14 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
+    "assets": [
+      {
+        "include": "**/*.ttf",
+        "outDir": "dist/src"
+      },
+      "**/*.ttf"
+    ],
+    "watchAssets": true,
     "deleteOutDir": true
   }
 }

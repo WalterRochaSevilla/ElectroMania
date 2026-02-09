@@ -2,28 +2,93 @@ services:
   backend:
     build:
       context: ./Back_Electromanía
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
       target: production
+      args:
+        - NODE_ENV=production
+    image: electromania-backend:${VERSION:-latest}
     container_name: electromania-backend
-    env_file: .env
-    volumes:
-      - ./uploads:/usr/src/app/uploads
+    restart: no
+    env_file: .prod.env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
     ports:
       - "3000:3000"
+    volumes:
+      - uploads_data:/app/uploads:rw
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   frontend:
     build:
       context: ./electromania-frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
+      target: production
+    image: electromania-frontend:${VERSION:-latest}
     container_name: electromania-frontend
+    restart: unless-stopped
     ports:
       - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
 
-  postgres:
-    image: postgres:16
-    env_file: .env
-    volumes:
-      - pg_data:/var/lib/postgresql/data
+  # postgres:
+  #   image: postgres:16-alpine
+  #   container_name: electromania-db
+  #   restart: unless-stopped
+  #   environment:
+  #     POSTGRES_USER: ${DATABASE_USER}
+  #     POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+  #     POSTGRES_DB: ${DATABASE_NAME}
+  #     PGDATA: /var/lib/postgresql/data/pgdata
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - pg_data:/var/lib/postgresql/data
+  #   networks:
+  #     - app-network
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER} -d ${DATABASE_NAME}"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #     start_period: 10s
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "10m"
+  #       max-file: "3"
 
 volumes:
-  pg_data:
+  # pg_data:
+  #   driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

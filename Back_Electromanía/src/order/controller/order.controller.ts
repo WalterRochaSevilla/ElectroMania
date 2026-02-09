@@ -38,7 +38,6 @@ export class OrderController {
     @Query('id', ParseIntPipe) id: number,
     @Res() res: Response
   ) {
-    this.logger.log("Generating receipt for order:", id);
     const result = await this.generateXml.execute(id);
     
     res.set('Content-Type', 'text/html; charset=utf-8');
@@ -46,7 +45,6 @@ export class OrderController {
   }
   @Post('receipt/send')
   async sendOrderReceipt(@Query('id', ParseIntPipe) id: number) {
-    this.logger.log('Sending receipt email for order:', id);
     return this.sendMail.execute(id);
   }
   @UseGuards(AuthGuard)
@@ -66,8 +64,6 @@ export class OrderController {
 
   @Patch(':id')
   update(@Param('id') id: number, @Body() updateOrderDto: UpdateOrderDto) {
-    this.logger.log("id:",id);
-    this.logger.log("updateOrderDto:",updateOrderDto);
     return this.updateOrderStatus.execute(id, updateOrderDto);
   }
   @Delete(':id')

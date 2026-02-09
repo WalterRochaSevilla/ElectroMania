@@ -9,10 +9,7 @@ export class MailService implements OnModuleInit {
   constructor(private mailerService: MailerService) {}
 
   async onModuleInit() {
-    this.logger.log('Verifying SMTP connection...');
     try {
-      // Acceso al transporter interno de nodemailer
-      // @ts-ignore
       await this.mailerService['transporter'].verify();
       this.logger.log('SMTP connection verified successfully ✅');
     } catch (error) {
@@ -26,7 +23,6 @@ export class MailService implements OnModuleInit {
     htmlContent: string,
   ): Promise<void> {
     try {
-      this.logger.log(`Sending receipt email to ${to} for order #${orderNumber}`);
       await this.mailerService.sendMail({
         to,
         subject: `Recibo de Compra - Orden #${orderNumber}`,
@@ -75,8 +71,6 @@ export class MailService implements OnModuleInit {
         subject: `Recibo de Compra - Orden #${orderNumber}`,
         html: htmlContent,
       });
-      
-      this.logger.log(`HTML receipt email sent to ${to} for order #${orderNumber}`);
     } catch (error) {
       this.logger.error(`Error sending HTML receipt: ${error.message}`);
       throw error;

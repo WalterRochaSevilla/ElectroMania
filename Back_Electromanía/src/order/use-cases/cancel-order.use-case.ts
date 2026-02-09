@@ -29,17 +29,13 @@ export class CancelOrderUseCase {
         state: CartState.CANCELED
       }
       if(order.status === OrderStatus.PAID){
-        this.logger.log("cancelado con pagar");
         await order.cart.details.forEach(async (detail) => {
           this.productService.addStock(detail.product.product_id, detail.quantity, tx);
         })
-        this.logger.log("stock restaurado");
-      }else{ 
-        this.logger.log("cancelado sin pagar");
+      }else{
         await order.cart.details.forEach(async (detail) => {
           this.productService.discountStock(detail.product.product_id, detail.quantity, tx);
         })
-        this.logger.log("stock restaurado y reservas quitadas");
       }
       const cart = await this.CartService.updateCart(order.cart.id,
         updateCart

@@ -26,13 +26,14 @@ import { GenerateOrderXmlUseCase } from './use-cases/generate-order-xml.usecase'
 import { OrderReceiptService } from './service/order-receipt-html.service';
 import { PaymentService } from '../payment/service/payment.service';
 import { SendOrderReceiptUseCase } from './use-cases/send-order-receipt.use-case';
-import { OrderPdfService } from './service/order-pdf.service';
 import { MailService } from '../mail/service/mail.service';
+import { HttpModule } from '@nestjs/axios';
+import { PdfMakeService } from '../common/utils/pdf/pdf-make.maker';
 
 
 @Module({
-  imports: [ProductModule, UserModule,AuthModule],
+  imports: [ProductModule, UserModule,AuthModule, HttpModule],
   controllers: [OrderController],
-  providers: [OrderService,RolesGuard,AuthGuard,PrismaService,CartService,OrderMapper,CartMapper,CreateOrderByCartUseCase,ProductService,AuthService,UserMapper,PasswordService,JwtService, ProductMapper,ProductImageMapper,PageProductMapper,ConfirmPaymentForOrderUseCase,CancelOrderUseCase,UpdateOrderStatusUseCase,GenerateOrderXmlUseCase,OrderReceiptService,PaymentService,SendOrderReceiptUseCase,OrderPdfService,MailService],
+  providers: [OrderService,RolesGuard,AuthGuard,PrismaService,CartService,OrderMapper,CartMapper,CreateOrderByCartUseCase,ProductService,AuthService,UserMapper,PasswordService,JwtService, ProductMapper,ProductImageMapper,PageProductMapper,ConfirmPaymentForOrderUseCase,CancelOrderUseCase,UpdateOrderStatusUseCase,GenerateOrderXmlUseCase,OrderReceiptService,PaymentService,SendOrderReceiptUseCase,MailService,PdfMakeService],
 })
 export class OrderModule {}
