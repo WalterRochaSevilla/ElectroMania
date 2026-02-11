@@ -35,7 +35,7 @@ services:
       - "4200:4200"
 
   postgres:
-    image: postgres:16
+    image: postgres:16-alpine
     container_name: postgres-db
     env_file: .env
     environment:
