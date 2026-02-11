@@ -6,6 +6,7 @@ import { ProductImageMapper } from '../mapper/ProductImage.mapper';
 import { PageProductMapper } from '../mapper/PageProduct.mapper';
 import { CreateProductRequestModel } from '../model/CreateProductRequest.model';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 describe('ProductService (unit)', () => {
   let service: ProductService;
@@ -59,6 +60,14 @@ describe('ProductService (unit)', () => {
         ProductImageMapper,
         PageProductMapper,
         { provide: PrismaService, useValue: prismaMock },
+        {
+          provide: CACHE_MANAGER,
+          useValue: {
+            get: jest.fn(),
+            set: jest.fn(),
+            del: jest.fn(),
+          },
+        }
       ],
     }).compile();
 
