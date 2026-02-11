@@ -1,21 +1,27 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/service/prisma.service';
-import { ProductMapper } from '../mapper/Product.mapper';
+import { ProductMapper, ProductWithCategoriesAndImages } from '../mapper/Product.mapper';
 import { ProductImageMapper } from '../mapper/ProductImage.mapper';
 import { PageProductMapper } from '../mapper/PageProduct.mapper';
 import { ProductModel } from '../model/Product.model';
 import { CreateProductRequestModel } from '../model/CreateProductRequest.model';
 import { RegisterProductImageRequestModel } from '../model/RegisterProductImageRequest.model';
 import { PageProductResponseModel } from '../model/PageProductResponse.model';
-import { Prisma } from '@prisma/client';
+import { Prisma, Product } from '@prisma/client';
 import { RegisterProductCategoryDto } from '../../category/dto/register-product-category.dto';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+import { CacheProductKeys } from '../cache/cache-products.keys';
 
 @Injectable()
 export class ProductService {
+  loger = new Logger(ProductService.name)
+  private readonly CacheProductKeys = CacheProductKeys
   constructor(private readonly prisma: PrismaService,
     private readonly productMapper: ProductMapper,
     private readonly productImageMapper: ProductImageMapper,
-    private readonly pageProductMapper: PageProductMapper
+    private readonly pageProductMapper: PageProductMapper,
+    @Inject(CACHE_MANAGER) private cacheManager:Cache
   ) {}
 
   async createProduct(dto: CreateProductRequestModel, tx?: Prisma.TransactionClient): Promise<ProductModel> {
@@ -61,11 +67,15 @@ export class ProductService {
 
   async getAllProducts(): Promise<ProductModel[]> {
     try{
+      const cachedProducts = await this.cacheManager.get(this.CacheProductKeys.allProducts);
+      if(cachedProducts){
+        return cachedProducts as ProductModel[]
+      }
       const products = await this.prisma.product.findMany({
-        include: { 
-          productImages: true, 
-          productCategories:{
-            include: {
+      include: { 
+        productImages: true, 
+        productCategories:{
+          include: {
               category: true 
             }
           }
@@ -75,7 +85,9 @@ export class ProductService {
       if(products.length === 0){
         throw new NotFoundException('Products not found');
       }
-      return products.map((p) => this.productMapper.toModelWithCategoryAndImages(p));
+      const result= products.map((p) => this.productMapper.toModelWithCategoryAndImages(p));
+      this.cacheManager.set(this.CacheProductKeys.allProducts, result,500);
+      return result
     }catch(e){
       throw new NotFoundException('Products not found');
     }
@@ -92,18 +104,25 @@ export class ProductService {
 
 
   private async getPageProductsByFilter(filter: any, skip?: number, take?: number): Promise<ProductModel[]> {
-    const products = await this.prisma.product.findMany({
-      where: filter,
-      skip,
-      take,
-      include: { productImages: true,
-        productCategories: {
-          include: {
-            category: true
+    const cachedProducts = await this.cacheManager.get(this.CacheProductKeys.pageProducts);
+    let products: ProductWithCategoriesAndImages[];
+    if(cachedProducts){
+      products = cachedProducts as ProductWithCategoriesAndImages[];
+    }else{
+      products = await this.prisma.product.findMany({
+        where: filter,
+        skip,
+        take,
+        include: { productImages: true,
+          productCategories: {
+            include: {
+              category: true
+            }
           }
-        }
-       },
-    });
+        },
+      });
+    }
+    this.cacheManager.set(this.CacheProductKeys.pageProducts, products,500);
     return products.map((p) => this.productMapper.toModelWithCategoryAndImages(p));
   }
 
@@ -138,6 +157,7 @@ export class ProductService {
         }
        },
     });
+    this.deleteAllProductCache();
     return this.productMapper.toModelWithCategoryAndImages(updated);
   }
 
@@ -156,6 +176,11 @@ export class ProductService {
     await this.prisma.product.delete({
       where: { product_id: productId },
     });
+    this.deleteAllProductCache();
+  }
+  private deleteAllProductCache(){
+    this.cacheManager.del(this.CacheProductKeys.allProducts);
+    this.cacheManager.del(this.CacheProductKeys.pageProducts);
   }
   async getProductById(productId: number,tx?: Prisma.TransactionClient): Promise<ProductModel> {
     const prisma = tx? tx : this.prisma
@@ -190,7 +215,7 @@ export class ProductService {
 
   async addStock(productId: number, quantity: number,tx?: Prisma.TransactionClient) {
     const prisma = tx? tx : this.prisma
-    return prisma.product.update({
+    const product = prisma.product.update({
       where: { product_id: productId },
       data: {
         stock_total: {
@@ -198,6 +223,8 @@ export class ProductService {
         },
       },
     });    
+    this.deleteAllProductCache();
+    return product
   }
   async releaseReservedStock(productId: number, quantity: number,tx?: Prisma.TransactionClient) {
     const prisma = tx? tx : this.prisma
@@ -215,7 +242,7 @@ export class ProductService {
   }
   async reserveStock(productId: number, quantity: number,tx?: Prisma.TransactionClient) {
     const prisma = tx? tx : this.prisma
-    return prisma.product.update({
+    const product = prisma.product.update({
       where: { product_id: productId },
       data: {
         stock_reserved: {
@@ -223,6 +250,8 @@ export class ProductService {
         }
       },
     });
+    this.deleteAllProductCache();
+    return product;
   }
   async discountStock(productId: number, quantity: number,tx?: Prisma.TransactionClient) {
     const prisma = tx? tx : this.prisma
@@ -238,8 +267,7 @@ export class ProductService {
     if (product.stock_reserved < quantity) {
         throw new ForbiddenException('Product out of stock');
     }
-
-    return prisma.product.update({
+    const updateProduct = prisma.product.update({
         where: { product_id: productId },
         data: {
             stock_total: {
@@ -251,6 +279,8 @@ export class ProductService {
         },
       }
     );
+    this.deleteAllProductCache();
+    return updateProduct;
   }
   async assingCategory(request:RegisterProductCategoryDto,tx?: Prisma.TransactionClient) {
     const prisma = tx? tx : this.prisma
