@@ -3,25 +3,23 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProductosService } from '../../services/productos.service';
-
 export interface ProductFormData {
-  id?: number;
-  nombre: string;
-  descripcion: string;
-  price: number;
-  stock: number;
-  categoria: string;
-  imagen?: File;
-  imagenUrl?: string;
-  existingImages?: string[];
-  selectedImageUrl?: string;  // The selected primary image URL
+    id?: number;
+    nombre: string;
+    descripcion: string;
+    price: number;
+    stock: number;
+    categoria: string;
+    imagen?: File;
+    imagenUrl?: string;
+    existingImages?: string[];
+    selectedImageUrl?: string;
 }
-
 @Component({
-  selector: 'app-product-form-modal',
-  standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
-  template: `
+    selector: 'app-product-form-modal',
+    standalone: true,
+    imports: [CommonModule, FormsModule, TranslateModule],
+    template: `
     @if (isVisible) {
       <div class="pfm-overlay" (click)="onHandleCancel()" (keyup.escape)="onHandleCancel()" tabindex="0" role="button" [attr.aria-label]="'COMMON.CLOSE' | translate">
         <div class="pfm-content" (click)="$event.stopPropagation()" (keyup)="null" role="dialog" aria-modal="true" tabindex="-1">
@@ -78,11 +76,11 @@ export interface ProductFormData {
                 <textarea id="pfm-descripcion" name="descripcion" [(ngModel)]="formData.descripcion" rows="3" [placeholder]="'PRODUCT_MODAL.DESCRIPTION_PLACEHOLDER' | translate"></textarea>
               </div>
 
-              <!-- Image Upload Section -->
+              
               <div class="pfm-form-group">
                 <span id="pfm-imagen-label" class="pfm-section-label">{{ 'PRODUCT_MODAL.IMAGE' | translate }}</span>
                 
-              <!-- Show existing images when editing -->
+              
                 @if (hasExistingImages()) {
                   <div class="pfm-existing-images-section">
                     <p class="pfm-existing-label">{{ 'PRODUCT_MODAL.EXISTING_IMAGES' | translate }}</p>
@@ -104,7 +102,7 @@ export interface ProductFormData {
                   </div>
                 }
                 
-                <!-- Drag & Drop Zone -->
+                
                 <div 
                   class="pfm-dropzone"
                   [class.dragover]="isDragOver"
@@ -146,7 +144,7 @@ export interface ProductFormData {
                   hidden
                 >
 
-                <!-- URL Input Alternative -->
+                
                 <div class="pfm-url-input-section">
                   <span class="pfm-divider-text">{{ 'PRODUCT_MODAL.OR_ENTER_URL' | translate }}</span>
                   <input 
@@ -173,7 +171,7 @@ export interface ProductFormData {
       </div>
     }
   `,
-  styles: [`
+    styles: [`
     .pfm-overlay {
       position: fixed;
       top: 0;
@@ -229,9 +227,9 @@ export interface ProductFormData {
       display: flex;
       padding: 0.25rem;
     }
-    .pfm-close-btn svg { width: 20px; height: 20px; }
+    .pfm-close-btn svg { width: var(--space-5); height: var(--space-5); }
 
-    /* Form must be flex to enable proper body scrolling */
+    
     .pfm-content form {
       display: flex;
       flex-direction: column;
@@ -311,7 +309,7 @@ export interface ProductFormData {
       margin-top: 0.5rem;
     }
 
-    /* Existing Images Section */
+    
     .pfm-existing-images-section {
       margin-bottom: 0.75rem;
     }
@@ -335,7 +333,7 @@ export interface ProductFormData {
       border-radius: 0.5rem;
       background: transparent;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: var(--transition-fast);
     }
 
     .pfm-existing-image-btn:hover {
@@ -360,8 +358,8 @@ export interface ProductFormData {
       position: absolute;
       top: -6px;
       right: -6px;
-      width: 20px;
-      height: 20px;
+      width: var(--space-5);
+      height: var(--space-5);
       background: var(--brand-primary);
       color: white;
       border-radius: 50%;
@@ -372,14 +370,14 @@ export interface ProductFormData {
       font-weight: bold;
     }
 
-    /* Drag & Drop Zone */
+    
     .pfm-dropzone {
       border: 2px dashed var(--border-color);
       border-radius: 0.75rem;
       padding: 2rem 1rem;
       text-align: center;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: var(--transition-fast);
       background: var(--bg-main);
     }
 
@@ -401,8 +399,8 @@ export interface ProductFormData {
     }
 
     .pfm-upload-icon {
-      width: 48px;
-      height: 48px;
+      width: var(--space-9);
+      height: var(--space-9);
       color: var(--text-secondary);
     }
 
@@ -435,8 +433,8 @@ export interface ProductFormData {
       position: absolute;
       top: -8px;
       right: -8px;
-      width: 24px;
-      height: 24px;
+      width: var(--space-6);
+      height: var(--space-6);
       border-radius: 50%;
       background: var(--color-danger);
       border: none;
@@ -484,7 +482,7 @@ export interface ProductFormData {
       background: transparent;
       color: var(--text-secondary);
       border: 1px solid var(--border-color);
-      transition: all 0.2s;
+      transition: var(--transition-fast);
     }
     .pfm-btn-cancel:hover {
       background: var(--bg-main);
@@ -499,7 +497,7 @@ export interface ProductFormData {
       background: var(--brand-primary);
       color: white;
       border: none;
-      transition: all 0.2s;
+      transition: var(--transition-fast);
     }
     .pfm-btn-save:hover {
       background: var(--brand-hover);
@@ -509,7 +507,7 @@ export interface ProductFormData {
       cursor: not-allowed;
     }
 
-    /* Hide number input spinners */
+    
     .pfm-form-group input[type="number"] {
       -moz-appearance: textfield;
       appearance: textfield;
@@ -526,186 +524,160 @@ export interface ProductFormData {
   `]
 })
 export class ProductFormModalComponent implements OnChanges, OnInit, OnDestroy {
-  private productosService = inject(ProductosService);
-
-  @Input() isVisible = false;
-  @Input() product: ProductFormData | null = null;
-  @Output() saveProduct = new EventEmitter<ProductFormData>();
-  @Output() cancelModal = new EventEmitter<void>();
-
-  formData: ProductFormData = this.getEmptyForm();
-  categories: string[] = ['General'];
-  selectedCategory = 'General';
-  showCustomInput = false;
-
-  // Drag & drop state
-  isDragOver = false;
-  imagePreview: string | null = null;
-  selectedExistingImage: string | null = null;
-
-  async ngOnInit() {
-    await this.loadCategories();
-  }
-
-  ngOnDestroy() {
-    // Ensure body scroll is restored on destroy
-    document.body.style.overflow = '';
-  }
-
-  async loadCategories() {
-    try {
-      const cats = await this.productosService.getCategoriasAsStrings();
-      this.categories = cats.length > 0 ? cats : ['General'];
-    } catch {
-      this.categories = ['General'];
+    private productosService = inject(ProductosService);
+    @Input()
+    isVisible = false;
+    @Input()
+    product: ProductFormData | null = null;
+    @Output()
+    saveProduct = new EventEmitter<ProductFormData>();
+    @Output()
+    cancelModal = new EventEmitter<void>();
+    formData: ProductFormData = this.getEmptyForm();
+    categories: string[] = ['General'];
+    selectedCategory = 'General';
+    showCustomInput = false;
+    isDragOver = false;
+    imagePreview: string | null = null;
+    selectedExistingImage: string | null = null;
+    async ngOnInit() {
+        await this.loadCategories();
     }
-  }
-
-  // Check if there are existing images
-  hasExistingImages(): boolean {
-    return !!(this.formData.existingImages && this.formData.existingImages.length > 0);
-  }
-
-  // Drag & Drop handlers
-  onDragOver(event: DragEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.isDragOver = true;
-  }
-
-  onDragLeave(event: DragEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.isDragOver = false;
-  }
-
-  onDrop(event: DragEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.isDragOver = false;
-
-    const files = event.dataTransfer?.files;
-    if (files && files.length > 0) {
-      this.handleFile(files[0]);
-    }
-  }
-
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.handleFile(input.files[0]);
-    }
-  }
-
-  private handleFile(file: File) {
-    // Validate file type
-    if (!file.type.match(/^image\/(png|jpeg|webp)$/)) {
-      console.error('Invalid file type');
-      return;
-    }
-
-    // Validate file size (10MB)
-    if (file.size > 10 * 1024 * 1024) {
-      console.error('File too large');
-      return;
-    }
-
-    this.formData.imagen = file;
-    this.formData.imagenUrl = undefined;
-    this.selectedExistingImage = null; // Clear existing selection when new file is chosen
-
-    // Create preview
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      this.imagePreview = e.target?.result as string;
-    };
-    reader.readAsDataURL(file);
-  }
-
-  selectExistingImage(imgUrl: string) {
-    // Toggle selection
-    if (this.selectedExistingImage === imgUrl) {
-      this.selectedExistingImage = null;
-    } else {
-      this.selectedExistingImage = imgUrl;
-      // Clear any new upload when selecting existing
-      this.formData.imagen = undefined;
-      this.imagePreview = null;
-    }
-  }
-
-  removeImage(event: Event) {
-    event.stopPropagation();
-    this.formData.imagen = undefined;
-    this.imagePreview = null;
-    this.selectedExistingImage = null;
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    // Handle body scroll lock when modal visibility changes
-    if (changes['isVisible']) {
-      if (this.isVisible) {
-        document.body.style.overflow = 'hidden';
-      } else {
+    ngOnDestroy() {
         document.body.style.overflow = '';
-      }
     }
-
-    if (changes['product'] && this.product) {
-      this.formData = { ...this.product };
-      this.selectedCategory = this.categories.includes(this.formData.categoria)
-        ? this.formData.categoria
-        : '__custom__';
-      this.showCustomInput = this.selectedCategory === '__custom__';
-      this.imagePreview = null;
-      // Pre-select the last (currently displayed) image if exists
-      if (this.formData.existingImages && this.formData.existingImages.length > 0) {
-        this.selectedExistingImage = this.formData.existingImages[this.formData.existingImages.length - 1];
-      } else {
+    async loadCategories() {
+        try {
+            const cats = await this.productosService.getCategoriasAsStrings();
+            this.categories = cats.length > 0 ? cats : ['General'];
+        }
+        catch {
+            this.categories = ['General'];
+        }
+    }
+    hasExistingImages(): boolean {
+        return !!(this.formData.existingImages && this.formData.existingImages.length > 0);
+    }
+    onDragOver(event: DragEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.isDragOver = true;
+    }
+    onDragLeave(event: DragEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.isDragOver = false;
+    }
+    onDrop(event: DragEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.isDragOver = false;
+        const files = event.dataTransfer?.files;
+        if (files && files.length > 0) {
+            this.handleFile(files[0]);
+        }
+    }
+    onFileSelected(event: Event) {
+        const input = event.target as HTMLInputElement;
+        if (input.files && input.files.length > 0) {
+            this.handleFile(input.files[0]);
+        }
+    }
+    private handleFile(file: File) {
+        if (!file.type.match(/^image\/(png|jpeg|webp)$/)) {
+            console.error('Invalid file type');
+            return;
+        }
+        if (file.size > 10 * 1024 * 1024) {
+            console.error('File too large');
+            return;
+        }
+        this.formData.imagen = file;
+        this.formData.imagenUrl = undefined;
         this.selectedExistingImage = null;
-      }
-    } else if (changes['isVisible'] && this.isVisible && !this.product) {
-      this.formData = this.getEmptyForm();
-      this.selectedCategory = 'General';
-      this.showCustomInput = false;
-      this.imagePreview = null;
-      this.selectedExistingImage = null;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            this.imagePreview = e.target?.result as string;
+        };
+        reader.readAsDataURL(file);
     }
-  }
-
-  onCategoryChange(value: string) {
-    if (value === '__custom__') {
-      this.showCustomInput = true;
-      this.formData.categoria = '';
-    } else {
-      this.showCustomInput = false;
-      this.formData.categoria = value;
+    selectExistingImage(imgUrl: string) {
+        if (this.selectedExistingImage === imgUrl) {
+            this.selectedExistingImage = null;
+        }
+        else {
+            this.selectedExistingImage = imgUrl;
+            this.formData.imagen = undefined;
+            this.imagePreview = null;
+        }
     }
-  }
-
-  getEmptyForm(): ProductFormData {
-    return {
-      nombre: '',
-      descripcion: '',
-      price: 0,
-      stock: 0,
-      categoria: 'General',
-      imagen: undefined,
-      imagenUrl: undefined,
-      existingImages: []
-    };
-  }
-
-  onSubmit() {
-    // Include the selected image URL in the form data
-    const dataToEmit = {
-      ...this.formData,
-      selectedImageUrl: this.selectedExistingImage || undefined
-    };
-    this.saveProduct.emit(dataToEmit);
-  }
-
-  onHandleCancel() {
-    this.cancelModal.emit();
-  }
+    removeImage(event: Event) {
+        event.stopPropagation();
+        this.formData.imagen = undefined;
+        this.imagePreview = null;
+        this.selectedExistingImage = null;
+    }
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['isVisible']) {
+            if (this.isVisible) {
+                document.body.style.overflow = 'hidden';
+            }
+            else {
+                document.body.style.overflow = '';
+            }
+        }
+        if (changes['product'] && this.product) {
+            this.formData = { ...this.product };
+            this.selectedCategory = this.categories.includes(this.formData.categoria)
+                ? this.formData.categoria
+                : '__custom__';
+            this.showCustomInput = this.selectedCategory === '__custom__';
+            this.imagePreview = null;
+            if (this.formData.existingImages && this.formData.existingImages.length > 0) {
+                this.selectedExistingImage = this.formData.existingImages[this.formData.existingImages.length - 1];
+            }
+            else {
+                this.selectedExistingImage = null;
+            }
+        }
+        else if (changes['isVisible'] && this.isVisible && !this.product) {
+            this.formData = this.getEmptyForm();
+            this.selectedCategory = 'General';
+            this.showCustomInput = false;
+            this.imagePreview = null;
+            this.selectedExistingImage = null;
+        }
+    }
+    onCategoryChange(value: string) {
+        if (value === '__custom__') {
+            this.showCustomInput = true;
+            this.formData.categoria = '';
+        }
+        else {
+            this.showCustomInput = false;
+            this.formData.categoria = value;
+        }
+    }
+    getEmptyForm(): ProductFormData {
+        return {
+            nombre: '',
+            descripcion: '',
+            price: 0,
+            stock: 0,
+            categoria: 'General',
+            imagen: undefined,
+            imagenUrl: undefined,
+            existingImages: []
+        };
+    }
+    onSubmit() {
+        const dataToEmit = {
+            ...this.formData,
+            selectedImageUrl: this.selectedExistingImage || undefined
+        };
+        this.saveProduct.emit(dataToEmit);
+    }
+    onHandleCancel() {
+        this.cancelModal.emit();
+    }
 }

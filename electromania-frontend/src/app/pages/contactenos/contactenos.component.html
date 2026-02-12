@@ -1,21 +1,13 @@
 <div class="contactenos-container">
-
   <main class="main-content">
     <div class="contact-wrapper">
-
-      <!-- HEADER SECTION (Moved out of columns) -->
       <div class="contact-header-block">
         <h1 class="page-title">{{ 'CONTACT.TITLE' | translate }}</h1>
         <p class="page-subtitle">{{ 'CONTACT.SUBTITLE' | translate }}</p>
       </div>
-
-      <!-- MAIN GRID -->
       <div class="contact-grid-row">
-
-        <!-- COLUMN 1: INFO CARDS -->
         <div class="contact-info-col">
           <div class="info-cards">
-
             <div class="info-card">
               <div class="icon-box">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -29,7 +21,6 @@
                 <p class="text-brand">{{ titulo }}</p>
               </div>
             </div>
-
             <div class="info-card">
               <div class="icon-box">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -39,11 +30,10 @@
                 </svg>
               </div>
               <div>
-                <h3>Ubicación</h3>
+                <h3>{{ 'CONTACT.LOCATION' | translate }}</h3>
                 <p>{{ localidad }}</p>
               </div>
             </div>
-
             <div class="info-card">
               <div class="icon-box">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -53,18 +43,17 @@
                 </svg>
               </div>
               <div>
-                <h3>Teléfono / WhatsApp</h3>
+                <h3>{{ 'CONTACT.PHONE_WHATSAPP' | translate }}</h3>
                 <p>{{ telefono }}</p>
                 <button class="btn-outline" (click)="openWhatsApp()">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                   </svg>
-                  Contactar por WhatsApp
+                  {{ 'CONTACT.WHATSAPP_CTA' | translate }}
                 </button>
               </div>
             </div>
-
             <div class="info-card">
               <div class="icon-box">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -74,7 +63,7 @@
                 </svg>
               </div>
               <div>
-                <h3>Correo Electrónico</h3>
+                <h3>{{ 'CONTACT.EMAIL' | translate }}</h3>
                 <p>{{ email }}</p>
                 <button class="btn-outline" (click)="sendEmail()">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -82,51 +71,44 @@
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                     <polyline points="22,6 12,13 2,6"></polyline>
                   </svg>
-                  Enviar Email
+                  {{ 'CONTACT.EMAIL_CTA' | translate }}
                 </button>
               </div>
             </div>
-
           </div>
         </div>
-
-        <!-- COLUMN 2: IMAGE & SERVICES -->
         <div class="image-col">
           <div class="service-card">
             <div class="image-header">
               <img src="contactenos.png" alt="ElectroMania Office" class="contact-img"
-                onerror="this.src='https://via.placeholder.com/800x600'">
+                (error)="onImageError($event)">
               <div class="overlay">
-                <h3>ElectroMania Bolivia</h3>
+                <h3>{{ 'CONTACT.BRAND' | translate }}</h3>
               </div>
             </div>
-
             <div class="service-content">
               <div class="tags-row">
-                <span class="tag">Electrónica</span>
-                <span class="tag">IoT</span>
-                <span class="tag">Robótica</span>
+                <span class="tag">{{ 'CONTACT.TAG_ELECTRONICS' | translate }}</span>
+                <span class="tag">{{ 'CONTACT.TAG_IOT' | translate }}</span>
+                <span class="tag">{{ 'CONTACT.TAG_ROBOTICS' | translate }}</span>
               </div>
-
               <div class="services-list">
-                <h4>Servicios Disponibles</h4>
+                <h4>{{ 'CONTACT.SERVICES_TITLE' | translate }}</h4>
                 <ul>
-                  <li>Asesoría técnica especializada</li>
-                  <li>Desarrollo de proyectos electrónicos</li>
-                  <li>Venta de componentes electrónicos</li>
-                  <li>Capacitación y talleres</li>
+                  <li>{{ 'CONTACT.SERVICE_ADVISORY' | translate }}</li>
+                  <li>{{ 'CONTACT.SERVICE_PROJECTS' | translate }}</li>
+                  <li>{{ 'CONTACT.SERVICE_SALES' | translate }}</li>
+                  <li>{{ 'CONTACT.SERVICE_TRAINING' | translate }}</li>
                 </ul>
               </div>
-
               <div class="horario-box">
-                <h4>Horario de Atención</h4>
-                <p>Lunes a Viernes: 8:00 - 18:00</p>
-                <p>Sábados: 9:00 - 13:00</p>
+                <h4>{{ 'CONTACT.SCHEDULE_TITLE' | translate }}</h4>
+                <p>{{ 'CONTACT.SCHEDULE_WEEKDAYS' | translate }}</p>
+                <p>{{ 'CONTACT.SCHEDULE_SATURDAY' | translate }}</p>
               </div>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </main>

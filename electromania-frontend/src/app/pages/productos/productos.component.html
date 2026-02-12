@@ -1,19 +1,10 @@
 <div class="producto-container">
   <div class="pagina-catalogo-container">
-
-    <!-- MAIN CONTENT -->
     <main class="main-content">
-
-      <!-- CONTENIDO DEL CARRITO -->
       <div class="carrito-wrapper">
-
         <h1 class="page-title">{{ 'CART.TITLE' | translate }}</h1>
-
         <div class="carrito-layout" [class.layout-vacio]="isEmpty()">
-
-          <!-- LEFT COLUMN: PRODUCTS LIST -->
           <div class="carrito-items-section">
-
             @if (!isEmpty()) {
             <div class="lista-productos">
               @for (item of carrito(); track item.id; let i = $index) {
@@ -36,7 +27,7 @@
                       </svg>
                     </button>
                     <span class="cantidad">{{ item.cantidad }}</span>
-                    <button class="btn-cantidad" (click)="aumentarCantidad(item.id)" 
+                    <button class="btn-cantidad" (click)="aumentarCantidad(item.id)"
                       [disabled]="isAtMaxStock(item.id, item.cantidad)"
                       [class.disabled]="isAtMaxStock(item.id, item.cantidad)">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -49,8 +40,8 @@
                 </div>
                 <div class="columna precio-col">
                   <span class="precio-total">{{ (item.precio * item.cantidad) | number:'1.2-2' }}
-                    Bs.</span>
-                  <span class="precio-unitario">{{ item.precio | number:'1.2-2' }} Bs. {{ 'CART.EACH' | translate }}</span>
+                    {{ 'CART.BS' | translate }}</span>
+                  <span class="precio-unitario">{{ item.precio | number:'1.2-2' }} {{ 'CART.BS' | translate }} {{ 'CART.EACH' | translate }}</span>
                 </div>
                 <div class="columna acciones-col">
                   <button class="btn-eliminar" (click)="eliminarProducto(item.id)">
@@ -83,10 +74,7 @@
               </button>
             </div>
             }
-
           </div>
-
-          <!-- RIGHT COLUMN: SUMMARY -->
           @if (!isEmpty()) {
           <div class="carrito-resumen-section">
             <div class="resumen-card">
@@ -94,18 +82,17 @@
               <div class="detalle-resumen">
                 <div class="fila-resumen">
                   <span>{{ 'CART.SUBTOTAL' | translate }}</span>
-                  <span>{{ totals().subtotal | number:'1.2-2' }} Bs.</span>
+                  <span>{{ totals().subtotal | number:'1.2-2' }} {{ 'CART.BS' | translate }}</span>
                 </div>
                 <div class="fila-resumen">
                   <span>{{ 'CART.TAXES' | translate }}</span>
-                  <span>{{ totals().impuestos | number:'1.2-2' }} Bs.</span>
+                  <span>{{ totals().impuestos | number:'1.2-2' }} {{ 'CART.BS' | translate }}</span>
                 </div>
                 <div class="fila-resumen total">
                   <span>{{ 'CART.TOTAL' | translate }}</span>
-                  <span class="monto-total">{{ totals().total | number:'1.2-2' }} Bs.</span>
+                  <span class="monto-total">{{ totals().total | number:'1.2-2' }} {{ 'CART.BS' | translate }}</span>
                 </div>
               </div>
-              <!-- BILLING INFO -->
               <div class="facturacion-info">
                 <h4 class="facturacion-titulo">{{ 'CHECKOUT.BILLING_INFO' | translate }}</h4>
                 <div class="campos-factura">
@@ -140,13 +127,10 @@
             </div>
           </div>
           }
-
         </div>
       </div>
     </main>
   </div>
-
-  <!-- MODAL PEDIDO ENVIADO -->
   @if (mostrarModalExito()) {
   <div class="modal-overlay">
     <div class="modal-exito">
@@ -158,7 +142,7 @@
       </div>
       <h2>{{ 'CHECKOUT.SUCCESS_TITLE' | translate }}</h2>
       <p class="mensaje-exito">
-        <span [innerHTML]="'CHECKOUT.SUCCESS_MESSAGE' | translate:{ orderNumber: numeroFactura() }"></span><br>
+        <span>{{ 'CHECKOUT.SUCCESS_MESSAGE' | translate:{ orderNumber: numeroFactura() } }}</span><br>
         <span>{{ 'CHECKOUT.SUCCESS_SUBMESSAGE' | translate }}</span>
       </p>
       <button class="btn-volver-tienda" (click)="volverATienda()">

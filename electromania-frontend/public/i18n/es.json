@@ -19,7 +19,8 @@
     "CLOSE": "Cerrar",
     "COMING_SOON": "Próximamente",
     "ACTIVE": "Activo",
-    "INACTIVE": "Inactivo"
+    "INACTIVE": "Inactivo",
+    "NOT_AVAILABLE": "N/D"
   },
   "USER_MODAL": {
     "NEW_USER": "Nuevo Usuario",
@@ -88,7 +89,8 @@
     "WELCOME_ADMIN": "Bienvenido Administrador",
     "SESSION_EXPIRED": "Sesión expirada. Por favor inicie sesión nuevamente.",
     "ACCESS_DENIED": "Acceso denegado. Se requieren permisos de administrador.",
-    "NO_PERMISSION": "No tiene permisos para realizar esta acción."
+    "NO_PERMISSION": "No tiene permisos para realizar esta acción.",
+    "EMAIL_PLACEHOLDER": "usuario@electromania.com"
   },
   "NAV": {
     "HOME": "Inicio",
@@ -96,9 +98,9 @@
     "CART": "Carrito",
     "JOIN": "Únete",
     "MY_ACCOUNT": "Mi Cuenta",
-    "ADMIN_PANEL": "Panel Admin",
-    "MY_ORDERS": "Mis Pedidos",
-    "MY_PROFILE": "Mi Perfil",
+    "ADMIN_PANEL": "Panel Administrativo",
+    "MY_ORDERS": "Pedidos",
+    "MY_PROFILE": "Perfil",
     "SETTINGS": "Configuración",
     "LOGOUT": "Cerrar Sesión",
     "LOGIN": "Iniciar Sesión",
@@ -137,7 +139,8 @@
     "QUANTITY": "Cantidad",
     "UNIT_PRICE": "Precio unitario",
     "ORDER_SUMMARY": "Resumen del Pedido",
-    "EACH": "c/u"
+    "EACH": "c/u",
+    "BS": "Bs."
   },
   "PRODUCTS": {
     "TITLE": "Productos",
@@ -156,7 +159,7 @@
     "LIBRARY": "Librería"
   },
   "ORDERS": {
-    "TITLE": "Mis Pedidos",
+    "TITLE": "Pedidos",
     "ORDER_NUMBER": "Número de pedido",
     "DATE": "Fecha",
     "STATUS": "Estado",
@@ -183,10 +186,12 @@
     "PROCESSING": "Procesando...",
     "CONFIRM_WHATSAPP": "Confirmar por WhatsApp",
     "SUCCESS_TITLE": "¡Pedido Enviado!",
-    "SUCCESS_MESSAGE": "Tu pedido <strong>#{{orderNumber}}</strong> ha sido enviado a WhatsApp.",
+    "SUCCESS_MESSAGE": "Tu pedido #{{orderNumber}} ha sido enviado a WhatsApp.",
     "SUCCESS_SUBMESSAGE": "Un vendedor de Electromania se pondrá en contacto contigo para coordinar el pago y envío.",
     "BACK_TO_STORE": "Volver a la tienda",
-    "ORDER_ERROR": "Error al procesar el pedido"
+    "ORDER_ERROR": "Error al procesar el pedido",
+    "WHATSAPP_MESSAGE": "Hola Electromania!\n\nQuiero realizar el siguiente pedido:\n\n{{productList}}\n\n-----------------------\n*Subtotal:* Bs. {{subtotal}}\n*Impuestos (13%):* Bs. {{impuestos}}\n*TOTAL A PAGAR:* Bs. {{total}}\n-----------------------\n\n*Datos de Facturacion:*\nNombre: {{nombre}}\nNIT/CI: {{nit}}\n{{emailLine}}\n\nGracias!",
+    "WHATSAPP_EMAIL": "Email: {{email}}"
   },
   "ADMIN": {
     "DASHBOARD": "Panel de Control",
@@ -228,6 +233,14 @@
     "ERROR_CREATE": "Error al crear",
     "ERROR_DELETE": "Error al eliminar",
     "INVENTORY_EXPORTED": "Inventario exportado",
+    "INVENTORY_EXPORTED_CSV": "Inventario exportado en CSV",
+    "INVENTORY_EXPORTED_XLSX": "Inventario exportado en Excel",
+    "ERROR_EXPORT_INVENTORY": "No se pudo exportar el inventario",
+    "EXPORT_CSV": "Exportar como CSV",
+    "EXPORT_XLSX": "Exportar como Excel (.xlsx)",
+    "SHEET_INVENTORY": "Inventario",
+    "EXPORT_INVENTORY_TITLE": "Reporte de Inventario - Electromania",
+    "EXPORT_DATE": "Fecha de exportación",
     "INVENTORY_MANAGEMENT": "Gestión de Inventario",
     "USER_MANAGEMENT": "Gestión de Usuarios",
     "ORDER_MANAGEMENT": "Gestión de Pedidos",
@@ -263,6 +276,9 @@
     "USER_DEACTIVATED": "Usuario desactivado",
     "USER_DELETED": "Usuario eliminado",
     "EDIT_NOT_AVAILABLE": "La edición de usuarios no está disponible en el backend",
+    "DELETE_NOT_AVAILABLE": "La eliminación de usuarios no está disponible en el backend",
+    "STATE_CHANGE_NOT_AVAILABLE": "El cambio de estado de usuarios no está disponible en el backend",
+    "RESET_NOT_AVAILABLE": "El reseteo de contraseña no está disponible en el backend",
     "RESET_PASSWORD": "Resetear Contraseña",
     "RESET_PASSWORD_CONFIRM": "¿Resetear contraseña del usuario {{name}}? Se enviará un correo con la nueva contraseña.",
     "PASSWORD_RESET_SENT": "Se ha enviado un correo a {{email}}",
@@ -297,7 +313,38 @@
     "ERROR_UPDATE_PRODUCT": "Error al actualizar el producto",
     "ERROR_CREATE_PRODUCT": "Error al crear el producto",
     "ERROR_DELETE_PRODUCT": "No se pudo eliminar el producto",
-    "ERROR_CREATE_USER": "Error al crear el usuario"
+    "ERROR_CREATE_USER": "Error al crear el usuario",
+    "ERROR_LOAD_DASHBOARD": "Error al cargar el dashboard",
+    "LOADING_DASHBOARD": "Cargando dashboard...",
+    "LOADING_PRODUCTS": "Cargando productos...",
+    "LOADING_USERS": "Cargando usuarios...",
+    "CONNECTION_LOST_TITLE": "Se perdió la conexión",
+    "CONNECTION_LOST_DESC": "No se pudo cargar el dashboard. Verifique su conexión y actualice la página para reintentar.",
+    "REFRESH_PAGE": "Actualizar página",
+    "SYSTEM_ONLINE": "En línea",
+    "SYSTEM_OFFLINE": "Fuera de línea",
+    "SYSTEM_MAINTENANCE": "Mantenimiento",
+    "WEEKDAY_MON": "Lun",
+    "WEEKDAY_TUE": "Mar",
+    "WEEKDAY_WED": "Mie",
+    "WEEKDAY_THU": "Jue",
+    "WEEKDAY_FRI": "Vie",
+    "WEEKDAY_SAT": "Sab",
+    "WEEKDAY_SUN": "Dom",
+    "WEEK_LABEL": "Sem {{index}}",
+    "LOW_STOCK_OUT": "Agotado",
+    "LOW_STOCK_CRITICAL": "Critico",
+    "LOW_STOCK_LOW": "Bajo",
+    "SALES_LABEL": "Ventas (Bs.)",
+    "UNITS_SOLD_LABEL": "Unidades Vendidas",
+    "ID": "ID",
+    "NO_SALES_DATA": "No hay datos de ventas para mostrar",
+    "NO_TOP_PRODUCTS": "No hay productos vendidos todavía",
+    "NO_LOW_STOCK": "No hay productos con stock bajo",
+    "NO_USERS_MATCH": "No se encontraron usuarios con los filtros actuales",
+    "ORDERS_EMPTY_TITLE": "Aun no hay pedidos",
+    "ORDERS_EMPTY_DESC": "Aqui veras todas las ordenes registradas.",
+    "NO_ORDERS_DESC": "No se encontraron pedidos con los filtros actuales."
   },
   "SETTINGS": {
     "TITLE": "Configuración",
@@ -336,11 +383,40 @@
     "FORM_NAME": "Tu nombre",
     "FORM_EMAIL": "Tu correo",
     "FORM_MESSAGE": "Tu mensaje",
-    "SEND": "Enviar mensaje"
+    "SEND": "Enviar mensaje",
+    "LOCATION": "Ubicacion",
+    "PHONE_WHATSAPP": "Telefono / WhatsApp",
+    "WHATSAPP_CTA": "Contactar por WhatsApp",
+    "EMAIL": "Correo Electronico",
+    "EMAIL_CTA": "Enviar Email",
+    "BRAND": "ElectroMania Bolivia",
+    "TAG_ELECTRONICS": "Electronica",
+    "TAG_IOT": "IoT",
+    "TAG_ROBOTICS": "Robotica",
+    "SERVICES_TITLE": "Servicios Disponibles",
+    "SERVICE_ADVISORY": "Asesoria tecnica especializada",
+    "SERVICE_PROJECTS": "Desarrollo de proyectos electronicos",
+    "SERVICE_SALES": "Venta de componentes electronicos",
+    "SERVICE_TRAINING": "Capacitacion y talleres",
+    "SCHEDULE_TITLE": "Horario de Atencion",
+    "SCHEDULE_WEEKDAYS": "Lunes a Viernes: 8:00 - 18:00",
+    "SCHEDULE_SATURDAY": "Sabados: 9:00 - 13:00",
+    "WHATSAPP_MESSAGE": "Hola, me interesa mas informacion sobre sus servicios",
+    "EMAIL_SUBJECT": "Consulta ElectroMania",
+    "EMAIL_BODY": "Hola, me interesa mas informacion sobre..."
   },
   "ABOUT": {
     "TITLE": "Sobre Nosotros",
-    "SUBTITLE": "Conoce más sobre Electromanía"
+    "SUBTITLE": "Conoce más sobre Electromanía",
+    "WHO_WE_ARE_TITLE": "Quienes Somos",
+    "WHO_WE_ARE_PARAGRAPH_1": "En ELECTROMANIA, entendemos que la mecatronica es el pilar de la nueva era industrial. Somos mas que una tienda online; somos una comunidad de entusiastas, ingenieros y creadores apasionados por la tecnologia.",
+    "WHO_WE_ARE_PARAGRAPH_2": "Especializados en componentes de mecatronica en Bolivia, nos dedicamos a proveer soluciones integrales para estudiantes, investigadores y empresas.",
+    "MISSION_TITLE": "Nuestra Mision",
+    "MISSION_PARAGRAPH_1": "Ser tu aliado tecnologico. Asesorarte con conocimiento real para que encuentres los componentes perfectos que se alineen con tus proyectos.",
+    "MISSION_PARAGRAPH_2": "Queremos que cada eleccion sea una inversion inteligente. Cada sensor, cada placa, cada motor es una pieza esencial en el desarrollo de la innovacion nacional.",
+    "VISION_TITLE": "Nuestra Vision",
+    "VISION_PARAGRAPH_1": "Ser el referente lider en Bolivia. Un punto de encuentro donde la innovacion, la calidad y la confianza impulsen una nueva generacion de talentos.",
+    "VISION_PARAGRAPH_2": "Visualizamos un pais donde el acceso a tecnologia de calidad no sea una barrera, sino un impulso para construir un futuro mas innovador."
   },
   "PRODUCT_DETAIL": {
     "STOCK_OUT": "Agotado temporalmente",
@@ -350,10 +426,16 @@
     "QUANTITY": "Cantidad",
     "SPECIFICATIONS": "Especificaciones",
     "DATASHEET": "Hoja de datos",
-    "LIBRARY": "Librería"
+    "LIBRARY": "Librería",
+    "GENERAL_CATEGORY": "General",
+    "SPEC_VOLTAGE": "Voltaje",
+    "SPEC_USAGE": "Uso",
+    "SPEC_USAGE_VALUE": "Prototipado rapido",
+    "DATASHEET_URL": "https://pdf-datasheet.com",
+    "LIBRARY_URL": "https://github.com"
   },
   "MY_ORDERS": {
-    "TITLE": "Mis Pedidos",
+    "TITLE": "Pedidos",
     "SUBTITLE": "Historial de tus compras",
     "NO_ORDERS": "No tienes pedidos aún",
     "NO_ORDERS_DESC": "¡Explora nuestro catálogo y realiza tu primera compra!",
@@ -372,7 +454,7 @@
     "RECEIPT_ERROR": "Error al cargar el recibo"
   },
   "PROFILE": {
-    "TITLE": "Mi Perfil",
+    "TITLE": "Perfil",
     "SUBTITLE": "Información de tu cuenta",
     "NAME": "Nombre",
     "EMAIL": "Correo electrónico",

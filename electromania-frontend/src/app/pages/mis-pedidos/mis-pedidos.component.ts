@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -7,7 +7,6 @@ import { ModalService } from '../../services/modal.service';
 import { ConfirmationModalComponent } from '../../components/confirmation-modal/confirmation-modal.component';
 import { Order } from '../../models';
 import { ToastService } from '../../services/toast.service';
-
 @Component({
     selector: 'app-mis-pedidos',
     standalone: true,
@@ -20,36 +19,29 @@ export class MisPedidosComponent implements OnInit {
     private translate = inject(TranslateService);
     private modalService = inject(ModalService);
     private toast = inject(ToastService);
-    private cdr = inject(ChangeDetectorRef);
-
-    orders: Order[] = [];
-    loading = true;
-
+    orders = signal<Order[]>([]);
+    loading = signal(true);
     async ngOnInit() {
         await this.loadOrders();
     }
-
     async loadOrders() {
-        this.loading = true;
-        this.cdr.markForCheck();
+        this.loading.set(true);
         try {
-            this.orders = await this.orderService.getMyOrders();
-        } catch {
+            this.orders.set(await this.orderService.getMyOrders());
+        }
+        catch {
             console.error('Error loading orders');
-        } finally {
-            this.loading = false;
-            this.cdr.markForCheck();
+        }
+        finally {
+            this.loading.set(false);
         }
     }
-
     getStatusLabel(status: string): string {
         return this.orderService.getStatusLabel(status);
     }
-
     getStatusClass(status: string): string {
         return this.orderService.getStatusClass(status);
     }
-
     formatDate(dateString: string): string {
         return new Date(dateString).toLocaleDateString('es-BO', {
             year: 'numeric',
@@ -59,27 +51,23 @@ export class MisPedidosComponent implements OnInit {
             minute: '2-digit'
         });
     }
-
     formatCurrency(amount: number): string {
-        return `Bs. ${amount.toFixed(2)}`;
+        return `${this.translate.instant('CART.BS')} ${amount.toFixed(2)}`;
     }
-
     async viewReceipt(orderId: number): Promise<void> {
         try {
             const blob = await this.orderService.getReceipt(orderId);
             const url = window.URL.createObjectURL(blob);
             window.open(url, '_blank');
-            // Clean up the object URL after a delay
             setTimeout(() => window.URL.revokeObjectURL(url), 1000);
-        } catch {
+        }
+        catch {
             this.toast.error(this.translate.instant('MY_ORDERS.RECEIPT_ERROR'));
         }
     }
-
     canViewReceipt(status: string): boolean {
         return status === 'PAID' || status === 'SHIPPED' || status === 'DELIVERED';
     }
-
     async cancelOrder(orderId: number): Promise<void> {
         const confirmed = await this.modalService.confirm({
             title: this.translate.instant('MY_ORDERS.CANCEL_TITLE'),
@@ -88,15 +76,14 @@ export class MisPedidosComponent implements OnInit {
             cancelText: this.translate.instant('COMMON.CANCEL'),
             type: 'danger'
         });
-
         if (!confirmed) {
             return;
         }
-
         try {
             await this.orderService.cancelOrder(orderId);
             await this.loadOrders();
-        } catch {
+        }
+        catch {
             console.error('Error canceling order');
         }
     }

@@ -10,14 +10,14 @@
 }
 
 .page-header {
-    margin-bottom: 32px;
+    margin-bottom: var(--space-7);
 }
 
 .page-header h1 {
     font-size: 2rem;
     font-weight: 800;
     color: var(--text-primary);
-    margin-bottom: 8px;
+    margin-bottom: var(--space-2);
 }
 
 .subtitle {
@@ -25,19 +25,18 @@
     font-size: 1rem;
 }
 
-/* Profile Card */
 .profile-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 16px;
+    border-radius: var(--radius-lg);
     overflow: hidden;
 }
 
 .profile-header {
     display: flex;
     align-items: center;
-    gap: 20px;
-    padding: 24px;
+    gap: var(--space-5);
+    padding: var(--space-6);
     background: linear-gradient(135deg, var(--brand-primary), var(--brand-hover));
     color: white;
 }
@@ -61,13 +60,13 @@
 .profile-name h2 {
     font-size: 1.5rem;
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: var(--space-2);
 }
 
 .role-badge {
     background: rgba(255, 255, 255, 0.2);
     padding: 4px 12px;
-    border-radius: 20px;
+    border-radius: var(--radius-xl);
     font-size: 0.8rem;
     font-weight: 600;
 }
@@ -76,9 +75,8 @@
     background: rgba(251, 191, 36, 0.3);
 }
 
-/* Profile Details */
 .profile-details {
-    padding: 24px;
+    padding: var(--space-6);
 }
 
 .detail-group {
@@ -96,7 +94,7 @@
     font-weight: 600;
     color: var(--text-muted);
     text-transform: uppercase;
-    margin-bottom: 8px;
+    margin-bottom: var(--space-2);
 }
 
 .detail-group p {
@@ -105,11 +103,10 @@
     font-weight: 500;
 }
 
-/* Notice */
 .profile-notice {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--space-3);
     padding: 16px 24px;
     background: var(--bg-main);
     border-top: 1px solid var(--border-color);
@@ -121,7 +118,6 @@
     flex-shrink: 0;
 }
 
-/* Error State */
 .error-state {
     text-align: center;
     padding: 60px;

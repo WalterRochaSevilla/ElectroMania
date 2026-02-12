@@ -1,12 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToastService } from '../../services/toast.service';
-
 @Component({
-  selector: 'app-toast',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'app-toast',
+    standalone: true,
+    imports: [CommonModule],
+    template: `
     <div class="toast-container">
       @for (toast of toastService.toasts(); track toast.id) {
         <div class="toast" [ngClass]="toast.type" (click)="remove(toast.id)" (keyup.enter)="remove(toast.id)" tabindex="0" role="alert">
@@ -29,7 +28,7 @@ import { ToastService } from '../../services/toast.service';
       }
     </div>
   `,
-  styles: [`
+    styles: [`
     .toast-container {
       position: fixed;
       bottom: 2rem;
@@ -38,7 +37,7 @@ import { ToastService } from '../../services/toast.service';
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
-      pointer-events: none; /* Allow clicks through to content behind container */
+      pointer-events: none; 
     }
 
     .toast {
@@ -71,8 +70,8 @@ import { ToastService } from '../../services/toast.service';
     }
     
     .toast-icon svg {
-      width: 20px;
-      height: 20px;
+      width: var(--space-5);
+      height: var(--space-5);
     }
 
     .toast-message {
@@ -87,10 +86,10 @@ import { ToastService } from '../../services/toast.service';
       border: none;
       color: var(--text-secondary);
       cursor: pointer;
-      padding: 4px;
+      padding: var(--space-1);
       display: flex;
-      border-radius: 4px;
-      transition: all 0.2s;
+      border-radius: var(--radius-xs);
+      transition: var(--transition-fast);
     }
 
     .toast-close:hover {
@@ -99,11 +98,11 @@ import { ToastService } from '../../services/toast.service';
     }
 
     .toast-close svg {
-      width: 16px;
-      height: 16px;
+      width: var(--space-4);
+      height: var(--space-4);
     }
 
-    /* Types */
+    
     .toast.success { border-left: 4px solid var(--color-success); }
     .toast.success .toast-icon { color: var(--color-success); }
 
@@ -118,9 +117,8 @@ import { ToastService } from '../../services/toast.service';
   `]
 })
 export class ToastComponent {
-  toastService = inject(ToastService);
-
-  remove(id: number) {
-    this.toastService.remove(id);
-  }
+    toastService = inject(ToastService);
+    remove(id: number) {
+        this.toastService.remove(id);
+    }
 }

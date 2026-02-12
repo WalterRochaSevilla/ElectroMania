@@ -1,13 +1,10 @@
 <div class="page-fade">
-  <!-- HERO SECTION -->
   <section class="hero-industrial" #heroSection>
     <div class="hero-content">
       <h1 class="titulo-principal">{{ 'WELCOME.HERO_TITLE' | translate }}</h1>
       <div class="sub-linea"></div>
       <p class="hero-subtitle">{{ 'WELCOME.HERO_SUBTITLE' | translate }}</p>
-
       <button class="btn-explorar" (click)="irATienda()">
-        <!-- Microchip SVG -->
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           stroke-linecap="round" stroke-linejoin="round">
           <path d="M18 12h2"></path>
@@ -24,18 +21,13 @@
       </button>
     </div>
   </section>
-
-  <!-- CONTENIDO PRINCIPAL -->
   <div class="container">
-
-    <!-- SECCIÓN OFERTAS -->
-    @if (productosOferta.length > 0) {
+    @if (productosOferta().length > 0) {
     <div class="flag-oferta-wrapper">
       <div class="flag-diseno" (click)="toggleOfertas()" (keyup.enter)="toggleOfertas()" tabindex="0"
-        [class.active]="ofertasAbiertas" [title]="(ofertasAbiertas ? 'WELCOME.HIDE_OFFERS' : 'WELCOME.SHOW_OFFERS') | translate">
+        [class.active]="ofertasAbiertas()" [title]="(ofertasAbiertas() ? 'WELCOME.HIDE_OFFERS' : 'WELCOME.SHOW_OFFERS') | translate">
         <span class="punto-pulso"></span>
         <span class="flag-texto">
-          <!-- Tag SVG -->
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round"
             style="display:inline-block; vertical-align:middle; margin-right:6px;">
@@ -45,7 +37,7 @@
           {{ 'WELCOME.OFFERS' | translate }}
         </span>
         <span class="flecha">
-          @if (ofertasAbiertas) {
+          @if (ofertasAbiertas()) {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <polyline points="18 15 12 9 6 15"></polyline>
             </svg>
@@ -56,11 +48,9 @@
           }
         </span>
       </div>
-
-      <!-- CARRUSEL OFERTAS -->
-      <div class="carrusel-oferta" [class.mostrar]="ofertasAbiertas">
+      <div class="carrusel-oferta" [class.mostrar]="ofertasAbiertas()">
         <div class="grid-productos fade-edges" #ofertasList appDraggableScroll>
-          @for (producto of productosOferta; track producto.product_id) {
+          @for (producto of productosOferta(); track producto.product_id) {
             <app-product-card [product]="producto" [isOffer]="true"
               (cardClick)="verDetalles(producto)" (addToCart)="verDetalles(producto)" class="tarjeta-producto-wrapper">
             </app-product-card>
@@ -69,9 +59,7 @@
       </div>
     </div>
     }
-
-    <!-- SECCIÓN DESTACADOS -->
-    @if (productosDestacados.length > 0) {
+    @if (productosDestacados().length > 0) {
     <div class="encabezado-seccion">
       <h2 class="titulo-tech">{{ 'WELCOME.FEATURED_TITLE' | translate }}</h2>
       <div class="linea-acento"></div>
@@ -79,11 +67,9 @@
         {{ 'WELCOME.FEATURED_SUBTITLE' | translate }}
       </p>
     </div>
-
-    <!-- CARRUSEL DESTACADOS -->
     <div class="contenedor-slider">
       <div class="wrapper-productos fade-edges" #destacadosList appDraggableScroll>
-        @for (producto of productosDestacados; track producto.product_id) {
+        @for (producto of productosDestacados(); track producto.product_id) {
           <app-product-card [product]="producto" [isFeatured]="true"
             (cardClick)="verDetalles(producto)" (addToCart)="verDetalles(producto)" class="tarjeta-producto-wrapper">
           </app-product-card>
@@ -91,6 +77,5 @@
       </div>
     </div>
     }
-
   </div>
 </div>

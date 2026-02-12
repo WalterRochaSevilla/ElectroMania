@@ -1,12 +1,11 @@
 import { Component, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ModalService } from '../../services/modal.service';
-
 @Component({
-  selector: 'app-confirmation-modal',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'app-confirmation-modal',
+    standalone: true,
+    imports: [CommonModule],
+    template: `
     @if (modalService.isOpen()) {
       <div class="modal-overlay" 
            (click)="cancel()" 
@@ -48,7 +47,7 @@ import { ModalService } from '../../services/modal.service';
       </div>
     }
   `,
-  styles: [`
+    styles: [`
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -95,7 +94,7 @@ import { ModalService } from '../../services/modal.service';
       margin: 0;
     }
 
-    /* Header Colors */
+    
     .modal-header.danger h3 { color: var(--color-danger); }
     .modal-header.warning h3 { color: var(--color-warning); }
     .modal-header.info h3 { color: var(--brand-primary, #0ea5e9); }
@@ -109,7 +108,7 @@ import { ModalService } from '../../services/modal.service';
       align-items: center;
       justify-content: center;
     }
-    .close-btn svg { width: 20px; height: 20px; }
+    .close-btn svg { width: var(--space-5); height: var(--space-5); }
 
     :host-context([data-theme='light']) .close-btn {
       color: #64748b;
@@ -140,7 +139,7 @@ import { ModalService } from '../../services/modal.service';
       font-weight: 500;
       cursor: pointer;
       border: none;
-      transition: all 0.2s;
+      transition: var(--transition-fast);
     }
 
     .btn-cancel {
@@ -180,20 +179,17 @@ import { ModalService } from '../../services/modal.service';
   `]
 })
 export class ConfirmationModalComponent {
-  modalService = inject(ModalService);
-
-  confirm() {
-    this.modalService.close(true);
-  }
-
-  cancel() {
-    this.modalService.close(false);
-  }
-
-  @HostListener('document:keydown.escape')
-  onKeydownHandler() {
-    if (this.modalService.isOpen()) {
-      this.cancel();
+    modalService = inject(ModalService);
+    confirm() {
+        this.modalService.close(true);
     }
-  }
+    cancel() {
+        this.modalService.close(false);
+    }
+    @HostListener('document:keydown.escape')
+    onKeydownHandler() {
+        if (this.modalService.isOpen()) {
+            this.cancel();
+        }
+    }
 }

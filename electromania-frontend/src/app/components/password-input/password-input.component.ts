@@ -1,10 +1,9 @@
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-
 @Component({
-  selector: 'app-password-input',
-  standalone: true,
-  template: `
+    selector: 'app-password-input',
+    standalone: true,
+    template: `
     <div class="input-contenedor password-input">
       <input
         [type]="visible ? 'text' : 'password'"
@@ -29,7 +28,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
       </button>
     </div>
   `,
-  styles: [`
+    styles: [`
     .input-contenedor {
       position: relative;
       display: flex;
@@ -41,12 +40,12 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
       padding: 12px 80px 12px 16px;
       background: var(--bg-main);
       border: 1px solid var(--border-color);
-      border-radius: 8px;
+      border-radius: var(--radius-sm);
       color: var(--text-primary);
       font-family: inherit;
       font-size: 1rem;
       outline: none;
-      transition: all 0.2s;
+      transition: var(--transition-fast);
     }
 
     .input-contenedor input:focus {
@@ -63,7 +62,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
       border: none;
       color: var(--brand-primary);
       cursor: pointer;
-      padding: 4px;
+      padding: var(--space-1);
       transition: opacity 0.2s;
     }
 
@@ -71,45 +70,41 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
       opacity: 0.7;
     }
   `],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => PasswordInputComponent),
-      multi: true,
-    },
-  ],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => PasswordInputComponent),
+            multi: true,
+        },
+    ],
 })
 export class PasswordInputComponent implements ControlValueAccessor {
-  @Input() inputId = 'password';
-  @Input() placeholder = '········';
-  @Output() visibilityChange = new EventEmitter<boolean>();
-
-  visible = false;
-  value = '';
-
-  private onChange: (value: string) => void = () => undefined;
-  onTouched: () => void = () => undefined;
-
-  toggle() {
-    this.visible = !this.visible;
-    this.visibilityChange.emit(this.visible);
-  }
-
-  onInput(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.value = input.value;
-    this.onChange(this.value);
-  }
-
-  writeValue(value: string): void {
-    this.value = value || '';
-  }
-
-  registerOnChange(fn: (value: string) => void): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
+    @Input()
+    inputId = 'password';
+    @Input()
+    placeholder = '········';
+    @Output()
+    visibilityChange = new EventEmitter<boolean>();
+    visible = false;
+    value = '';
+    private onChange: (value: string) => void = () => undefined;
+    onTouched: () => void = () => undefined;
+    toggle() {
+        this.visible = !this.visible;
+        this.visibilityChange.emit(this.visible);
+    }
+    onInput(event: Event) {
+        const input = event.target as HTMLInputElement;
+        this.value = input.value;
+        this.onChange(this.value);
+    }
+    writeValue(value: string): void {
+        this.value = value || '';
+    }
+    registerOnChange(fn: (value: string) => void): void {
+        this.onChange = fn;
+    }
+    registerOnTouched(fn: () => void): void {
+        this.onTouched = fn;
+    }
 }

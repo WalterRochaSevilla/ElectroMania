@@ -1,130 +1,158 @@
 <div class="admin-layout dashboard-container">
   <app-admin-sidebar></app-admin-sidebar>
-
   <div class="main-content">
     <header class="top-bar">
       <h2>{{ 'ADMIN.DASHBOARD_TITLE' | translate }}</h2>
     </header>
 
-    <div class="dashboard-grid">
-
-      <!-- STATS CARDS -->
-      <div class="stats-row">
-        <div class="stat-card">
-          <div class="stat-icon revenue">
-            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    @if (loading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>{{ 'ADMIN.LOADING_DASHBOARD' | translate }}</p>
+      </div>
+    } @else if (connectionLost()) {
+      <div class="connection-lost-state">
+        <div class="connection-icon" aria-hidden="true">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4.93 4.93a10 10 0 0 1 14.14 0" />
+            <path d="M1.51 8.35a15 15 0 0 1 20.98 0" />
+            <path d="M8.46 11.88a5 5 0 0 1 7.08 0" />
+            <line x1="1" y1="1" x2="23" y2="23" />
+            <circle cx="12" cy="18" r="1" />
+          </svg>
+        </div>
+        <h3>{{ 'ADMIN.CONNECTION_LOST_TITLE' | translate }}</h3>
+        <p>{{ 'ADMIN.CONNECTION_LOST_DESC' | translate }}</p>
+        <button class="btn-refresh" (click)="refreshPage()">{{ 'ADMIN.REFRESH_PAGE' | translate }}</button>
+      </div>
+    } @else {
+      <div class="dashboard-grid">
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-icon revenue">
+              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div class="stat-info">
               <h3>{{ 'ADMIN.TOTAL_REVENUE' | translate }}</h3>
-              <div class="value">Bs. {{ stats.totalRevenue | number:'1.2-2' }}</div>
+              <div class="value">{{ 'CART.BS' | translate }} {{ stats().total_revenue | number:'1.2-2' }}</div>
               <div class="trend positive">
-                <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> {{ stats.revenueChange }}%</span> {{ 'ADMIN.VS_PREV_MONTH' | translate }}
+                <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> {{ stats().revenue_change }}%</span> {{ 'ADMIN.VS_PREV_MONTH' | translate }}
               </div>
             </div>
           </div>
 
-          <div class="stat-card">
-            <div class="stat-icon warning">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          @if (stats().low_stock_count > 0) {
+            <div class="stat-card">
+              <div class="stat-icon warning">
+                <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
               <div class="stat-info">
                 <h3>{{ 'ADMIN.CRITICAL_STOCK' | translate }}</h3>
-                <div class="value">{{ stats.lowStockCount }} {{ 'ADMIN.PRODUCTS' | translate }}</div>
+                <div class="value">{{ stats().low_stock_count }} {{ 'ADMIN.PRODUCTS' | translate }}</div>
                 <div class="trend negative">{{ 'ADMIN.REQUIRES_ATTENTION' | translate }}</div>
               </div>
             </div>
+          }
 
-            <div class="stat-card">
-              <div class="stat-icon system">
-                <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <div class="stat-info">
-                <h3>{{ 'ADMIN.SYSTEM' | translate }}</h3>
-                <div class="value text-success">{{ stats.systemStatus }}</div>
-                <div class="trend">{{ 'ADMIN.VERSION' | translate }} 1.0.0</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- CHARTS ROW -->
-          <div class="charts-row">
-            <!-- REVENUE CHART -->
-            <div class="chart-card large">
-              <div class="card-header">
-                <h3>{{ 'ADMIN.SALES_TREND' | translate }}</h3>
-                <select class="period-select" [(ngModel)]="periodoSeleccionado" (change)="updateRevenueChart()">
-                  <option value="7d">{{ 'ADMIN.DAYS_7' | translate }}</option>
-                  <option value="30d">{{ 'ADMIN.DAYS_30' | translate }}</option>
-                  <option value="90d">{{ 'ADMIN.DAYS_90' | translate }}</option>
-                </select>
-              </div>
-              <div class="chart-wrapper">
-                <canvas baseChart [data]="lineChartData" [options]="lineChartOptions" [type]="lineChartType">
-                </canvas>
-              </div>
-            </div>
-
-            <!-- TOP SELLING CHART -->
-            <div class="chart-card">
-              <div class="card-header">
-                <h3>{{ 'ADMIN.TOP_SELLING' | translate }}</h3>
-              </div>
-              <div class="chart-wrapper">
-                <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType">
-                </canvas>
-              </div>
-            </div>
-          </div>
-
-          <!-- LOW STOCK TABLE -->
-          <div class="table-section">
-            <h3 class="section-title">
-              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="alert-icon">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          <div class="stat-card">
+            <div class="stat-icon system">
+              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
-              <span>{{ 'ADMIN.STOCK_ALERT' | translate }}</span>
-            </h3>
-              <div class="table-responsive">
-                <table class="dashboard-table">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>{{ 'ADMIN.PRODUCT' | translate }}</th>
-                      <th>{{ 'ADMIN.CURRENT_STOCK' | translate }}</th>
-                      <th>{{ 'ADMIN.STATE' | translate }}</th>
-                      <th>{{ 'ADMIN.ACTION' | translate }}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @for (prod of lowStockProducts; track prod.id) {
-                      <tr>
-                        <td class="id-col">#{{ prod.id }}</td>
-                        <td>{{ prod.name }}</td>
-                        <td class="font-bold">{{ prod.stock }}</td>
-                        <td>
-                          <span class="status-badge" [class.critical]="prod.stock === 0" [class.warning]="prod.stock > 0">
-                            {{ prod.status }}
-                          </span>
-                        </td>
-                        <td>
-                          <button class="btn-action" (click)="reabastecer(prod.id)">{{ 'ADMIN.RESTOCK' | translate }}</button>
-                        </td>
-                      </tr>
-                    }
-                  </tbody>
-                </table>
-              </div>
             </div>
+            <div class="stat-info">
+              <h3>{{ 'ADMIN.SYSTEM' | translate }}</h3>
+              <div class="value text-success">{{ systemStatusLabel }}</div>
+              <div class="trend">{{ 'ADMIN.VERSION' | translate }} {{ appVersion }}</div>
+            </div>
+          </div>
+        </div>
 
+        <div class="charts-row">
+          <div class="chart-card large">
+            <div class="card-header">
+              <h3>{{ 'ADMIN.SALES_TREND' | translate }}</h3>
+              <select class="period-select" [(ngModel)]="periodoSeleccionado" (change)="updateRevenueChart()">
+                <option value="7d">{{ 'ADMIN.DAYS_7' | translate }}</option>
+                <option value="30d">{{ 'ADMIN.DAYS_30' | translate }}</option>
+                <option value="90d">{{ 'ADMIN.DAYS_90' | translate }}</option>
+              </select>
+            </div>
+            @if (hasRevenueData) {
+              <div class="chart-wrapper">
+                <canvas baseChart [data]="lineChartData" [options]="lineChartOptions" [type]="lineChartType"></canvas>
+              </div>
+            } @else {
+              <div class="empty-inline">{{ 'ADMIN.NO_SALES_DATA' | translate }}</div>
+            }
+          </div>
+
+          <div class="chart-card">
+            <div class="card-header">
+              <h3>{{ 'ADMIN.TOP_SELLING' | translate }}</h3>
+            </div>
+            @if (hasTopProductsData) {
+              <div class="chart-wrapper">
+                <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType"></canvas>
+              </div>
+            } @else {
+              <div class="empty-inline">{{ 'ADMIN.NO_TOP_PRODUCTS' | translate }}</div>
+            }
+          </div>
+        </div>
+
+        <div class="table-section">
+          <h3 class="section-title">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="alert-icon">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span>{{ 'ADMIN.STOCK_ALERT' | translate }}</span>
+          </h3>
+          <div class="table-responsive">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>{{ 'ADMIN.ID' | translate }}</th>
+                  <th>{{ 'ADMIN.PRODUCT' | translate }}</th>
+                  <th>{{ 'ADMIN.CURRENT_STOCK' | translate }}</th>
+                  <th>{{ 'ADMIN.STATE' | translate }}</th>
+                  <th>{{ 'ADMIN.ACTION' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @if (lowStockProducts().length === 0) {
+                  <tr>
+                    <td class="empty-row" colspan="5">{{ 'ADMIN.NO_LOW_STOCK' | translate }}</td>
+                  </tr>
+                } @else {
+                  @for (prod of lowStockProducts(); track prod.id) {
+                    <tr>
+                      <td class="id-col">#{{ prod.id }}</td>
+                      <td>{{ prod.name }}</td>
+                      <td class="font-bold">{{ prod.stock }}</td>
+                      <td>
+                        <span class="status-badge" [class.critical]="prod.stock === 0" [class.warning]="prod.stock > 0">
+                          {{ prod.status }}
+                        </span>
+                      </td>
+                      <td>
+                        <button class="btn-action" (click)="reabastecer(prod.id)">{{ 'ADMIN.RESTOCK' | translate }}</button>
+                      </td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
+    }
+  </div>
+</div>

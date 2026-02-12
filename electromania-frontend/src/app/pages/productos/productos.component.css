@@ -1,18 +1,14 @@
-/* =========================
-   CONTENEDOR GENERAL
-========================= */
+
 .pagina-catalogo-container {
   min-height: 100vh;
   background: var(--bg-main);
   color: var(--text-primary);
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-family-base);
   display: flex;
   flex-direction: column;
 }
 
-/* =========================
-   MAIN CONTENT
-========================= */
+
 .main-content {
   flex: 1;
   padding: 40px 24px;
@@ -33,17 +29,16 @@
 .page-title {
   font-size: 2rem;
   font-weight: 800;
-  margin-bottom: 32px;
+  margin-bottom: var(--space-7);
   color: var(--text-primary);
   letter-spacing: -0.5px;
 }
 
-/* LAYOUT 2 COLUMNS */
 .carrito-layout {
   display: grid;
   grid-template-columns: 1.8fr 1fr;
-  /* List takes more space, Summary less */
-  gap: 32px;
+
+  gap: var(--space-7);
   align-items: start;
 }
 
@@ -53,12 +48,10 @@
   margin: 0;
 }
 
-/* =========================
-   LEFT COLUMN: LIST
-========================= */
+
 .carrito-items-section {
   background: var(--bg-card);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border-color);
   overflow: hidden;
 }
@@ -66,8 +59,8 @@
 .fila-producto {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 0.2fr;
-  gap: 16px;
-  padding: 24px;
+  gap: var(--space-4);
+  padding: var(--space-6);
   border-bottom: 1px solid var(--border-color);
   align-items: center;
 }
@@ -80,7 +73,7 @@
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 4px;
+  margin-bottom: var(--space-1);
 }
 
 .descripcion {
@@ -88,14 +81,13 @@
   font-size: 0.9rem;
 }
 
-/* QUANTITY CONTROLS */
 .contador-cantidad {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   background: var(--slate-800);
-  padding: 4px;
-  border-radius: 8px;
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
   width: fit-content;
 }
 
@@ -114,7 +106,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: var(--transition-fast);
 }
 
 .btn-cantidad:hover:not(:disabled) {
@@ -139,11 +131,10 @@
 
 .cantidad {
   font-weight: 700;
-  min-width: 24px;
+  min-width: var(--space-6);
   text-align: center;
 }
 
-/* PRICES */
 .precio-col {
   display: flex;
   flex-direction: column;
@@ -162,15 +153,14 @@
   color: var(--text-muted);
 }
 
-/* ACTIONS */
 .btn-eliminar {
   background: transparent;
   border: none;
   color: var(--text-muted);
   cursor: pointer;
-  padding: 8px;
+  padding: var(--space-2);
   border-radius: 6px;
-  transition: all 0.2s;
+  transition: var(--transition-fast);
 }
 
 .btn-eliminar:hover {
@@ -178,7 +168,6 @@
   color: var(--color-danger);
 }
 
-/* EMPTY STATE */
 .carrito-vacio {
   text-align: center;
   padding: 80px 24px;
@@ -191,19 +180,19 @@
 
 .icon-empty {
   font-size: 48px;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
   opacity: 0.5;
 }
 
 .carrito-vacio h3 {
   font-size: 1.5rem;
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 
 .carrito-vacio p {
   color: var(--text-muted);
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
 }
 
 .btn-ver-catalogo {
@@ -211,47 +200,45 @@
   color: white;
   border: none;
   padding: 12px 24px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: var(--transition-fast);
 }
 
 .btn-ver-catalogo:hover {
   background: var(--brand-hover);
 }
 
-/* =========================
-   RIGHT COLUMN: SUMMARY
-========================= */
+
 .resumen-card {
   background: var(--bg-card);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border-color);
-  padding: 24px;
+  padding: var(--space-6);
   position: sticky;
   top: 100px;
-  /* Sticky scroll */
+
 }
 
 .resumen-card h3 {
   font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
   color: var(--text-primary);
 }
 
 .fila-resumen {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-3);
   color: var(--text-secondary);
   font-size: 0.95rem;
 }
 
 .fila-resumen.total {
-  margin-top: 16px;
-  padding-top: 16px;
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
   border-top: 1px dashed var(--border-color);
   font-weight: 800;
   color: var(--text-primary);
@@ -262,42 +249,41 @@
   color: var(--brand-primary);
 }
 
-/* BILLING FORM */
 .facturacion-info {
-  margin-top: 24px;
-  padding-top: 24px;
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
   border-top: 1px solid var(--border-color);
 }
 
 .checkbox-factura {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   cursor: pointer;
   font-weight: 600;
   font-size: 0.9rem;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 }
 
 .campos-factura {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
   animation: slideDown 0.3s ease;
 }
 
 .btn-pagar {
   width: 100%;
-  margin-top: 24px;
+  margin-top: var(--space-6);
   background: var(--brand-primary);
   color: white;
   border: none;
-  padding: 16px;
-  border-radius: 8px;
+  padding: var(--space-4);
+  border-radius: var(--radius-sm);
   font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: var(--transition-fast);
   box-shadow: var(--shadow-glow);
 }
 
@@ -328,17 +314,15 @@
   font-size: 1rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 }
 
-/* =========================
-   MODAL
-========================= */
+
 .modal-exito {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 20px;
-  padding: 40px;
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
   text-align: center;
   max-width: 400px;
   width: 90%;
@@ -386,14 +370,14 @@
 .modal-exito h2 {
   font-size: 1.5rem;
   font-weight: 800;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-3);
   color: var(--text-primary);
 }
 
 .mensaje-exito {
   color: var(--text-secondary);
   line-height: 1.5;
-  margin-bottom: 32px;
+  margin-bottom: var(--space-7);
 }
 
 .btn-volver-tienda {
@@ -403,9 +387,9 @@
   border: 1px solid var(--border-color);
   color: var(--text-primary);
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: var(--transition-fast);
 }
 
 .btn-volver-tienda:hover {
@@ -418,13 +402,11 @@
   color: var(--text-primary);
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
+
 @media (max-width: 900px) {
   .carrito-layout {
     grid-template-columns: 1fr;
-    /* Stack visually */
+
   }
 
   .resumen-card {
@@ -435,7 +417,7 @@
 @media (max-width: 600px) {
   .fila-producto {
     grid-template-columns: 1fr auto;
-    gap: 12px;
+    gap: var(--space-3);
   }
 
   .columna.producto-col {
@@ -459,6 +441,6 @@
 
   .fila-producto {
     position: relative;
-    /* For delete button positioning */
+
   }
 }

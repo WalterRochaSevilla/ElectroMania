@@ -1,5 +1,3 @@
-
-
 export default {
-    API_DOMAIN:''
-}
+    API_DOMAIN: ''
+};

@@ -1,6 +1,5 @@
 <div class="admin-layout">
   <app-admin-sidebar></app-admin-sidebar>
-
   <div class="main-content">
     <header class="top-bar">
       <h2>{{ 'ADMIN.USER_MANAGEMENT' | translate }}</h2>
@@ -15,9 +14,17 @@
         <input type="text" class="search-input" [placeholder]="'ADMIN.SEARCH_USER' | translate" [(ngModel)]="busqueda" (input)="filtrarUsuarios()" />
       </div>
     </header>
-
-    <!-- TABLA DE USUARIOS -->
     <div class="table-container">
+      @if (loading()) {
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>{{ 'ADMIN.LOADING_USERS' | translate }}</p>
+        </div>
+      } @else if (usuarios().length === 0) {
+        <div class="empty-state">{{ 'ADMIN.NO_USERS' | translate }}</div>
+      } @else if (usuariosFiltrados().length === 0) {
+        <div class="empty-state">{{ 'ADMIN.NO_USERS_MATCH' | translate }}</div>
+      } @else {
       <table class="admin-table">
         <thead>
           <tr>
@@ -29,7 +36,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (usuario of usuariosFiltrados; track usuario.id) {
+          @for (usuario of usuariosFiltrados(); track usuario.id) {
           <tr>
             <td>
               <div class="user-info-cell">
@@ -47,7 +54,7 @@
                 {{ usuario.rol }}
               </span>
             </td>
-            <td class="nit-cell">{{ usuario.nitCi }}</td>
+            <td class="nit-cell">{{ usuario.nit_ci }}</td>
             <td>
               <span class="status-badge" [class.active]="usuario.estado === 'Activo'" [class.inactive]="usuario.estado === 'Inactivo'">
                 <span class="status-dot"></span>
@@ -62,13 +69,13 @@
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                   </svg>
                 </button>
-                <button class="btn-icon delete" (click)="eliminarUsuario(usuario.id)" [title]="'COMMON.DELETE' | translate">
+                <button class="btn-icon delete" (click)="eliminarUsuario(usuario.id)" [title]="'ADMIN.DELETE_NOT_AVAILABLE' | translate" [disabled]="true">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="3 6 5 6 21 6"></polyline>
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                   </svg>
                 </button>
-                <button class="btn-icon toggle" (click)="toggleEstado(usuario)" [title]="usuario.estado === 'Activo' ? ('ADMIN.INACTIVE' | translate) : ('ADMIN.ACTIVE' | translate)">
+                <button class="btn-icon toggle" (click)="toggleEstado(usuario)" [title]="'ADMIN.STATE_CHANGE_NOT_AVAILABLE' | translate" [disabled]="true">
                   @if (usuario.estado === 'Activo') {
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <circle cx="12" cy="12" r="10"></circle>
@@ -81,7 +88,7 @@
                     </svg>
                   }
                 </button>
-                <button class="btn-icon reset" (click)="resetPassword(usuario)" [title]="'ADMIN.RESET_PASSWORD' | translate">
+                <button class="btn-icon reset" (click)="resetPassword(usuario)" [title]="'ADMIN.RESET_NOT_AVAILABLE' | translate" [disabled]="true">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
                   </svg>
@@ -92,9 +99,9 @@
           }
         </tbody>
       </table>
+      }
     </div>
-
-    <!-- FILTROS Y ESTADÍSTICAS -->
+    @if (!loading()) {
     <div class="table-footer">
       <div class="filter-buttons">
         <button class="btn-filter" [class.active]="filtroRol === 'all'" (click)="aplicarFiltroRol('all')">
@@ -110,20 +117,18 @@
           {{ 'ADMIN.FILTER_CLIENT' | translate }}
         </button>
       </div>
-
       <div class="summary">
-        <span>{{ 'ADMIN.TOTAL' | translate }}: <strong>{{ usuarios.length }}</strong></span>
+        <span>{{ 'ADMIN.TOTAL' | translate }}: <strong>{{ usuarios().length }}</strong></span>
         <span>{{ 'ADMIN.ACTIVES' | translate }}: <strong class="text-success">{{ contarActivos() }}</strong></span>
         <span>{{ 'ADMIN.INACTIVES' | translate }}: <strong class="text-danger">{{ contarInactivos() }}</strong></span>
       </div>
     </div>
+    }
   </div>
 </div>
-
-<!-- USER FORM MODAL -->
 <app-user-form-modal
-  [isVisible]="isModalOpen"
-  [user]="selectedUser"
+  [isVisible]="isModalOpen()"
+  [user]="selectedUser()"
   (saveUser)="handleModalSave($event)"
   (cancelModal)="handleModalCancel()">
 </app-user-form-modal>

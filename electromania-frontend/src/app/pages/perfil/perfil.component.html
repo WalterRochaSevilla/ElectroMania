@@ -4,43 +4,39 @@
             <h1>{{ 'PROFILE.TITLE' | translate }}</h1>
             <p class="subtitle">{{ 'PROFILE.SUBTITLE' | translate }}</p>
         </header>
-
-        @if (loading) {
+        @if (loading()) {
         <div class="loading-state">
             <div class="spinner"></div>
             <p>{{ 'PROFILE.LOADING' | translate }}</p>
         </div>
-        } @else if (user) {
+        } @else {
+        @if (user(); as profileUser) {
         <div class="profile-card">
             <div class="profile-header">
                 <div class="avatar">
-                    <span class="avatar-initials">{{ user.name.charAt(0).toUpperCase() }}</span>
+                    <span class="avatar-initials">{{ profileUser.name.charAt(0).toUpperCase() }}</span>
                 </div>
                 <div class="profile-name">
-                    <h2>{{ user.name }}</h2>
-                    <span class="role-badge" [class.admin]="isAdminRole(user.role)">
-                        {{ getRoleLabel(user.role) }}
+                    <h2>{{ profileUser.name }}</h2>
+                    <span class="role-badge" [class.admin]="isAdminRole(profileUser.role)">
+                        {{ getRoleLabel(profileUser.role) }}
                     </span>
                 </div>
             </div>
-
             <div class="profile-details">
                 <div class="detail-group">
                     <span class="detail-label">{{ 'PROFILE.EMAIL' | translate }}</span>
-                    <p>{{ user.email }}</p>
+                    <p>{{ profileUser.email }}</p>
                 </div>
-
                 <div class="detail-group">
                     <span class="detail-label">{{ 'PROFILE.NIT_CI' | translate }}</span>
-                    <p>{{ user.nit_ci || ('PROFILE.NOT_SPECIFIED' | translate) }}</p>
+                    <p>{{ profileUser.nit_ci || ('PROFILE.NOT_SPECIFIED' | translate) }}</p>
                 </div>
-
                 <div class="detail-group">
                     <span class="detail-label">{{ 'PROFILE.SOCIAL_REASON' | translate }}</span>
-                    <p>{{ user.social_reason || ('PROFILE.NOT_SPECIFIED' | translate) }}</p>
+                    <p>{{ profileUser.social_reason || ('PROFILE.NOT_SPECIFIED' | translate) }}</p>
                 </div>
             </div>
-
             <div class="profile-notice">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="10" />
@@ -54,6 +50,7 @@
         <div class="error-state">
             <p>{{ 'PROFILE.LOAD_ERROR' | translate }}</p>
         </div>
+        }
         }
     </div>
 </main>

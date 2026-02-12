@@ -1,16 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
-
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-
 @Component({
-  selector: 'app-admin-sidebar',
-  standalone: true,
-  imports: [RouterLink, RouterLinkActive],
-  template: `
+    selector: 'app-admin-sidebar',
+    standalone: true,
+    imports: [RouterLink, RouterLinkActive],
+    template: `
     <div class="sidebar">
       <nav class="sidebar-nav">
-        <!-- Dashboard: All Roles -->
+        
         <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
           <span class="icon">
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -20,7 +18,7 @@ import { AuthService } from '../../services/auth.service';
           Dashboard
         </a>
     
-        <!-- Products: Admin Only -->
+        
         @if (isAdmin) {
           <a routerLink="/productos-admin" routerLinkActive="active" class="nav-item">
             <span class="icon">
@@ -32,7 +30,7 @@ import { AuthService } from '../../services/auth.service';
           </a>
         }
     
-        <!-- Users: Admin Only -->
+        
         @if (isAdmin) {
           <a routerLink="/usuarios-admin" routerLinkActive="active" class="nav-item">
             <span class="icon">
@@ -44,7 +42,7 @@ import { AuthService } from '../../services/auth.service';
           </a>
         }
     
-        <!-- Orders: Admin Only -->
+        
         @if (isAdmin) {
           <a routerLink="/pedidos-admin" routerLinkActive="active" class="nav-item">
             <span class="icon">
@@ -59,7 +57,7 @@ import { AuthService } from '../../services/auth.service';
       </nav>
     </div>
     `,
-  styles: [`
+    styles: [`
     .sidebar {
       width: 220px;
       background: var(--bg-card);
@@ -73,20 +71,20 @@ import { AuthService } from '../../services/auth.service';
     .sidebar-nav {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: var(--space-2);
       flex: 1;
     }
 
     .nav-item {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: var(--space-3);
       padding: 12px 16px;
       color: var(--text-secondary);
       text-decoration: none;
-      border-radius: 8px;
+      border-radius: var(--radius-sm);
       font-weight: 500;
-      transition: all 0.2s;
+      transition: var(--transition-fast);
       cursor: pointer;
     }
 
@@ -95,14 +93,13 @@ import { AuthService } from '../../services/auth.service';
       color: var(--brand-primary);
     }
 
-    /* Light mode override for hover background visibility if needed, 
-       but standard rgba should work on light too. */
+    
     :host-context([data-theme='light']) .nav-item:hover,
     :host-context([data-theme='light']) .nav-item.active {
        background: var(--slate-200);
     }
 
-    /* Mobile: hide sidebar since navigation is in hamburger menu */
+    
     @media (max-width: 768px) {
       .sidebar {
         display: none;
@@ -111,15 +108,12 @@ import { AuthService } from '../../services/auth.service';
   `]
 })
 export class AdminSidebarComponent implements OnInit {
-  private authService = inject(AuthService);
-
-  userRole = '';
-
-  ngOnInit() {
-    this.userRole = this.authService.getRole();
-  }
-
-  get isAdmin(): boolean {
-    return this.userRole === 'admin';
-  }
+    private authService = inject(AuthService);
+    userRole = '';
+    ngOnInit() {
+        this.userRole = this.authService.getRole();
+    }
+    get isAdmin(): boolean {
+        return this.userRole === 'admin';
+    }
 }

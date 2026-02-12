@@ -1,17 +1,15 @@
-/* ===== SHARED LAYOUT PATTERNS ===== */
 
-/* Admin Layout */
 .admin-layout {
   display: flex;
   min-height: 100vh;
   background: var(--bg-main);
   color: var(--text-primary);
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-family-base);
 }
 
 .admin-layout .main-content {
   flex: 1;
-  padding: 32px;
+  padding: var(--space-7);
   overflow-y: auto;
 }
 
@@ -19,7 +17,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 32px;
+  margin-bottom: var(--space-7);
 }
 
 .admin-layout .top-bar h2 {
@@ -31,7 +29,7 @@
 
 .admin-layout .header-actions {
   display: flex;
-  gap: 16px;
+  gap: var(--space-4);
   align-items: center;
 }
 
@@ -40,7 +38,7 @@
   border: 1px solid var(--border-color);
   color: var(--text-primary);
   padding: 10px 16px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   width: 250px;
   font-size: 0.9rem;
 }
@@ -52,8 +50,8 @@
 .admin-layout .theme-toggle {
   background: rgba(255, 255, 255, 0.05);
   border: none;
-  width: 40px;
-  height: 40px;
+  width: var(--space-8);
+  height: var(--space-8);
   border-radius: 50%;
   cursor: pointer;
   font-size: 1.2rem;
@@ -68,19 +66,19 @@
 .admin-layout .actions-bar {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
 }
 
 @media (max-width: 768px) {
   .admin-layout .main-content {
-    padding: 16px;
+    padding: var(--space-4);
   }
 
   .admin-layout .top-bar {
     flex-direction: column;
     align-items: flex-start;
-    gap: 16px;
+    gap: var(--space-4);
   }
 
   .admin-layout .header-actions {
@@ -93,22 +91,20 @@
   }
 }
 
-/* Page container */
 .page-container {
   min-height: 100vh;
   background: var(--bg-main);
   color: var(--text-primary);
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-family-base);
   display: flex;
   flex-direction: column;
 }
 
-/* Card styles */
 .card {
   background: var(--bg-card);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
+  transition: var(--transition-base);
 }
 
 .card:hover {
@@ -117,7 +113,6 @@
   box-shadow: var(--shadow-lg);
 }
 
-/* ===== SHARED FORM STYLES ===== */
 .form-group label {
   display: block;
   font-size: 0.8rem;
@@ -133,12 +128,12 @@
   padding: 10px 12px;
   background: var(--bg-main);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   color: var(--text-primary);
   font-family: inherit;
   font-size: 0.95rem;
   outline: none;
-  transition: all 0.2s;
+  transition: var(--transition-fast);
 }
 
 .form-group input:focus,
@@ -147,18 +142,17 @@
   box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
 }
 
-/* Large form variant (for auth pages) */
 .form-group-lg label {
   display: block;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  margin-bottom: 8px;
+  font-family: var(--font-family-base);
+  margin-bottom: var(--space-2);
   color: var(--text-secondary);
   font-weight: 600;
   font-size: 0.9rem;
 }
 
 .form-group-lg {
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
 }
 
 .form-group-lg input {
@@ -166,11 +160,11 @@
   padding: 12px 16px;
   background: var(--bg-main);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   color: var(--text-primary);
   font-family: inherit;
   font-size: 1rem;
-  transition: all 0.2s ease;
+  transition: var(--transition-fast);
 }
 
 .form-group-lg input:focus {
@@ -183,20 +177,19 @@
   color: var(--text-muted);
 }
 
-/* ===== SHARED BUTTON STYLES ===== */
 .btn {
   padding: 10px 20px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: var(--transition-fast);
   border: none;
   font-family: inherit;
   font-size: 0.9rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .btn-primary {
@@ -242,8 +235,18 @@
   background: var(--slate-800);
 }
 
-:host-context([data-theme='light']) .btn-secondary:hover {
+[data-theme='light'] .btn-secondary {
+  background: var(--bg-card);
+  color: var(--text-secondary);
+}
+
+[data-theme='light'] .btn-secondary:hover {
   background: var(--slate-200);
+  color: var(--text-primary);
+}
+
+[data-theme='light'] .btn-secondary:active {
+  background: var(--slate-300);
 }
 
 .btn-success {
@@ -266,10 +269,9 @@
   color: white;
 }
 
-/* ===== SHARED TABLE STYLES ===== */
 .table-container {
   background: var(--bg-card);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border-color);
   overflow: hidden;
 }
@@ -303,7 +305,7 @@
   background-color: var(--bg-main);
 }
 
-:host-context([data-theme='light']) .table tbody tr:hover {
+[data-theme='light'] .table tbody tr:hover {
   background-color: rgba(0, 0, 0, 0.02);
 }
 
@@ -312,11 +314,10 @@
   color: var(--text-primary);
 }
 
-/* ===== SHARED BADGE STYLES ===== */
 .badge {
   display: inline-block;
   padding: 6px 12px;
-  border-radius: 20px;
+  border-radius: var(--radius-xl);
   font-size: 13px;
   font-weight: 600;
   text-align: center;
@@ -347,19 +348,18 @@
   color: white;
 }
 
-/* ===== ICON BUTTONS ===== */
 .btn-icon {
   width: 36px;
   height: 36px;
   padding: 0;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   background: transparent;
   border: none;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: var(--transition-fast);
   color: var(--text-secondary);
 }
 
@@ -368,7 +368,7 @@
   color: var(--text-primary);
 }
 
-:host-context([data-theme='light']) .btn-icon:hover {
+[data-theme='light'] .btn-icon:hover {
   background: var(--slate-200);
 }
 
@@ -402,7 +402,6 @@
   color: white;
 }
 
-/* ===== SHARED SEARCH BAR ===== */
 .search-bar {
   position: relative;
   display: flex;
@@ -414,7 +413,7 @@
   border: 1px solid var(--border-color);
   color: var(--text-primary);
   padding: 10px 16px 10px 40px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   width: 250px;
 }
@@ -431,7 +430,6 @@
   color: var(--text-muted);
 }
 
-/* ===== SHARED MODAL STYLES ===== */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -446,8 +444,8 @@
 .modal-content {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 20px;
-  padding: 40px;
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
   max-width: 500px;
   width: 90%;
   box-shadow: var(--shadow-xl);
@@ -465,7 +463,6 @@
   }
 }
 
-/* ===== SHARED ANIMATIONS ===== */
 @keyframes slideDown {
   from {
     opacity: 0;
@@ -485,7 +482,6 @@
   to { transform: rotate(360deg); }
 }
 
-/* Loading States */
 .loading-state {
   display: flex;
   flex-direction: column;
@@ -496,33 +492,32 @@
 }
 
 .spinner {
-  width: 40px;
-  height: 40px;
+  width: var(--space-8);
+  height: var(--space-8);
   border: 3px solid var(--border-color);
   border-top-color: var(--brand-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 }
 
 .spinner-sm {
-  width: 24px;
-  height: 24px;
+  width: var(--space-6);
+  height: var(--space-6);
   border-width: 2px;
 }
 
-/* ===== QUANTITY CONTROLS ===== */
 .quantity-controls {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   background: var(--slate-800);
-  padding: 4px;
-  border-radius: 8px;
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
   width: fit-content;
 }
 
-:host-context([data-theme='light']) .quantity-controls {
+[data-theme='light'] .quantity-controls {
   background: var(--slate-100);
 }
 
@@ -537,7 +532,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: var(--transition-fast);
 }
 
 .quantity-btn:hover {
@@ -547,6 +542,6 @@
 
 .quantity-value {
   font-weight: 700;
-  min-width: 24px;
+  min-width: var(--space-6);
   text-align: center;
 }

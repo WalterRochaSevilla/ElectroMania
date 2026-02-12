@@ -1,9 +1,8 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { UserService } from '../../services/user.service';
 import { isAdminRole } from '../../constants/roles';
-
 interface UserProfile {
     uuid: string;
     name: string;
@@ -12,7 +11,6 @@ interface UserProfile {
     social_reason: string;
     role: string;
 }
-
 @Component({
     selector: 'app-perfil',
     standalone: true,
@@ -23,29 +21,24 @@ interface UserProfile {
 export class PerfilComponent implements OnInit {
     private userService = inject(UserService);
     private translate = inject(TranslateService);
-    private cdr = inject(ChangeDetectorRef);
-
-    user: UserProfile | null = null;
-    loading = true;
+    user = signal<UserProfile | null>(null);
+    loading = signal(true);
     isAdminRole = isAdminRole;
-
     async ngOnInit() {
         await this.loadProfile();
     }
-
     async loadProfile() {
-        this.loading = true;
-        this.cdr.markForCheck();
+        this.loading.set(true);
         try {
-            this.user = await this.userService.getCurrentUser();
-        } catch {
+            this.user.set(await this.userService.getCurrentUser());
+        }
+        catch {
             console.error('Error loading profile');
-        } finally {
-            this.loading = false;
-            this.cdr.markForCheck();
+        }
+        finally {
+            this.loading.set(false);
         }
     }
-
     getRoleLabel(role: string): string {
         return isAdminRole(role)
             ? this.translate.instant('PROFILE.ADMIN')

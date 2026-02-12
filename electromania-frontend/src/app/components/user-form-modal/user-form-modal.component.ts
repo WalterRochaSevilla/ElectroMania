@@ -4,23 +4,21 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { PasswordInputComponent } from '../password-input/password-input.component';
 import { isValidEmail, isValidNIT, isValidPassword, formatNIT } from '../../utils/validators';
-
 export interface UserFormData {
-  uuid?: string;
-  nombre: string;
-  email: string;
-  password: string;
-  phone: string;
-  nitCi: string;
-  socialReason: string;
-  rol: 'Admin' | 'Cliente';
+    uuid?: string;
+    nombre: string;
+    email: string;
+    password: string;
+    phone: string;
+    nit_ci: string;
+    social_reason: string;
+    rol: 'Admin' | 'Cliente';
 }
-
 @Component({
-  selector: 'app-user-form-modal',
-  standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, PasswordInputComponent],
-  template: `
+    selector: 'app-user-form-modal',
+    standalone: true,
+    imports: [CommonModule, FormsModule, TranslateModule, PasswordInputComponent],
+    template: `
     @if (isVisible) {
       <div class="modal-overlay" (click)="onHandleCancel()" (keyup.escape)="onHandleCancel()" tabindex="0" role="button" [attr.aria-label]="'COMMON.CLOSE' | translate">
         <div class="modal-content" (click)="$event.stopPropagation()" (keyup)="null" role="dialog" aria-modal="true" tabindex="-1">
@@ -69,8 +67,8 @@ export interface UserFormData {
               <div class="form-row">
                 <div class="form-group">
                   <label for="nitCi">{{ 'USER_MODAL.NIT_CI' | translate }}</label>
-                  <input type="text" id="nitCi" name="nitCi" [ngModel]="formData.nitCi" (ngModelChange)="onNitChange($event)" required [placeholder]="'USER_MODAL.NIT_CI_PLACEHOLDER' | translate">
-                  @if (formData.nitCi && !isNitValid) {
+                  <input type="text" id="nitCi" name="nitCi" [ngModel]="formData.nit_ci" (ngModelChange)="onNitChange($event)" required [placeholder]="'USER_MODAL.NIT_CI_PLACEHOLDER' | translate">
+                  @if (formData.nit_ci && !isNitValid) {
                     <span class="error-text">{{ 'USER_MODAL.NIT_INVALID' | translate }}</span>
                   }
                 </div>
@@ -86,7 +84,7 @@ export interface UserFormData {
 
               <div class="form-group">
                 <label for="socialReason">{{ 'USER_MODAL.SOCIAL_REASON' | translate }}</label>
-                <input type="text" id="socialReason" name="socialReason" [(ngModel)]="formData.socialReason" [placeholder]="'USER_MODAL.SOCIAL_REASON_PLACEHOLDER' | translate">
+                <input type="text" id="socialReason" name="socialReason" [(ngModel)]="formData.social_reason" [placeholder]="'USER_MODAL.SOCIAL_REASON_PLACEHOLDER' | translate">
               </div>
 
             </div>
@@ -103,7 +101,7 @@ export interface UserFormData {
       </div>
     }
   `,
-  styles: [`
+    styles: [`
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -164,7 +162,7 @@ export interface UserFormData {
       cursor: pointer;
       display: flex;
     }
-    .close-btn svg { width: 20px; height: 20px; }
+    .close-btn svg { width: var(--space-5); height: var(--space-5); }
 
     .modal-body {
       padding: 1.5rem;
@@ -237,7 +235,7 @@ export interface UserFormData {
       font-weight: 500;
       cursor: pointer;
       border: none;
-      transition: all 0.2s;
+      transition: var(--transition-fast);
     }
 
     .btn-cancel {
@@ -276,70 +274,63 @@ export interface UserFormData {
   `]
 })
 export class UserFormModalComponent implements OnChanges {
-  @Input() isVisible = false;
-  @Input() user: UserFormData | null = null;
-  @Output() saveUser = new EventEmitter<UserFormData>();
-  @Output() cancelModal = new EventEmitter<void>();
-
-  formData: UserFormData = this.getEmptyForm();
-
-  get isEmailValid(): boolean {
-    return isValidEmail(this.formData.email);
-  }
-
-  get isNitValid(): boolean {
-    return isValidNIT(this.formData.nitCi);
-  }
-
-  get isPasswordValid(): boolean {
-    return this.user !== null || isValidPassword(this.formData.password);
-  }
-
-  get isPhoneValid(): boolean {
-    return this.formData.phone.trim().length >= 7;
-  }
-
-  get isFormValid(): boolean {
-    const baseValid = this.formData.nombre.trim() !== '' &&
-      this.isEmailValid &&
-      this.isPhoneValid &&
-      this.isNitValid;
-
-    if (this.user) {
-      return baseValid;
+    @Input()
+    isVisible = false;
+    @Input()
+    user: UserFormData | null = null;
+    @Output()
+    saveUser = new EventEmitter<UserFormData>();
+    @Output()
+    cancelModal = new EventEmitter<void>();
+    formData: UserFormData = this.getEmptyForm();
+    get isEmailValid(): boolean {
+        return isValidEmail(this.formData.email);
     }
-    return baseValid && this.isPasswordValid;
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['user'] && this.user) {
-      this.formData = { ...this.user };
-    } else if (changes['isVisible'] && this.isVisible && !this.user) {
-      this.formData = this.getEmptyForm();
+    get isNitValid(): boolean {
+        return isValidNIT(this.formData.nit_ci);
     }
-  }
-
-  getEmptyForm(): UserFormData {
-    return {
-      nombre: '',
-      email: '',
-      password: '',
-      phone: '',
-      nitCi: '',
-      socialReason: '',
-      rol: 'Cliente'
-    };
-  }
-
-  onNitChange(value: string) {
-    this.formData.nitCi = formatNIT(value);
-  }
-
-  onSubmit() {
-    this.saveUser.emit(this.formData);
-  }
-
-  onHandleCancel() {
-    this.cancelModal.emit();
-  }
+    get isPasswordValid(): boolean {
+        return this.user !== null || isValidPassword(this.formData.password);
+    }
+    get isPhoneValid(): boolean {
+        return this.formData.phone.trim().length >= 7;
+    }
+    get isFormValid(): boolean {
+        const baseValid = this.formData.nombre.trim() !== '' &&
+            this.isEmailValid &&
+            this.isPhoneValid &&
+            this.isNitValid;
+        if (this.user) {
+            return baseValid;
+        }
+        return baseValid && this.isPasswordValid;
+    }
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['user'] && this.user) {
+            this.formData = { ...this.user };
+        }
+        else if (changes['isVisible'] && this.isVisible && !this.user) {
+            this.formData = this.getEmptyForm();
+        }
+    }
+    getEmptyForm(): UserFormData {
+        return {
+            nombre: '',
+            email: '',
+            password: '',
+            phone: '',
+            nit_ci: '',
+            social_reason: '',
+            rol: 'Cliente'
+        };
+    }
+    onNitChange(value: string) {
+        this.formData.nit_ci = formatNIT(value);
+    }
+    onSubmit() {
+        this.saveUser.emit(this.formData);
+    }
+    onHandleCancel() {
+        this.cancelModal.emit();
+    }
 }
