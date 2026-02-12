@@ -23,10 +23,11 @@ export default () => ({
         expiresIn: process.env.JWT_EXPIRATION
     },
     webSiteDomain: {
-        url: process.env.WEBSITE_DOMAIN
+        url: process.env.WEBSITE_DOMAIN,
+        port: process.env.WEBSITE_PORT || 80
     },
     apiDomain: {
-        url: process.env.API_DOMAIN
+        url: process.env.API_DOMAIN || 'http://localhost:3000',
     },
     cloudinary: {
         cloud_name: process.env.CLOUDINARY_CLOUD_NAME || '',
@@ -43,5 +44,15 @@ export default () => ({
             receipts: process.env.R2_PRIVATE_BUCKET_NAME || ''
         },
         publicUrl: process.env.R2_PUBLIC_ENDPOINT || ''
+    },
+    mail:{
+        host: process.env.MAIL_HOST || '',
+        port: process.env.MAIL_PORT || '',
+        user: process.env.MAIL_USER || '',
+        password: process.env.MAIL_PASSWORD || '',
+        from: process.env.MAIL_FROM || ''
+    },
+    gotenberg:{
+        url: process.env.GOTENBERG_URL || "http://localhost:3001"
     }
 })

@@ -1,11 +1,12 @@
-import { extname } from 'path';
+import { extname, join } from 'path';
 import { BadRequestException } from '@nestjs/common';
 import { diskStorage } from 'multer';
 
 export const productMulterConfig = {
   storage: diskStorage({
     destination: (req, file, cb) => {
-      cb(null, './uploads/tmp');
+      // Usar ruta absoluta desde el directorio raíz del proyecto
+      cb(null, join(process.cwd(), 'uploads', 'tmp'));
     },
     filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);

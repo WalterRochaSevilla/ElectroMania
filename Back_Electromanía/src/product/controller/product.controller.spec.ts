@@ -6,6 +6,7 @@ import { CreateProductRequestModel } from '../model/CreateProductRequest.model';
 import { RegisterProductImageRequestModel } from '../model/RegisterProductImageRequest.model';
 import { ProductModel, ProductWithCategoriesAndImagesModel } from '../model/Product.model';
 import { JwtService } from '@nestjs/jwt';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 // Mock más completo del AuthGuard
 class AuthGuardMock {
@@ -69,6 +70,14 @@ describe('ProductController (unit)', () => {
             verify: jest.fn().mockReturnValue({ user: { uuid: 'uuid' } }),
           },
         },
+        {
+          provide: CACHE_MANAGER,
+          useValue: {
+            get: jest.fn(),
+            set: jest.fn(),
+            del: jest.fn(),
+          },
+        }
       ],
     })
       .overrideGuard(AuthGuardMock) // Sobrescribir los guards

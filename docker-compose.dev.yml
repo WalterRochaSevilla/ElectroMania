@@ -35,7 +35,7 @@ services:
       - "4200:4200"
 
   postgres:
-    image: postgres:16
+    image: postgres:16-alpine
     container_name: postgres-db
     env_file: .env
     environment:
@@ -51,7 +51,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-
 volumes:
   pg_data:
   uploads_data:

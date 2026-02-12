@@ -4,6 +4,9 @@ import { ImageStorage } from '../../common/utils/storage/image-storage.interface
 import { CreateProductRequestModel } from "../model/CreateProductRequest.model";
 import { PrismaService } from '../../prisma/service/prisma.service';
 import { RegisterProductImageRequestModel } from "../model/RegisterProductImageRequest.model";
+import { CategoryService } from "../../category/service/category.service";
+import { RegisterProductCategoryDto } from '../../category/dto/register-product-category.dto';
+
 
 
 @Injectable()
@@ -25,7 +28,14 @@ export class RegisterProductUseCase{
         }
         await this.productService.registerProductImage(imageRequest,tx)
       }
-      return product
+      if(request.category_id){
+        const categoryRequest: RegisterProductCategoryDto = {
+          productId: product.product_id,
+          categoryId: request.category_id
+        }
+        await this.productService.assingCategory(categoryRequest,tx)
+      }
+      return await this.productService.getProductById(product.product_id,tx)
     })
   }
 }

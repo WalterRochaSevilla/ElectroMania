@@ -13,7 +13,7 @@ RUN npm install -g npm@latest
 COPY package.json package-lock.json ./
 
 # instalar deps
-RUN npm ci
+RUN npm install --frozen-lockfile
 
 # copiar código
 COPY . .
@@ -34,7 +34,8 @@ FROM node:20-alpine AS build
 WORKDIR /usr/src/app
 
 COPY package.json package-lock.json ./
-RUN npm ci
+
+RUN npm install --frozen-lockfile
 
 COPY . .
 

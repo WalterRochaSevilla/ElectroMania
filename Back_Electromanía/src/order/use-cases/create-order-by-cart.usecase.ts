@@ -26,7 +26,7 @@ export class CreateOrderByCartUseCase {
       })
       await this.cartService.updateCart(cart.id,{
         id: cart.id,
-        state: 'COMPLETED'
+        state: 'RESERVED'
       })
       const order = await this.orderService.register(userUuid,cart,tx);
       await this.orderService.saveOrderItems(cart,order.id,tx);

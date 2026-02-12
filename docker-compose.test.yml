@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   postgres:
-    image: postgres:16
+    image: postgres:16-alpine
     environment:
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
@@ -18,6 +18,8 @@ services:
       dockerfile: Dockerfile
       target: test
     env_file: .env
+    image: electromania-backend:test
+    container_name: electromania-backend
     depends_on:
       - postgres
     command: sh -c "pnpm prisma migrate deploy && pnpm run test"

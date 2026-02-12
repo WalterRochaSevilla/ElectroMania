@@ -4,9 +4,11 @@ import { PasswordService } from '../../common/utils/password.service';
 import { UserCreateRequestModel } from '../models/UserCreateRequest.model';
 import { UserMapper } from '../mapper/User.mapper';
 import { UserModel } from '../models/User.model';
-import { Prisma } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { UserRole } from '../enums/UserRole.enum';
 import { AuthService } from '../../auth/service/auth.service';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class UserService {
@@ -16,10 +18,18 @@ export class UserService {
     private readonly prisma: PrismaService,
     private readonly passwordService: PasswordService,
     @Inject(forwardRef(() => AuthService))
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    @Inject(CACHE_MANAGER) private cacheManager:Cache
   ) {}
-  async findAll() {
-    return this.prisma.user.findMany();
+  async findAll():Promise<User[]>{
+    const cachedUserKey = 'allUsers';
+    const cachedUsers = await this.cacheManager.get(cachedUserKey);
+    if(cachedUsers){
+      return cachedUsers as User[];
+    }
+    const users = await this.prisma.user.findMany();
+    await this.cacheManager.set(cachedUserKey, users,8000);
+    return users;
   }
 
   async getAllUsers(): Promise<UserModel[]> {
@@ -28,6 +38,8 @@ export class UserService {
   }
 
   async createUser(user: Prisma.UserCreateInput) {
+    const allUsersKey = 'allUsers';
+    this.cacheManager.del(allUsersKey);
     return this.prisma.user.create({ data: user });
   }
 
@@ -63,7 +75,14 @@ export class UserService {
   }
 
   async filterBy(filter: Prisma.UserWhereInput) {
-    return this.prisma.user.findMany({ where: filter });
+    const filterByKey = 'filterBy';
+    const usersFiltered = await this.cacheManager.get(filterByKey);
+    if(usersFiltered){
+      return usersFiltered as User[];
+    }
+    const users = await this.prisma.user.findMany({ where: filter });
+    await this.cacheManager.set(filterByKey, users,8000);
+    return users;
   }
   async registerAdminUser(user: UserCreateRequestModel) {
     try{

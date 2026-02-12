@@ -12,6 +12,7 @@ import { ProductMapper } from './mapper/Product.mapper';
 import { R2ImageStorage } from '../common/utils/storage/r2-image-storage.storage';
 import { ProductImageMapper } from './mapper/ProductImage.mapper';
 import { PageProductMapper } from './mapper/PageProduct.mapper';
+import { CategoryService } from '../category/service/category.service';
 
 @Module({
   imports: [

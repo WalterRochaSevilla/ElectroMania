@@ -1,24 +1,27 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/service/prisma.service';
-import { ProductMapper } from '../mapper/Product.mapper';
+import { ProductMapper, ProductWithCategoriesAndImages } from '../mapper/Product.mapper';
 import { ProductImageMapper } from '../mapper/ProductImage.mapper';
 import { PageProductMapper } from '../mapper/PageProduct.mapper';
 import { ProductModel } from '../model/Product.model';
 import { CreateProductRequestModel } from '../model/CreateProductRequest.model';
 import { RegisterProductImageRequestModel } from '../model/RegisterProductImageRequest.model';
 import { PageProductResponseModel } from '../model/PageProductResponse.model';
-import { Prisma } from '@prisma/client';
-import { join, parse} from 'path';
-import * as sharp from 'sharp';
-import {promises as fs } from 'fs';
-import config from '../../config/Configuration'
+import { Prisma, Product } from '@prisma/client';
+import { RegisterProductCategoryDto } from '../../category/dto/register-product-category.dto';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+import { CacheProductKeys } from '../cache/cache-products.keys';
 
 @Injectable()
 export class ProductService {
+  loger = new Logger(ProductService.name)
+  private readonly CacheProductKeys = CacheProductKeys
   constructor(private readonly prisma: PrismaService,
     private readonly productMapper: ProductMapper,
     private readonly productImageMapper: ProductImageMapper,
-    private readonly pageProductMapper: PageProductMapper
+    private readonly pageProductMapper: PageProductMapper,
+    @Inject(CACHE_MANAGER) private cacheManager:Cache
   ) {}
 
   async createProduct(dto: CreateProductRequestModel, tx?: Prisma.TransactionClient): Promise<ProductModel> {
@@ -64,11 +67,15 @@ export class ProductService {
 
   async getAllProducts(): Promise<ProductModel[]> {
     try{
+      const cachedProducts = await this.cacheManager.get(this.CacheProductKeys.allProducts);
+      if(cachedProducts){
+        return cachedProducts as ProductModel[]
+      }
       const products = await this.prisma.product.findMany({
-        include: { 
-          productImages: true, 
-          productCategories:{
-            include: {
+      include: { 
+        productImages: true, 
+        productCategories:{
+          include: {
               category: true 
             }
           }
@@ -78,7 +85,9 @@ export class ProductService {
       if(products.length === 0){
         throw new NotFoundException('Products not found');
       }
-      return products.map((p) => this.productMapper.toModelWithCategoryAndImages(p));
+      const result= products.map((p) => this.productMapper.toModelWithCategoryAndImages(p));
+      this.cacheManager.set(this.CacheProductKeys.allProducts, result,500);
+      return result
     }catch(e){
       throw new NotFoundException('Products not found');
     }
@@ -93,19 +102,27 @@ export class ProductService {
     return this.pageProductMapper.toResponse(page, products);
   }
 
+
   private async getPageProductsByFilter(filter: any, skip?: number, take?: number): Promise<ProductModel[]> {
-    const products = await this.prisma.product.findMany({
-      where: filter,
-      skip,
-      take,
-      include: { productImages: true,
-        productCategories: {
-          include: {
-            category: true
+    const cachedProducts = await this.cacheManager.get(this.CacheProductKeys.pageProducts);
+    let products: ProductWithCategoriesAndImages[];
+    if(cachedProducts){
+      products = cachedProducts as ProductWithCategoriesAndImages[];
+    }else{
+      products = await this.prisma.product.findMany({
+        where: filter,
+        skip,
+        take,
+        include: { productImages: true,
+          productCategories: {
+            include: {
+              category: true
+            }
           }
-        }
-       },
-    });
+        },
+      });
+    }
+    this.cacheManager.set(this.CacheProductKeys.pageProducts, products,500);
     return products.map((p) => this.productMapper.toModelWithCategoryAndImages(p));
   }
 
@@ -140,6 +157,7 @@ export class ProductService {
         }
        },
     });
+    this.deleteAllProductCache();
     return this.productMapper.toModelWithCategoryAndImages(updated);
   }
 
@@ -158,6 +176,11 @@ export class ProductService {
     await this.prisma.product.delete({
       where: { product_id: productId },
     });
+    this.deleteAllProductCache();
+  }
+  private deleteAllProductCache(){
+    this.cacheManager.del(this.CacheProductKeys.allProducts);
+    this.cacheManager.del(this.CacheProductKeys.pageProducts);
   }
   async getProductById(productId: number,tx?: Prisma.TransactionClient): Promise<ProductModel> {
     const prisma = tx? tx : this.prisma
@@ -177,60 +200,99 @@ export class ProductService {
     return this.productMapper.toModelWithCategoryAndImages(product);
   }
 
-  async productExist(productId:number): Promise<Boolean>{
-    return this.prisma.product.findUnique({
-      where:{ product_id: productId}
-    }) != null
-  }
-
   async checkStock(productId: number, quantity: number,tx?: Prisma.TransactionClient) {
     const prisma = tx? tx : this.prisma
     const product = await prisma.product.findUnique({
       where: { product_id: productId },
-      select: { stock: true },
+      select: { stock_total: true, stock_reserved: true },
     })
     if(!product){
       throw new NotFoundException('Product not found');
     }
-    return product?.stock >= quantity
+    const aviableStock = product.stock_total - product.stock_reserved
+    return aviableStock >= quantity
   }
 
   async addStock(productId: number, quantity: number,tx?: Prisma.TransactionClient) {
     const prisma = tx? tx : this.prisma
-    return prisma.product.update({
+    const product = prisma.product.update({
       where: { product_id: productId },
       data: {
-        stock: {
+        stock_total: {
           increment: quantity,
         },
       },
     });    
+    this.deleteAllProductCache();
+    return product
+  }
+  async releaseReservedStock(productId: number, quantity: number,tx?: Prisma.TransactionClient) {
+    const prisma = tx? tx : this.prisma
+    return prisma.product.update({
+      where: { product_id: productId },
+      data: {
+        stock_reserved: {
+          decrement: quantity,
+        },
+        stock_total: {
+          increment: quantity,
+        }
+      },
+    });
+  }
+  async reserveStock(productId: number, quantity: number,tx?: Prisma.TransactionClient) {
+    const prisma = tx? tx : this.prisma
+    const product = prisma.product.update({
+      where: { product_id: productId },
+      data: {
+        stock_reserved: {
+          increment: quantity,
+        }
+      },
+    });
+    this.deleteAllProductCache();
+    return product;
   }
   async discountStock(productId: number, quantity: number,tx?: Prisma.TransactionClient) {
     const prisma = tx? tx : this.prisma
     if (quantity <= 0) return;
     const product = await prisma.product.findUnique({
         where: { product_id: productId },
-        select: { stock: true },
+        select: { stock_total: true, stock_reserved: true },
     });
-
     if (!product) {
         throw new NotFoundException('Product not found');
     }
-
-    if (product.stock < quantity) {
+    const aviableStock = product.stock_total - product.stock_reserved;
+    if (product.stock_reserved < quantity) {
         throw new ForbiddenException('Product out of stock');
     }
-
-    return prisma.product.update({
+    const updateProduct = prisma.product.update({
         where: { product_id: productId },
         data: {
-            stock: {
+            stock_total: {
+              decrement: quantity,
+            },
+            stock_reserved: {
               decrement: quantity,
             },
         },
       }
     );
+    this.deleteAllProductCache();
+    return updateProduct;
   }
-
+  async assingCategory(request:RegisterProductCategoryDto,tx?: Prisma.TransactionClient) {
+    const prisma = tx? tx : this.prisma
+    return prisma.product.update({
+      where: { product_id: request.productId },
+      data: {
+        productCategories: {
+          create: {
+            category_id: request.categoryId,
+          },
+        },
+      },
+    });
+  }
 }
