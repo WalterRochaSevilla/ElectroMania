@@ -1,7 +1,5 @@
 <div class="card-producto" [class.is-offer]="isOffer" (click)="onCardClick()" (keyup.enter)="onCardClick()" tabindex="0"
   role="button">
-
-  <!-- BADGES -->
   <div class="badge-container">
     @if (isOffer) {
     <span class="badge badge-offer">{{ 'PRODUCT_CARD.OFFER' | translate }}</span>
@@ -15,8 +13,6 @@
     <span class="badge badge-low-stock">{{ 'PRODUCT_CARD.LOW_STOCK' | translate }}</span>
     }
   </div>
-
-  <!-- IMAGE - Show most recent (last) image -->
   <div class="imagen-container">
     @if (product.images && product.images.length > 0) {
       <img [src]="product.images[product.images.length - 1]" [alt]="product.product_name" loading="lazy" (error)="handleImageError($event)">
@@ -31,28 +27,21 @@
       </div>
     }
   </div>
-
-  <!-- CONTENT -->
   <div class="info-producto">
     <h4 class="titulo">
       {{ product.product_name }}
     </h4>
-
     <p class="descripcion">
       {{ product.description }}
     </p>
-
-    <!-- PRICES -->
     <div class="precio-container">
       @if (isOffer) {
-      <span class="precio-original">Bs. {{ product.price | number:'1.2-2' }}</span>
-      <span class="precio-final">Bs. {{ getDiscountPrice(product.price) | number:'1.2-2' }}</span>
+      <span class="precio-original">{{ 'CART.BS' | translate }} {{ product.price | number:'1.2-2' }}</span>
+      <span class="precio-final">{{ 'CART.BS' | translate }} {{ getDiscountPrice(product.price) | number:'1.2-2' }}</span>
       } @else {
-      <span class="precio-final">Bs. {{ product.price | number:'1.2-2' }}</span>
+      <span class="precio-final">{{ 'CART.BS' | translate }} {{ product.price | number:'1.2-2' }}</span>
       }
     </div>
-
-    <!-- ACTION BUTTON -->
     <button class="btn-action" (click)="onAddToCart($event)" [disabled]="product.stock === 0" [class.disabled]="product.stock === 0">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round">
@@ -63,5 +52,4 @@
       {{ (product.stock === 0 ? 'PRODUCT_CARD.OUT_OF_STOCK' : (isOffer ? 'PRODUCT_CARD.ADD_OFFER' : 'PRODUCT_CARD.ADD')) | translate }}
     </button>
   </div>
-
 </div>

@@ -1,14 +1,12 @@
 export interface Category {
-  id: number;
-  name: string;
+    id: number;
+    name: string;
 }
-
 export interface CreateCategoryRequest {
-  name: string;
-  description: string;
+    name: string;
+    description: string;
 }
-
 export interface RegisterProductCategoryRequest {
-  productId: number;
-  categoryId: number;
+    product_id: number;
+    category_id: number;
 }

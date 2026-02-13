@@ -1,19 +1,19 @@
 import { Component, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ModalService } from '../../services/modal.service';
-
 @Component({
-  selector: 'app-confirmation-modal',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'app-confirmation-modal',
+    standalone: true,
+  imports: [CommonModule, TranslatePipe],
+    template: `
     @if (modalService.isOpen()) {
       <div class="modal-overlay" 
            (click)="cancel()" 
            (keyup.escape)="cancel()" 
            tabindex="0" 
            role="button" 
-           aria-label="Cerrar modal">
+           [attr.aria-label]="'COMMON.CLOSE' | translate">
         
         <div class="modal-content" 
              (click)="$event.stopPropagation()" 
@@ -35,12 +35,12 @@ import { ModalService } from '../../services/modal.service';
 
           <div class="modal-footer">
             <button class="btn-cancel" (click)="cancel()">
-              {{ modalService.data().cancelText || 'Cancelar' }}
+              {{ modalService.data().cancelText || ('COMMON.CANCEL' | translate) }}
             </button>
             <button class="btn-confirm" 
                     [ngClass]="modalService.data().type || 'info'"
                     (click)="confirm()">
-              {{ modalService.data().confirmText || 'Confirmar' }}
+              {{ modalService.data().confirmText || ('COMMON.CONFIRM' | translate) }}
             </button>
           </div>
 
@@ -48,7 +48,7 @@ import { ModalService } from '../../services/modal.service';
       </div>
     }
   `,
-  styles: [`
+    styles: [`
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -95,7 +95,7 @@ import { ModalService } from '../../services/modal.service';
       margin: 0;
     }
 
-    /* Header Colors */
+    
     .modal-header.danger h3 { color: var(--color-danger); }
     .modal-header.warning h3 { color: var(--color-warning); }
     .modal-header.info h3 { color: var(--brand-primary, #0ea5e9); }
@@ -109,7 +109,7 @@ import { ModalService } from '../../services/modal.service';
       align-items: center;
       justify-content: center;
     }
-    .close-btn svg { width: 20px; height: 20px; }
+    .close-btn svg { width: var(--space-5); height: var(--space-5); }
 
     :host-context([data-theme='light']) .close-btn {
       color: #64748b;
@@ -140,7 +140,7 @@ import { ModalService } from '../../services/modal.service';
       font-weight: 500;
       cursor: pointer;
       border: none;
-      transition: all 0.2s;
+      transition: var(--transition-fast);
     }
 
     .btn-cancel {
@@ -180,20 +180,17 @@ import { ModalService } from '../../services/modal.service';
   `]
 })
 export class ConfirmationModalComponent {
-  modalService = inject(ModalService);
-
-  confirm() {
-    this.modalService.close(true);
-  }
-
-  cancel() {
-    this.modalService.close(false);
-  }
-
-  @HostListener('document:keydown.escape')
-  onKeydownHandler() {
-    if (this.modalService.isOpen()) {
-      this.cancel();
+    modalService = inject(ModalService);
+    confirm() {
+        this.modalService.close(true);
     }
-  }
+    cancel() {
+        this.modalService.close(false);
+    }
+    @HostListener('document:keydown.escape')
+    onKeydownHandler() {
+        if (this.modalService.isOpen()) {
+            this.cancel();
+        }
+    }
 }

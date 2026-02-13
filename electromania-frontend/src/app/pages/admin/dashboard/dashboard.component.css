@@ -1,36 +1,89 @@
-/* =========================
-   DASHBOARD-SPECIFIC STYLES
-   (Layout styles are in shared.css via .admin-layout)
-========================= */
 
-/* GRID SETUP */
+
 .dashboard-grid {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--space-6);
 }
 
-/* STATS ROW */
+.loading-state {
+  min-height: 260px;
+  padding: 0;
+}
+
+.connection-lost-state {
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  text-align: center;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-7);
+}
+
+.connection-icon {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 12%, transparent);
+}
+
+.connection-lost-state h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.connection-lost-state p {
+  margin: 0;
+  max-width: 520px;
+}
+
+.btn-refresh {
+  margin-top: var(--space-2);
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background: var(--brand-primary);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-refresh:hover {
+  opacity: 0.92;
+}
+
 .stats-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 24px;
+  gap: var(--space-6);
 }
 
 .stat-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 16px;
-  padding: 24px;
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
   display: flex;
   align-items: flex-start;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .stat-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+  width: var(--space-9);
+  height: var(--space-9);
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -81,18 +134,17 @@
   color: var(--color-danger);
 }
 
-/* CHARTS ROW */
 .charts-row {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 24px;
+  gap: var(--space-6);
 }
 
 .chart-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 16px;
-  padding: 24px;
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
   display: flex;
   flex-direction: column;
 }
@@ -101,7 +153,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
 }
 
 .card-header h3 {
@@ -116,7 +168,7 @@
   color: var(--text-primary);
   border: 1px solid var(--border-color);
   padding: 6px 12px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
 }
 
 .chart-wrapper {
@@ -125,18 +177,28 @@
   width: 100%;
 }
 
-/* TABLES */
+.empty-inline {
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-main);
+}
+
 .table-section {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 16px;
-  padding: 24px;
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
 }
 
 .section-title {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   font-size: 1.1rem;
   font-weight: 700;
   margin: 0 0 16px 0;
@@ -155,7 +217,7 @@
 
 .dashboard-table th {
   text-align: left;
-  padding: 12px;
+  padding: var(--space-3);
   color: var(--text-secondary);
   font-size: 0.9rem;
   border-bottom: 1px solid var(--border-color);
@@ -167,9 +229,15 @@
   color: var(--text-primary);
 }
 
+.empty-row {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 24px 12px;
+}
+
 .status-badge {
   padding: 4px 10px;
-  border-radius: 20px;
+  border-radius: var(--radius-xl);
   font-size: 0.8rem;
   font-weight: 600;
 }
@@ -184,11 +252,8 @@
   color: var(--color-warning);
 }
 
-/* RESPONSIVE */
 @media (max-width: 1024px) {
   .charts-row {
     grid-template-columns: 1fr;
   }
 }
-
-/* Responsive overrides for dashboard are handled by shared.css .admin-layout */

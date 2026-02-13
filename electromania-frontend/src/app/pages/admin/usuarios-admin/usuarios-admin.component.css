@@ -1,12 +1,24 @@
-/* =========================
-   TABLE STYLES
-========================= */
+
 .table-container {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   overflow-x: auto;
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
+}
+
+.loading-state {
+  min-height: 220px;
+  padding: 0;
+}
+
+.empty-state {
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  padding: var(--space-6);
 }
 
 .admin-table {
@@ -41,16 +53,15 @@
   border-bottom: none;
 }
 
-/* USER INFO CELL */
 .user-info-cell {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .user-avatar {
-  width: 40px;
-  height: 40px;
+  width: var(--space-8);
+  height: var(--space-8);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -81,10 +92,9 @@
   color: var(--text-muted);
 }
 
-/* BADGES */
 .role-badge {
   padding: 4px 12px;
-  border-radius: 20px;
+  border-radius: var(--radius-xl);
   font-size: 0.8rem;
   font-weight: 600;
 }
@@ -109,7 +119,7 @@
   align-items: center;
   gap: 6px;
   padding: 4px 12px;
-  border-radius: 20px;
+  border-radius: var(--radius-xl);
   font-size: 0.8rem;
   font-weight: 500;
 }
@@ -136,10 +146,9 @@
   font-family: monospace;
 }
 
-/* ACTION BUTTONS */
 .actions-cell {
   display: flex;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .btn-icon.toggle {
@@ -162,20 +171,19 @@
   color: white;
 }
 
-/* FOOTER */
 .table-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: var(--bg-card);
   padding: 16px 24px;
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border-color);
 }
 
 .filter-buttons {
   display: flex;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .btn-filter {
@@ -183,10 +191,10 @@
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
   padding: 6px 14px;
-  border-radius: 20px;
+  border-radius: var(--radius-xl);
   font-size: 0.85rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: var(--transition-fast);
 }
 
 .btn-filter:hover {
@@ -202,7 +210,7 @@
 
 .summary {
   display: flex;
-  gap: 24px;
+  gap: var(--space-6);
   font-size: 0.9rem;
   color: var(--text-muted);
 }
@@ -219,11 +227,10 @@
   color: var(--color-danger) !important;
 }
 
-/* RESPONSIVE */
 @media (max-width: 768px) {
   .table-footer {
     flex-direction: column;
-    gap: 16px;
+    gap: var(--space-4);
   }
 
   .filter-buttons {

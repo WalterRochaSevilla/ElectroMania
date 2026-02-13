@@ -1,31 +1,29 @@
 import { HttpErrorResponse } from '@angular/common/http';
-
-export function getErrorMessage(err: unknown): string {
-  if (err instanceof HttpErrorResponse) {
-    if (err.error?.message) {
-      return err.error.message;
+import { LanguageService } from '../services/language.service';
+export function getErrorMessage(err: unknown, languageService: LanguageService): string {
+    if (err instanceof HttpErrorResponse) {
+        if (err.error?.message) {
+            return err.error.message;
+        }
+        if (err.message) {
+            return err.message;
+        }
+        return languageService.instant('ERRORS.NETWORK');
     }
-    if (err.message) {
-      return err.message;
+    if (err instanceof Error) {
+        return err.message;
     }
-    return 'Error de red.';
-  }
-  if (err instanceof Error) {
-    return err.message;
-  }
-  return 'Ocurrió un error inesperado.';
+    return languageService.instant('ERRORS.UNEXPECTED');
 }
-
 export class NotFoundError extends Error {
-  override name = 'NotFoundError';
-  constructor(message = 'Recurso no encontrado') {
-    super(message);
-  }
+    override name = 'NotFoundError';
+    constructor(message: string) {
+        super(message);
+    }
 }
-
 export class ValidationError extends Error {
-  override name = 'ValidationError';
-  constructor(message = 'Error de validación') {
-    super(message);
-  }
+    override name = 'ValidationError';
+    constructor(message: string) {
+        super(message);
+    }
 }

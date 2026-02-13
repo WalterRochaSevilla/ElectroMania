@@ -1,7 +1,7 @@
-/* PAGE CONTAINER */
+
 .registro-container {
   min-height: calc(100vh - 72px);
-  /* Adjust for global navbar */
+
   background: var(--bg-main);
   color: var(--text-primary);
   display: flex;
@@ -10,18 +10,16 @@
   padding: 40px 20px;
 }
 
-/* REGISTRO WRAPPER */
 .registro-wrapper {
   width: 100%;
   max-width: 500px;
 }
 
-/* REGISTRO CARD */
 .registro-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 20px;
-  padding: 40px;
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
   box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
@@ -31,18 +29,17 @@
   background: white;
 }
 
-/* HEADER */
 .registro-header {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: var(--space-7);
 }
 
 .registro-header h2 {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-family-base);
   color: var(--text-primary);
   font-size: 1.75rem;
   font-weight: 800;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 
 .subtitle {
@@ -50,17 +47,16 @@
   font-size: 0.9rem;
 }
 
-/* FORM FIELDS */
 .campo-formulario {
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
 }
 
 .campo-formulario label {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  margin-bottom: 8px;
+  font-family: var(--font-family-base);
+  margin-bottom: var(--space-2);
   color: var(--text-secondary);
   font-weight: 600;
   font-size: 0.85rem;
@@ -86,11 +82,11 @@
   padding: 12px 16px;
   background: var(--bg-main);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   color: var(--text-primary);
   font-family: inherit;
   font-size: 1rem;
-  transition: all 0.2s ease;
+  transition: var(--transition-fast);
 }
 
 .input-contenedor input:focus {
@@ -103,7 +99,6 @@
   color: var(--text-muted);
 }
 
-/* PASSWORD INPUT */
 .password-input input {
   padding-right: 80px;
 }
@@ -126,7 +121,6 @@
   color: var(--brand-primary);
 }
 
-/* CHECKBOX */
 .campo-checkbox {
   margin: 24px 0 32px 0;
 }
@@ -134,7 +128,7 @@
 .checkbox-container {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   cursor: pointer;
   user-select: none;
 }
@@ -144,13 +138,13 @@
 }
 
 .checkmark {
-  width: 20px;
-  height: 20px;
+  width: var(--space-5);
+  height: var(--space-5);
   background: var(--bg-main);
   border: 2px solid var(--border-color);
   border-radius: 6px;
   position: relative;
-  transition: all 0.2s;
+  transition: var(--transition-fast);
 }
 
 .checkbox-container input:checked~.checkmark {
@@ -164,7 +158,7 @@
   display: none;
   left: 6px;
   top: 2px;
-  width: 4px;
+  width: var(--space-1);
   height: 10px;
   border: solid white;
   border-width: 0 2px 2px 0;
@@ -190,21 +184,19 @@
   text-decoration: underline;
 }
 
-/* REGISTER BUTTON - extends .btn .btn-primary .btn-block .btn-lg */
 .btn-registrarse {
-  margin-top: 8px;
-  border-radius: 12px;
+  margin-top: var(--space-2);
+  border-radius: var(--radius-md);
 }
 
 .btn-registrarse:hover:not(:disabled) {
   box-shadow: 0 10px 25px var(--brand-glow);
 }
 
-/* FOOTER */
 .registro-footer {
   text-align: center;
-  margin-top: 32px;
-  padding-top: 24px;
+  margin-top: var(--space-7);
+  padding-top: var(--space-6);
   border-top: 1px solid var(--border-color);
   font-size: 0.9rem;
 }
@@ -215,22 +207,21 @@
   font-weight: 600;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .enlace-volver:hover {
   color: var(--brand-hover);
 }
 
-/* RESPONSIVE */
 @media (max-width: 480px) {
   .registro-container {
     padding: 20px 16px;
   }
 
   .registro-card {
-    padding: 24px;
-    border-radius: 16px;
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
   }
 
   .registro-header h2 {

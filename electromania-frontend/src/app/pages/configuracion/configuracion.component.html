@@ -4,7 +4,6 @@
             <h1>{{ 'SETTINGS.TITLE' | translate }}</h1>
             <p class="subtitle">{{ 'SETTINGS.SUBTITLE' | translate }}</p>
         </header>
-
         <div class="settings-card">
             <div class="settings-section">
                 <h3>{{ 'SETTINGS.PREFERENCES' | translate }}</h3>
@@ -15,13 +14,12 @@
                     </div>
                     <span class="setting-value">{{ 'SETTINGS.THEME_AUTO' | translate }}</span>
                 </div>
-
                 <div class="setting-item">
                     <div class="setting-info">
                         <span class="setting-label">{{ 'SETTINGS.LANGUAGE' | translate }}</span>
                         <span class="setting-description">{{ 'SETTINGS.LANGUAGE_DESC' | translate }}</span>
                     </div>
-                    <select 
+                    <select
                         class="language-select"
                         [ngModel]="currentLang"
                         (ngModelChange)="onLanguageChange($event)">
@@ -31,7 +29,6 @@
                     </select>
                 </div>
             </div>
-
             <div class="settings-section">
                 <h3>{{ 'SETTINGS.NOTIFICATIONS' | translate }}</h3>
                 <div class="setting-item">
@@ -41,7 +38,6 @@
                     </div>
                     <span class="setting-badge coming-soon">{{ 'COMMON.COMING_SOON' | translate }}</span>
                 </div>
-
                 <div class="setting-item">
                     <div class="setting-info">
                         <span class="setting-label">{{ 'SETTINGS.WHATSAPP' | translate }}</span>
@@ -50,7 +46,6 @@
                     <span class="setting-badge active">{{ 'COMMON.ACTIVE' | translate }}</span>
                 </div>
             </div>
-
             <div class="settings-section">
                 <h3>{{ 'SETTINGS.SECURITY' | translate }}</h3>
                 <div class="setting-item">
@@ -62,7 +57,6 @@
                 </div>
             </div>
         </div>
-
         <div class="info-notice">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10" />

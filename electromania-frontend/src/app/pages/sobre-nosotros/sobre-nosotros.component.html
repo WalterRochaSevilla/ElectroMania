@@ -1,72 +1,52 @@
 <div class="nosotros-page">
-
   <div class="about-container">
-
-    <!-- HEADER SECTION -->
     <div class="about-header">
       <h1>{{ 'ABOUT.TITLE' | translate }}</h1>
       <p class="subtitle">{{ 'ABOUT.SUBTITLE' | translate }}</p>
     </div>
-
-    <!-- MAIN GRID -->
     <div class="about-grid">
-
-      <!-- QUIENES SOMOS -->
       <section class="about-card">
         <div class="card-content">
-          <h2>Quiénes Somos</h2>
+          <h2>{{ 'ABOUT.WHO_WE_ARE_TITLE' | translate }}</h2>
           <p>
-            En <strong>ELECTROMANIA</strong>, entendemos que la mecatrónica es el pilar de la nueva era industrial.
-            Somos más que una tienda online; somos una comunidad de entusiastas, ingenieros y creadores
-            apasionados por la tecnología.
+            {{ 'ABOUT.WHO_WE_ARE_PARAGRAPH_1' | translate }}
           </p>
           <p>
-            Especializados en <strong>componentes de mecatrónica en Bolivia</strong>, nos dedicamos
-            a proveer soluciones integrales para estudiantes, investigadores y empresas.
+            {{ 'ABOUT.WHO_WE_ARE_PARAGRAPH_2' | translate }}
           </p>
         </div>
         <div class="card-image">
-          <img src="quienes-somos.png" alt="Equipo Electromania"
-            onerror="this.src='https://via.placeholder.com/600x400'">
+          <img src="quienes-somos.png" [alt]="'ABOUT.TEAM_IMAGE_ALT' | translate" (error)="onImageError($event)">
         </div>
       </section>
-
-      <!-- MISION -->
       <section class="about-card reverse">
         <div class="card-content">
-          <h2>Nuestra Misión</h2>
+          <h2>{{ 'ABOUT.MISSION_TITLE' | translate }}</h2>
           <p>
-            Ser tu <strong>aliado tecnológico</strong>. Asesorarte con conocimiento real para que encuentres
-            los componentes perfectos que se alineen con tus proyectos.
+            {{ 'ABOUT.MISSION_PARAGRAPH_1' | translate }}
           </p>
           <p>
-            Queremos que cada elección sea una <strong>inversión inteligente</strong>. Cada sensor, cada placa,
-            cada motor es una pieza esencial en el desarrollo de la innovación nacional.
+            {{ 'ABOUT.MISSION_PARAGRAPH_2' | translate }}
           </p>
         </div>
         <div class="card-image">
-          <img src="mision-electromania.png" alt="Misión" onerror="this.src='https://via.placeholder.com/600x400'">
+          <img src="mision-electromania.png" [alt]="'ABOUT.MISSION_IMAGE_ALT' | translate" (error)="onImageError($event)">
         </div>
       </section>
-
-      <!-- VISION -->
       <section class="about-card">
         <div class="card-content">
-          <h2>Nuestra Visión</h2>
+          <h2>{{ 'ABOUT.VISION_TITLE' | translate }}</h2>
           <p>
-            Ser el <strong>referente líder</strong> en Bolivia. Un punto de encuentro donde la innovación,
-            la calidad y la confianza impulsen una nueva generación de talentos.
+            {{ 'ABOUT.VISION_PARAGRAPH_1' | translate }}
           </p>
           <p>
-            Visualizamos un país donde el acceso a tecnología de calidad no sea una barrera, sino un impulso
-            para construir un futuro más innovador.
+            {{ 'ABOUT.VISION_PARAGRAPH_2' | translate }}
           </p>
         </div>
         <div class="card-image">
-          <img src="vision.png" alt="Visión" onerror="this.src='https://via.placeholder.com/600x400'">
+          <img src="vision.png" [alt]="'ABOUT.VISION_IMAGE_ALT' | translate" (error)="onImageError($event)">
         </div>
       </section>
-
     </div>
   </div>
 </div>

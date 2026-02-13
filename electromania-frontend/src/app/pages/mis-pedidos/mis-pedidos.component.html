@@ -5,13 +5,12 @@
             <h1>{{ 'MY_ORDERS.TITLE' | translate }}</h1>
             <p class="subtitle">{{ 'MY_ORDERS.SUBTITLE' | translate }}</p>
         </header>
-
-        @if (loading) {
+        @if (loading()) {
         <div class="loading-state">
             <div class="spinner"></div>
             <p>{{ 'MY_ORDERS.LOADING' | translate }}</p>
         </div>
-        } @else if (orders.length === 0) {
+        } @else if (orders().length === 0) {
         <div class="empty-state">
             <div class="empty-icon">
                 <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -25,18 +24,17 @@
         </div>
         } @else {
         <div class="orders-list">
-            @for (order of orders; track order.id) {
+            @for (order of orders(); track order.id) {
             <div class="order-card">
                 <div class="order-header">
                     <div class="order-info">
                         <span class="order-id">#{{ order.id }}</span>
-                        <span class="order-date">{{ formatDate(order.createdAt) }}</span>
+                        <span class="order-date">{{ formatDate(order.created_at) }}</span>
                     </div>
                     <span class="status-badge" [class]="getStatusClass(order.status)">
                         {{ getStatusLabel(order.status) }}
                     </span>
                 </div>
-
                 <div class="order-items">
                     @if (order.cart.details && order.cart.details.length > 0) {
                     @for (detail of order.cart.details; track detail.product.product_id) {
@@ -50,7 +48,6 @@
                     <p class="no-items">{{ 'MY_ORDERS.DETAILS_NOT_AVAILABLE' | translate }}</p>
                     }
                 </div>
-
                 <div class="order-footer">
                     <div class="order-actions">
                         @if (order.status === 'PENDING') {

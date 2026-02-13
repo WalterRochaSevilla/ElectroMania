@@ -1,27 +1,24 @@
-@if (producto) {
+@if (producto(); as producto) {
   <div class="pagina-detalle-container">
-    <!-- Global Navbar is in AppComponent, no local header needed -->
     <main class="main-content">
       <div class="detalle-wrapper">
-        <!-- COLUMN 1: IMAGE -->
         <div class="columna-imagen">
           <div class="imagen-card">
             <img [src]="producto.imagen" [alt]="producto.nombre"
-              (error)="producto.imagen = 'https://via.placeholder.com/500'">
+              (error)="setDefaultImage($event)">
             </div>
           </div>
-          <!-- COLUMN 2: INFO -->
           <div class="columna-info">
             <span class="categoria-tag">{{ producto.categoria }}</span>
             <h1 class="titulo-producto">{{ producto.nombre }}</h1>
             <div class="badges-container">
               <span class="stock-badge" [ngClass]="obtenerClaseStock()">
-                <span class="punto-estado"></span> {{ mensajeStock }}
+                <span class="punto-estado"></span> {{ mensajeStock() }}
               </span>
             </div>
             <p class="descripcion-producto">{{ producto.descripcionCorta }}</p>
             <div class="precio-area">
-              <span class="simbolo">Bs.</span>
+              <span class="simbolo">{{ 'CART.BS' | translate }}</span>
               <span class="monto">{{ producto.precio | number:'1.2-2' }}</span>
             </div>
             <div class="acciones-compra">
@@ -62,8 +59,7 @@
       </main>
     </div>
   }
-
-  @if (!producto) {
+  @if (!producto()) {
     <div style="color: white; text-align: center; padding: 50px;">
       <h2>{{ 'COMMON.LOADING' | translate }}</h2>
     </div>

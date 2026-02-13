@@ -1,5 +1,5 @@
 .page-header {
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
 }
 
 .page-header h1 {
@@ -14,127 +14,10 @@
   margin: 0;
 }
 
-/* Backend Pending State */
-.backend-pending {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 48px;
-  text-align: center;
-  max-width: 700px;
-  margin: 40px auto;
-}
-
-.pending-icon {
-  margin-bottom: 16px;
-}
-
-.pending-icon svg {
-  width: 64px;
-  height: 64px;
-  color: var(--color-warning);
-}
-
-.backend-pending h2 {
-  font-size: 1.5rem;
-  color: var(--text-primary);
-  margin: 0 0 8px 0;
-}
-
-.backend-pending > p {
-  color: var(--text-secondary);
-  margin: 0 0 32px 0;
-}
-
-.pending-details {
-  background: var(--bg-primary);
-  border-radius: 8px;
-  padding: 24px;
-  margin-bottom: 24px;
-  text-align: left;
-}
-
-.pending-details h3 {
-  font-size: 1rem;
-  color: var(--text-primary);
-  margin: 0 0 16px 0;
-}
-
-.pending-details ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.pending-details li {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.pending-details li:last-child {
-  border-bottom: none;
-}
-
-.pending-details code {
-  background: rgba(14, 165, 233, 0.1);
-  color: var(--brand-primary);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  font-family: monospace;
-  white-space: nowrap;
-}
-
-.pending-details span {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-}
-
-.pending-info {
-  background: var(--bg-primary);
-  border-radius: 8px;
-  padding: 24px;
-  text-align: left;
-}
-
-.pending-info h3 {
-  font-size: 1rem;
-  color: var(--text-primary);
-  margin: 0 0 16px 0;
-}
-
-.status-flow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
-}
-
-.arrow {
-  color: var(--text-secondary);
-}
-
-.status-cancel {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.status-cancel .note {
-  color: var(--text-secondary);
-  font-size: 0.85rem;
-}
-
-/* Filters */
 .filters-bar {
   display: flex;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
   flex-wrap: wrap;
 }
 
@@ -147,7 +30,7 @@
   width: 100%;
   padding: 10px 16px;
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   background: var(--bg-card);
   color: var(--text-primary);
   font-size: 0.95rem;
@@ -156,25 +39,52 @@
 .filters-bar select {
   padding: 10px 16px;
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   background: var(--bg-card);
   color: var(--text-primary);
   font-size: 0.95rem;
   min-width: 180px;
 }
 
-/* Empty State */
+.loading-state {
+  min-height: 240px;
+  padding: 0;
+}
+
 .empty-state {
   text-align: center;
-  padding: 60px 20px;
+  padding: 70px 20px;
   color: var(--text-secondary);
 }
 
-/* Orders Table */
+.empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: var(--space-4);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--brand-primary) 12%, transparent);
+  color: var(--brand-primary);
+}
+
+.empty-state h3 {
+  margin: 0 0 var(--space-2);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.empty-state p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
 .orders-table-container {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   overflow-x: auto;
 }
 
@@ -232,11 +142,10 @@
   color: var(--text-secondary);
 }
 
-/* Status Badges */
 .status-badge {
   display: inline-block;
   padding: 4px 10px;
-  border-radius: 20px;
+  border-radius: var(--radius-xl);
   font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -267,10 +176,9 @@
   color: var(--color-danger);
 }
 
-/* Action Buttons */
 .actions {
   display: flex;
-  gap: 8px;
+  gap: var(--space-2);
   flex-wrap: wrap;
 }
 
@@ -282,7 +190,7 @@
   color: var(--text-primary);
   font-size: 0.85rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: var(--transition-fast);
 }
 
 .btn-action:hover {
@@ -325,22 +233,13 @@
   background: color-mix(in srgb, var(--color-danger) 10%, transparent);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .orders-table-container {
     overflow-x: auto;
   }
 
+
   .orders-table {
     min-width: 700px;
-  }
-
-  .backend-pending {
-    padding: 24px;
-    margin: 20px;
-  }
-
-  .status-flow {
-    justify-content: center;
   }
 }

@@ -1,23 +1,19 @@
 <div class="login-container">
     <div class="pagina-catalogo-container">
-
-        <!-- Global Navbar is in AppComponent -->
         <main class="main-content">
             <div class="login-wrapper">
                 <div class="login-card">
                     <div class="login-header">
                         <h2>{{ 'WELCOME.TITLE' | translate }}</h2>
                     </div>
-                    <!-- FORMULARIO DE LOGIN -->
                     <div class="login-body">
                         <div class="campo-formulario">
                             <label for="email">{{ 'AUTH.EMAIL' | translate }}</label>
                             <div class="input-contenedor">
                                 <input type="email" id="email" [(ngModel)]="email"
-                                    placeholder="admin@electromania.com" />
+                                    [placeholder]="'AUTH.EMAIL_PLACEHOLDER' | translate" />
                             </div>
                         </div>
-
                         <div class="campo-formulario">
                             <label for="password">{{ 'AUTH.PASSWORD' | translate }}</label>
                             <app-password-input
@@ -26,11 +22,9 @@
                                 [(ngModel)]="contrasena"
                             ></app-password-input>
                         </div>
-
                         <button class="btn btn-primary btn-block btn-lg btn-login" (click)="iniciarSesion()">
                             {{ 'AUTH.LOGIN' | translate }}
                         </button>
-
                         <div class="login-footer">
                             <p>{{ 'AUTH.NO_ACCOUNT' | translate }}
                                 <a class="enlace-registro" routerLink="/registro">{{ 'AUTH.REGISTER' | translate }}</a>

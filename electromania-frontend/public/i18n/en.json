@@ -19,7 +19,9 @@
     "CLOSE": "Close",
     "COMING_SOON": "Coming Soon",
     "ACTIVE": "Active",
-    "INACTIVE": "Inactive"
+    "INACTIVE": "Inactive",
+    "NOT_AVAILABLE": "N/A",
+    "TOGGLE_PASSWORD_VISIBILITY": "Toggle password visibility"
   },
   "USER_MODAL": {
     "NEW_USER": "New User",
@@ -64,7 +66,9 @@
     "DRAG_REPLACE": "Drag a new image to replace",
     "IMAGE_FORMATS": "PNG, JPG, WebP (max. 10MB)",
     "OR_ENTER_URL": "or enter a URL",
-    "URL_PLACEHOLDER": "https://example.com/image.jpg"
+    "URL_PLACEHOLDER": "https://example.com/image.jpg",
+    "EXISTING_IMAGE_ALT": "Existing image",
+    "IMAGE_PREVIEW_ALT": "Image preview"
   },
   "PRODUCT_CARD": {
     "OFFER": "SALE",
@@ -88,7 +92,8 @@
     "WELCOME_ADMIN": "Welcome Administrator",
     "SESSION_EXPIRED": "Session expired. Please log in again.",
     "ACCESS_DENIED": "Access denied. Administrator permissions required.",
-    "NO_PERMISSION": "You do not have permission to perform this action."
+    "NO_PERMISSION": "You do not have permission to perform this action.",
+    "EMAIL_PLACEHOLDER": "user@electromania.com"
   },
   "NAV": {
     "HOME": "Home",
@@ -113,7 +118,8 @@
     "ORDERS": "Orders",
     "ABOUT": "About Us",
     "CONTACT": "Contact Us",
-    "PROFILE": "Profile"
+    "PROFILE": "Profile",
+    "MENU": "Menu"
   },
   "FOOTER": {
     "BRAND_DESC": "Mechatronics engineering and high-fidelity components. Professional technology for innovators.",
@@ -137,7 +143,8 @@
     "QUANTITY": "Quantity",
     "UNIT_PRICE": "Unit price",
     "ORDER_SUMMARY": "Order Summary",
-    "EACH": "each"
+    "EACH": "each",
+    "BS": "Bs."
   },
   "PRODUCTS": {
     "TITLE": "Products",
@@ -183,10 +190,12 @@
     "PROCESSING": "Processing...",
     "CONFIRM_WHATSAPP": "Confirm via WhatsApp",
     "SUCCESS_TITLE": "Order Sent!",
-    "SUCCESS_MESSAGE": "Your order <strong>#{{orderNumber}}</strong> has been sent to WhatsApp.",
+    "SUCCESS_MESSAGE": "Your order #{{orderNumber}} has been sent to WhatsApp.",
     "SUCCESS_SUBMESSAGE": "A seller from Electromania will contact you to coordinate payment and shipping.",
     "BACK_TO_STORE": "Back to store",
-    "ORDER_ERROR": "Error processing order"
+    "ORDER_ERROR": "Error processing order",
+    "WHATSAPP_MESSAGE": "Hello Electromania!\n\nI want to place the following order:\n\n{{productList}}\n\n-----------------------\n*Subtotal:* Bs. {{subtotal}}\n*Taxes (13%):* Bs. {{impuestos}}\n*TOTAL TO PAY:* Bs. {{total}}\n-----------------------\n\n*Billing Details:*\nName: {{nombre}}\nNIT/ID: {{nit}}\n{{emailLine}}\n\nThank you!",
+    "WHATSAPP_EMAIL": "Email: {{email}}"
   },
   "ADMIN": {
     "DASHBOARD": "Dashboard",
@@ -228,6 +237,14 @@
     "ERROR_CREATE": "Error creating",
     "ERROR_DELETE": "Error deleting",
     "INVENTORY_EXPORTED": "Inventory exported",
+    "INVENTORY_EXPORTED_CSV": "Inventory exported as CSV",
+    "INVENTORY_EXPORTED_XLSX": "Inventory exported as Excel",
+    "ERROR_EXPORT_INVENTORY": "Could not export inventory",
+    "EXPORT_CSV": "Export as CSV",
+    "EXPORT_XLSX": "Export as Excel (.xlsx)",
+    "SHEET_INVENTORY": "Inventory",
+    "EXPORT_INVENTORY_TITLE": "Inventory Report - Electromania",
+    "EXPORT_DATE": "Export date",
     "INVENTORY_MANAGEMENT": "Inventory Management",
     "USER_MANAGEMENT": "User Management",
     "ORDER_MANAGEMENT": "Order Management",
@@ -263,6 +280,9 @@
     "USER_DEACTIVATED": "User deactivated",
     "USER_DELETED": "User deleted",
     "EDIT_NOT_AVAILABLE": "User editing is not available in the backend",
+    "DELETE_NOT_AVAILABLE": "User deletion is not available in the backend",
+    "STATE_CHANGE_NOT_AVAILABLE": "User status change is not available in the backend",
+    "RESET_NOT_AVAILABLE": "Password reset is not available in the backend",
     "RESET_PASSWORD": "Reset Password",
     "RESET_PASSWORD_CONFIRM": "Reset password for user {{name}}? An email will be sent with the new password.",
     "PASSWORD_RESET_SENT": "An email has been sent to {{email}}",
@@ -297,7 +317,38 @@
     "ERROR_UPDATE_PRODUCT": "Error updating product",
     "ERROR_CREATE_PRODUCT": "Error creating product",
     "ERROR_DELETE_PRODUCT": "Could not delete product",
-    "ERROR_CREATE_USER": "Error creating user"
+    "ERROR_CREATE_USER": "Error creating user",
+    "ERROR_LOAD_DASHBOARD": "Error loading dashboard",
+    "LOADING_DASHBOARD": "Loading dashboard...",
+    "LOADING_PRODUCTS": "Loading products...",
+    "LOADING_USERS": "Loading users...",
+    "CONNECTION_LOST_TITLE": "Connection lost",
+    "CONNECTION_LOST_DESC": "Dashboard data could not be loaded. Check your connection and refresh the page to try again.",
+    "REFRESH_PAGE": "Refresh page",
+    "SYSTEM_ONLINE": "Online",
+    "SYSTEM_OFFLINE": "Offline",
+    "SYSTEM_MAINTENANCE": "Maintenance",
+    "WEEKDAY_MON": "Mon",
+    "WEEKDAY_TUE": "Tue",
+    "WEEKDAY_WED": "Wed",
+    "WEEKDAY_THU": "Thu",
+    "WEEKDAY_FRI": "Fri",
+    "WEEKDAY_SAT": "Sat",
+    "WEEKDAY_SUN": "Sun",
+    "WEEK_LABEL": "Week {{index}}",
+    "LOW_STOCK_OUT": "Out of stock",
+    "LOW_STOCK_CRITICAL": "Critical",
+    "LOW_STOCK_LOW": "Low",
+    "SALES_LABEL": "Sales (Bs.)",
+    "UNITS_SOLD_LABEL": "Units Sold",
+    "ID": "ID",
+    "NO_SALES_DATA": "No sales data to display",
+    "NO_TOP_PRODUCTS": "No sold products yet",
+    "NO_LOW_STOCK": "No products with low stock",
+    "NO_USERS_MATCH": "No users match the current filters",
+    "ORDERS_EMPTY_TITLE": "No orders yet",
+    "ORDERS_EMPTY_DESC": "Once the backend is ready, all registered orders will appear here.",
+    "NO_ORDERS_DESC": "No orders match the current filters."
   },
   "SETTINGS": {
     "TITLE": "Settings",
@@ -336,11 +387,44 @@
     "FORM_NAME": "Your name",
     "FORM_EMAIL": "Your email",
     "FORM_MESSAGE": "Your message",
-    "SEND": "Send message"
+    "SEND": "Send message",
+    "LOCATION": "Location",
+    "PHONE_WHATSAPP": "Phone / WhatsApp",
+    "WHATSAPP_CTA": "Contact via WhatsApp",
+    "EMAIL": "Email",
+    "EMAIL_CTA": "Send Email",
+    "BRAND": "ElectroMania Bolivia",
+    "TAG_ELECTRONICS": "Electronics",
+    "TAG_IOT": "IoT",
+    "TAG_ROBOTICS": "Robotics",
+    "SERVICES_TITLE": "Available Services",
+    "SERVICE_ADVISORY": "Specialized technical advice",
+    "SERVICE_PROJECTS": "Electronic project development",
+    "SERVICE_SALES": "Electronic components sales",
+    "SERVICE_TRAINING": "Training and workshops",
+    "SCHEDULE_TITLE": "Business Hours",
+    "SCHEDULE_WEEKDAYS": "Monday to Friday: 8:00 - 18:00",
+    "SCHEDULE_SATURDAY": "Saturdays: 9:00 - 13:00",
+    "WHATSAPP_MESSAGE": "Hello, I would like more information about your services",
+    "EMAIL_SUBJECT": "ElectroMania inquiry",
+    "EMAIL_BODY": "Hello, I would like more information about...",
+    "OFFICE_IMAGE_ALT": "ElectroMania office"
   },
   "ABOUT": {
     "TITLE": "About Us",
-    "SUBTITLE": "Learn more about Electromanía"
+    "SUBTITLE": "Learn more about Electromanía",
+    "WHO_WE_ARE_TITLE": "Who We Are",
+    "WHO_WE_ARE_PARAGRAPH_1": "At ELECTROMANIA, we understand mechatronics is the foundation of the new industrial era. We are more than an online store; we are a community of enthusiasts, engineers, and creators passionate about technology.",
+    "WHO_WE_ARE_PARAGRAPH_2": "Specialized in mechatronics components in Bolivia, we provide comprehensive solutions for students, researchers, and companies.",
+    "MISSION_TITLE": "Our Mission",
+    "MISSION_PARAGRAPH_1": "Be your technology ally. We advise with real knowledge so you can find the perfect components aligned with your projects.",
+    "MISSION_PARAGRAPH_2": "We want every choice to be a smart investment. Every sensor, board, and motor is an essential piece in national innovation.",
+    "VISION_TITLE": "Our Vision",
+    "VISION_PARAGRAPH_1": "Be the leading reference in Bolivia. A meeting point where innovation, quality, and trust drive a new generation of talent.",
+    "VISION_PARAGRAPH_2": "We envision a country where access to quality technology is not a barrier, but a boost to build a more innovative future.",
+    "TEAM_IMAGE_ALT": "ElectroMania team",
+    "MISSION_IMAGE_ALT": "Mission",
+    "VISION_IMAGE_ALT": "Vision"
   },
   "PRODUCT_DETAIL": {
     "STOCK_OUT": "Temporarily out of stock",
@@ -350,7 +434,13 @@
     "QUANTITY": "Quantity",
     "SPECIFICATIONS": "Specifications",
     "DATASHEET": "Datasheet",
-    "LIBRARY": "Library"
+    "LIBRARY": "Library",
+    "GENERAL_CATEGORY": "General",
+    "SPEC_VOLTAGE": "Voltage",
+    "SPEC_USAGE": "Usage",
+    "SPEC_USAGE_VALUE": "Rapid prototyping",
+    "DATASHEET_URL": "https://pdf-datasheet.com",
+    "LIBRARY_URL": "https://github.com"
   },
   "MY_ORDERS": {
     "TITLE": "My Orders",

@@ -1,12 +1,11 @@
-/* ===== GLOBAL PAGE ===== */
+
 .page-fade {
   animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ===== HERO SECTION ===== */
 .hero-industrial {
   height: 85vh;
-  /* Large impactful hero */
+
   min-height: 600px;
   display: flex;
   flex-direction: column;
@@ -17,13 +16,12 @@
   overflow: hidden;
   padding: 0 24px;
   background-color: var(--bg-main);
-  /* Professional Gradient Background */
+
   background-image:
     radial-gradient(circle at 50% 0%, rgba(14, 165, 233, 0.15), transparent 70%),
     linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 1));
 }
 
-/* Clean Tech Grid Pattern */
 .hero-industrial::before {
   content: '';
   position: absolute;
@@ -35,7 +33,7 @@
     linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   background-size: 40px 40px;
-  /* Subtle grid */
+
   mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 80%);
   pointer-events: none;
 }
@@ -45,17 +43,16 @@
   margin: 0 auto;
   position: relative;
   z-index: 2;
-  padding: 40px;
+  padding: var(--space-8);
 }
 
-/* Headings */
 .titulo-principal {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-family-base);
   font-size: clamp(2.5rem, 5vw, 4.5rem);
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--text-primary);
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
   line-height: 1.1;
   background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
   -webkit-background-clip: text;
@@ -73,7 +70,7 @@
 .hero-subtitle {
   font-size: clamp(1.1rem, 2vw, 1.25rem);
   color: var(--text-secondary);
-  margin-bottom: 40px;
+  margin-bottom: var(--space-8);
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
@@ -81,29 +78,32 @@
   font-weight: 500;
 }
 
+:host-context([data-theme='light']) .hero-subtitle {
+  color: var(--slate-200);
+}
+
 .sub-linea {
   width: 80px;
-  height: 4px;
+  height: var(--space-1);
   background: var(--brand-primary);
   margin: 0 auto 32px;
   border-radius: 2px;
 }
 
-/* Primary Button */
 .btn-explorar {
   background: var(--brand-primary);
   color: white;
   border: none;
   padding: 16px 40px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-family-base);
   font-weight: 700;
   font-size: 1.1rem;
   cursor: pointer;
-  transition: all 0.2s ease;
-  border-radius: 12px;
+  transition: var(--transition-fast);
+  border-radius: var(--radius-md);
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   box-shadow: var(--shadow-glow);
 }
 
@@ -113,30 +113,28 @@
   box-shadow: 0 10px 25px rgba(14, 165, 233, 0.4);
 }
 
-/* ===== SECTIONS ===== */
 .encabezado-seccion {
   margin: 80px 0 40px;
   text-align: center;
 }
 
 .titulo-tech {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-family-base);
   font-size: 2.25rem;
   font-weight: 800;
   color: var(--text-primary);
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
   letter-spacing: -0.02em;
 }
 
 .linea-acento {
   width: 60px;
-  height: 4px;
+  height: var(--space-1);
   background: var(--brand-primary);
   margin: 0 auto;
   border-radius: 2px;
 }
 
-/* ===== OFFERS / CAROUSEL ===== */
 .flag-oferta-wrapper {
   margin: 60px 0;
   display: flex;
@@ -153,10 +151,10 @@
   padding: 12px 24px;
   font-weight: 600;
   font-size: 1rem;
-  gap: 12px;
+  gap: var(--space-3);
   cursor: pointer;
-  border-radius: 50px;
-  transition: all 0.2s ease;
+  border-radius: var(--radius-pill);
+  transition: var(--transition-fast);
   box-shadow: var(--shadow-md);
 }
 
@@ -167,8 +165,8 @@
 }
 
 .punto-pulso {
-  width: 8px;
-  height: 8px;
+  width: var(--space-2);
+  height: var(--space-2);
   background: var(--brand-primary);
   border-radius: 50%;
   box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.3);
@@ -186,15 +184,14 @@
 
 .carrusel-oferta.mostrar {
   max-height: 600px;
-  /* Adequate height for cards */
-  margin-top: 32px;
+
+  margin-top: var(--space-7);
 }
 
-/* ===== PRODUCT CARDS WRAPPER ===== */
 .grid-productos,
 .wrapper-productos {
   display: flex;
-  gap: 24px;
+  gap: var(--space-6);
   overflow-x: auto;
   padding: 24px 4px;
   scroll-behavior: smooth;
@@ -208,7 +205,6 @@
   display: none;
 }
 
-/* Smooth edge fade effect */
 .fade-edges {
   mask-image: linear-gradient(
     to right,
@@ -228,7 +224,7 @@
 
 .tarjeta-producto-wrapper {
   flex: 0 0 300px;
-  /* Fixed width for the wrapper */
+
   height: auto;
 }
 
@@ -240,7 +236,6 @@
   justify-content: center;
 }
 
-/* Resp */
 @media (max-width: 768px) {
   .hero-industrial {
     height: auto;
