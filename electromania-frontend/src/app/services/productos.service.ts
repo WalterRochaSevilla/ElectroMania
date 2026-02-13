@@ -88,7 +88,8 @@ export class ProductosService {
             this.invalidateProductsCache();
             return updated;
         }
-        const { image: _image, ...jsonData } = product;
+        const jsonData: UpdateProductRequest = { ...product };
+        delete jsonData.image;
         const updated = await firstValueFrom(this.http.put<Product>(API.PRODUCTS.UPDATE(id), jsonData));
         this.invalidateProductsCache();
         return updated;

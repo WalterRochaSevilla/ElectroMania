@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
@@ -11,7 +11,7 @@ import { isValidEmail, isValidNIT, isValidPassword, passwordsMatch, formatNIT } 
 @Component({
     selector: 'app-registro',
     standalone: true,
-    imports: [FormsModule, RouterLink, PasswordInputComponent, TranslateModule],
+    imports: [FormsModule, PasswordInputComponent, TranslateModule],
     templateUrl: './registro.component.html',
     styleUrls: ['./registro.component.css']
 })

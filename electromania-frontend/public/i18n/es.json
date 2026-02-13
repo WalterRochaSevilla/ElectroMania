@@ -20,7 +20,8 @@
     "COMING_SOON": "Próximamente",
     "ACTIVE": "Activo",
     "INACTIVE": "Inactivo",
-    "NOT_AVAILABLE": "N/D"
+    "NOT_AVAILABLE": "N/D",
+    "TOGGLE_PASSWORD_VISIBILITY": "Alternar visibilidad de contraseña"
   },
   "USER_MODAL": {
     "NEW_USER": "Nuevo Usuario",
@@ -65,7 +66,9 @@
     "DRAG_REPLACE": "Arrastra una nueva imagen para reemplazar",
     "IMAGE_FORMATS": "PNG, JPG, WebP (máx. 10MB)",
     "OR_ENTER_URL": "o ingresa una URL",
-    "URL_PLACEHOLDER": "https://ejemplo.com/imagen.jpg"
+    "URL_PLACEHOLDER": "https://ejemplo.com/imagen.jpg",
+    "EXISTING_IMAGE_ALT": "Imagen existente",
+    "IMAGE_PREVIEW_ALT": "Vista previa de imagen"
   },
   "PRODUCT_CARD": {
     "OFFER": "OFERTA",
@@ -115,7 +118,8 @@
     "ORDERS": "Pedidos",
     "ABOUT": "Sobre Nosotros",
     "CONTACT": "Contáctenos",
-    "PROFILE": "Perfil"
+    "PROFILE": "Perfil",
+    "MENU": "Menú"
   },
   "FOOTER": {
     "BRAND_DESC": "Ingeniería mecatrónica y componentes de alta fidelidad. Tecnología profesional para innovadores.",
@@ -403,7 +407,8 @@
     "SCHEDULE_SATURDAY": "Sabados: 9:00 - 13:00",
     "WHATSAPP_MESSAGE": "Hola, me interesa mas informacion sobre sus servicios",
     "EMAIL_SUBJECT": "Consulta ElectroMania",
-    "EMAIL_BODY": "Hola, me interesa mas informacion sobre..."
+    "EMAIL_BODY": "Hola, me interesa mas informacion sobre...",
+    "OFFICE_IMAGE_ALT": "Oficina de ElectroMania"
   },
   "ABOUT": {
     "TITLE": "Sobre Nosotros",
@@ -416,7 +421,10 @@
     "MISSION_PARAGRAPH_2": "Queremos que cada eleccion sea una inversion inteligente. Cada sensor, cada placa, cada motor es una pieza esencial en el desarrollo de la innovacion nacional.",
     "VISION_TITLE": "Nuestra Vision",
     "VISION_PARAGRAPH_1": "Ser el referente lider en Bolivia. Un punto de encuentro donde la innovacion, la calidad y la confianza impulsen una nueva generacion de talentos.",
-    "VISION_PARAGRAPH_2": "Visualizamos un pais donde el acceso a tecnologia de calidad no sea una barrera, sino un impulso para construir un futuro mas innovador."
+    "VISION_PARAGRAPH_2": "Visualizamos un pais donde el acceso a tecnologia de calidad no sea una barrera, sino un impulso para construir un futuro mas innovador.",
+    "TEAM_IMAGE_ALT": "Equipo de ElectroMania",
+    "MISSION_IMAGE_ALT": "Misión",
+    "VISION_IMAGE_ALT": "Visión"
   },
   "PRODUCT_DETAIL": {
     "STOCK_OUT": "Agotado temporalmente",

@@ -130,6 +130,7 @@ export class DetalleProductoComponent implements OnInit {
         this.toast.success(this.translate.instant('CART.ADDED', { name: producto.nombre }));
     }
     setDefaultImage(_event: Event) {
+        void _event;
         const producto = this.producto();
         if (!producto)
             return;

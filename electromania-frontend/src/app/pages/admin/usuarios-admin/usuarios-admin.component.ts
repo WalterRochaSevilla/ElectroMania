@@ -150,12 +150,15 @@ export class UsuariosAdminComponent implements OnInit {
         }
     }
     eliminarUsuario(_id: number) {
+        void _id;
         this.toast.info(this.languageService.instant('ADMIN.DELETE_NOT_AVAILABLE'));
     }
     toggleEstado(_usuario: UserDisplay) {
+        void _usuario;
         this.toast.info(this.languageService.instant('ADMIN.STATE_CHANGE_NOT_AVAILABLE'));
     }
     resetPassword(_usuario: UserDisplay) {
+        void _usuario;
         this.toast.info(this.languageService.instant('ADMIN.RESET_NOT_AVAILABLE'));
     }
 }

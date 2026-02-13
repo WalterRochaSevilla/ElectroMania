@@ -80,7 +80,7 @@
         <div class="image-col">
           <div class="service-card">
             <div class="image-header">
-              <img src="contactenos.png" alt="ElectroMania Office" class="contact-img"
+              <img src="contactenos.png" [alt]="'CONTACT.OFFICE_IMAGE_ALT' | translate" class="contact-img"
                 (error)="onImageError($event)">
               <div class="overlay">
                 <h3>{{ 'CONTACT.BRAND' | translate }}</h3>

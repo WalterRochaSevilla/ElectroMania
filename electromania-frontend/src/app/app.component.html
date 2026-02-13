@@ -197,7 +197,7 @@
 <div class="mobile-menu-overlay" [class.open]="mobileMenuOpen()" (click)="toggleMobileMenu()"
   (keyup.enter)="toggleMobileMenu()" tabindex="0"></div>
 <button class="hamburger-btn" (click)="toggleMobileMenu()" [class.active]="mobileMenuOpen()"
-  [class.hidden]="isScrolled() && !mobileMenuOpen()" aria-label="Menu">
+  [class.hidden]="isScrolled() && !mobileMenuOpen()" [attr.aria-label]="'NAV.MENU' | translate">
   <span></span>
   <span></span>
   <span></span>

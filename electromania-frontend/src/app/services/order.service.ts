@@ -42,8 +42,8 @@ export class OrderService {
         this.ordersInFlight = request;
         return request;
     }
-    async getOrderById(id: number): Promise<Blob> {
-        return firstValueFrom(this.http.get(API.ORDER.BY_ID(id), { responseType: 'blob' }));
+    async getOrderById(id: number): Promise<Order> {
+        return firstValueFrom(this.http.get<Order>(API.ORDER.BY_ID(id)));
     }
     async createOrderFromCart(): Promise<Order> {
         const created = await firstValueFrom(this.http.post<Order>(API.ORDER.REGISTER, {}));

@@ -20,7 +20,8 @@
     "COMING_SOON": "Coming Soon",
     "ACTIVE": "Active",
     "INACTIVE": "Inactive",
-    "NOT_AVAILABLE": "N/A"
+    "NOT_AVAILABLE": "N/A",
+    "TOGGLE_PASSWORD_VISIBILITY": "Toggle password visibility"
   },
   "USER_MODAL": {
     "NEW_USER": "New User",
@@ -65,7 +66,9 @@
     "DRAG_REPLACE": "Drag a new image to replace",
     "IMAGE_FORMATS": "PNG, JPG, WebP (max. 10MB)",
     "OR_ENTER_URL": "or enter a URL",
-    "URL_PLACEHOLDER": "https://example.com/image.jpg"
+    "URL_PLACEHOLDER": "https://example.com/image.jpg",
+    "EXISTING_IMAGE_ALT": "Existing image",
+    "IMAGE_PREVIEW_ALT": "Image preview"
   },
   "PRODUCT_CARD": {
     "OFFER": "SALE",
@@ -115,7 +118,8 @@
     "ORDERS": "Orders",
     "ABOUT": "About Us",
     "CONTACT": "Contact Us",
-    "PROFILE": "Profile"
+    "PROFILE": "Profile",
+    "MENU": "Menu"
   },
   "FOOTER": {
     "BRAND_DESC": "Mechatronics engineering and high-fidelity components. Professional technology for innovators.",
@@ -403,7 +407,8 @@
     "SCHEDULE_SATURDAY": "Saturdays: 9:00 - 13:00",
     "WHATSAPP_MESSAGE": "Hello, I would like more information about your services",
     "EMAIL_SUBJECT": "ElectroMania inquiry",
-    "EMAIL_BODY": "Hello, I would like more information about..."
+    "EMAIL_BODY": "Hello, I would like more information about...",
+    "OFFICE_IMAGE_ALT": "ElectroMania office"
   },
   "ABOUT": {
     "TITLE": "About Us",
@@ -416,7 +421,10 @@
     "MISSION_PARAGRAPH_2": "We want every choice to be a smart investment. Every sensor, board, and motor is an essential piece in national innovation.",
     "VISION_TITLE": "Our Vision",
     "VISION_PARAGRAPH_1": "Be the leading reference in Bolivia. A meeting point where innovation, quality, and trust drive a new generation of talent.",
-    "VISION_PARAGRAPH_2": "We envision a country where access to quality technology is not a barrier, but a boost to build a more innovative future."
+    "VISION_PARAGRAPH_2": "We envision a country where access to quality technology is not a barrier, but a boost to build a more innovative future.",
+    "TEAM_IMAGE_ALT": "ElectroMania team",
+    "MISSION_IMAGE_ALT": "Mission",
+    "VISION_IMAGE_ALT": "Vision"
   },
   "PRODUCT_DETAIL": {
     "STOCK_OUT": "Temporarily out of stock",

@@ -174,8 +174,12 @@ export class CartService {
     async removeItem(id: number): Promise<void> {
         if (this.authService.isAuthenticated()) {
             await this.postDeleteProduct(id);
+            await this.refreshCart();
+            return;
         }
-        await this.refreshCart();
+
+        this.itemsSignal.update(items => items.filter(item => item.id !== id));
+        this.saveToStorage();
     }
     async updateQuantity(id: number, cantidad: number): Promise<void> {
         if (cantidad <= 0) {

@@ -92,7 +92,7 @@ export interface ProductFormData {
                           [class.selected]="selectedExistingImage === img"
                           (click)="selectExistingImage(img)"
                         >
-                          <img [src]="img" alt="Imagen existente" class="pfm-existing-image-thumb">
+                          <img [src]="img" [alt]="'PRODUCT_MODAL.EXISTING_IMAGE_ALT' | translate" class="pfm-existing-image-thumb">
                           @if (selectedExistingImage === img) {
                             <span class="pfm-check-mark">✓</span>
                           }
@@ -118,7 +118,7 @@ export interface ProductFormData {
                 >
                   @if (imagePreview) {
                     <div class="pfm-preview-container">
-                      <img [src]="imagePreview" alt="Vista previa" class="pfm-image-preview">
+                      <img [src]="imagePreview" [alt]="'PRODUCT_MODAL.IMAGE_PREVIEW_ALT' | translate" class="pfm-image-preview">
                       <button type="button" class="pfm-remove-image" (click)="removeImage($event)">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                       </button>

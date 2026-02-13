@@ -2,16 +2,38 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BienvenidaComponent } from './bienvenida.component';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { vi } from 'vitest';
+import { COMMON_TEST_PROVIDERS } from '../../../testing/test-providers';
+import { ProductosService } from '../../services/productos.service';
 describe('BienvenidaComponent', () => {
     let component: BienvenidaComponent;
     let fixture: ComponentFixture<BienvenidaComponent>;
-    let routerSpy: jasmine.SpyObj<Router>;
+    let routerSpy: Pick<Router, 'navigate'>;
+    const mockCards = Array.from({ length: 12 }, (_, index) => ({
+        product_id: index + 1,
+        product_name: `Producto ${index + 1}`,
+        description: 'Descripción',
+        price: 100,
+        stock: 10,
+        images: [],
+        isOffer: false
+    }));
     beforeEach(async () => {
-        routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+        routerSpy = {
+            navigate: vi.fn()
+        };
         await TestBed.configureTestingModule({
             imports: [BienvenidaComponent, CommonModule],
             providers: [
-                { provide: Router, useValue: routerSpy }
+                ...COMMON_TEST_PROVIDERS,
+                { provide: Router, useValue: routerSpy },
+                {
+                    provide: ProductosService,
+                    useValue: {
+                        getAllProducts: vi.fn().mockResolvedValue([]),
+                        toProductCards: vi.fn().mockReturnValue(mockCards)
+                    }
+                }
             ]
         }).compileComponents();
         fixture = TestBed.createComponent(BienvenidaComponent);
@@ -22,19 +44,21 @@ describe('BienvenidaComponent', () => {
         expect(component).toBeTruthy();
     });
     it('debe inicializar con ofertas cerradas', () => {
-        expect(component.ofertasAbiertas).toBeFalse();
+        expect(component.ofertasAbiertas()).toBe(true);
     });
     it('debe alternar el estado de ofertas', () => {
         component.toggleOfertas();
-        expect(component.ofertasAbiertas).toBeTrue();
+        expect(component.ofertasAbiertas()).toBe(false);
         component.toggleOfertas();
-        expect(component.ofertasAbiertas).toBeFalse();
+        expect(component.ofertasAbiertas()).toBe(true);
     });
     it('debe tener 6 productos destacados', () => {
-        expect(component.productosDestacados.length).toBe(6);
+        component.productosDestacados.set(mockCards.slice(0, 6));
+        expect(component.productosDestacados().length).toBe(6);
     });
     it('debe tener 6 productos en oferta', () => {
-        expect(component.productosOferta.length).toBe(6);
+        component.productosOferta.set(mockCards.slice(6, 12));
+        expect(component.productosOferta().length).toBe(6);
     });
     it('debe navegar a tienda al hacer click en explorar', () => {
         component.irATienda();

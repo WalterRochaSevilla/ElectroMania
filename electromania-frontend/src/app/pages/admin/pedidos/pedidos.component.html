@@ -78,7 +78,7 @@
                       {{ getStatusLabel(order.status) }}
                     </span>
                   </td>
-                  <td class="order-date">{{ formatDate(order.created_at) }}</td>
+                  <td class="order-date">{{ formatDate(order.created_at || order.createdAt) }}</td>
                   <td class="actions">
                     @if (order.status === 'PENDING') {
                       <button class="btn-action btn-confirm" (click)="updateStatus(order, 'PAID')">

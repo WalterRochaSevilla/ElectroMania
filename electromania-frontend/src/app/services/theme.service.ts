@@ -24,7 +24,9 @@ export class ThemeService {
         if (!this.isBrowser)
             return;
         const savedTheme = this.storageService.getItem(STORAGE_KEY);
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const prefersDark = typeof window.matchMedia === 'function'
+            ? window.matchMedia('(prefers-color-scheme: dark)').matches
+            : true;
         if (savedTheme) {
             this.isDarkSignal.set(savedTheme === 'dark');
         }

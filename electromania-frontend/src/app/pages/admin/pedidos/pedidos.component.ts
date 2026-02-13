@@ -114,8 +114,15 @@ export class PedidosComponent implements OnInit {
     getStatusClass(status: string): string {
         return this.orderService.getStatusClass(status);
     }
-    formatDate(dateString: string): string {
-        return new Date(dateString).toLocaleDateString('es-BO', {
+    formatDate(dateString?: string): string {
+        if (!dateString) {
+            return this.languageService.instant('COMMON.NOT_AVAILABLE');
+        }
+        const parsedDate = new Date(dateString);
+        if (Number.isNaN(parsedDate.getTime())) {
+            return this.languageService.instant('COMMON.NOT_AVAILABLE');
+        }
+        return parsedDate.toLocaleString('es-BO', {
             year: 'numeric',
             month: 'short',
             day: 'numeric',
