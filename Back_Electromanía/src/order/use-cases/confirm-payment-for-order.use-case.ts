@@ -22,48 +22,58 @@ export class ConfirmPaymentForOrderUseCase {
     private readonly sendOrderByEmail:SendOrderReceiptUseCase,
     private readonly generateHtml:GenerateOrderXmlUseCase
   ){}
-  async execute(orderId:number){
-    const result = await this.prisma.$transaction(async (tx) => {
-      const order = await this.orderService.getById(orderId);
-      if(!order){
-        throw new NotFoundException('Order not found');
-      }
-      const updateCart: CartUpdateRequest ={
-        id: order.cart.id,
-        state: 'COMPLETED'
-      }
-      const cart = await this.cartService.updateCart(order.cart.id,
-        updateCart,tx
-      )
-      await Promise.all(
-        order.cart.details.map(detail =>
-        this.productService.discountStock(detail.product.product_id, detail.quantity, tx)
+  async execute(orderId: number) {
+    await this.processPaymentTransaction(orderId);
+    await this.sendOrderByEmail.execute(orderId);
+    return await this.generateHtml.execute(orderId);
+  }
+
+  private async processPaymentTransaction(orderId: number): Promise<void> {
+    await this.prisma.$transaction(async (tx) => {
+      const order = await this.getOrder(orderId);
+      await this.confirmProductsSales(order, tx);
+      await this.markCartAsCompleted(order.cart.id, tx);
+      await this.markOrderAsPaid(orderId, tx);
+      await this.createPaymentRecord(orderId, order.total, tx);
+    });
+  }
+
+  private async getOrder(orderId: number) {
+    const order = await this.orderService.getById(orderId);
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+    return order;
+  }
+
+  private async confirmProductsSales(order: any, tx: any): Promise<void> {
+    await Promise.all(
+      order.cart.details.map((detail: any) =>
+        this.productService.confirmSale(detail.product.product_id, detail.quantity, tx)
       )
     );
-      await this.orderService.update(orderId,{
-        orderId: orderId,
-        status: OrderStatus.PAID,
-      },tx)
-      const payment = await this.paymentService.registerPayment(orderId, {
-        orderId: orderId,
-        amount: order.total,
-        method: PaymentMethod.CASH,
-        status: PaymentStatus.PAID
-      }, tx)
-      // await this.prisma.order.update({
-      //   where: { order_id: orderId },
-      //   data: {
-      //     payment:{
-      //       connect: {
-      //         payment_id: payment.payment_id
-      //       }
-      //     }
-      //   }
-      // })
-      return orderId
-    })
-    await this.sendOrderByEmail.execute(orderId);
-    const html = (await this.generateHtml.execute(orderId));
-    return html
+  }
+
+  private async markCartAsCompleted(cartId: number, tx: any): Promise<void> {
+    const updateCart: CartUpdateRequest = {
+      id: cartId,
+      state: 'COMPLETED'
+    };
+    await this.cartService.updateCart(cartId, updateCart, tx);
+  }
+
+  private async markOrderAsPaid(orderId: number, tx: any): Promise<void> {
+    await this.orderService.update(orderId, {
+      status: OrderStatus.PAID,
+    }, tx);
+  }
+
+  private async createPaymentRecord(orderId: number, amount: number, tx: any): Promise<void> {
+    await this.paymentService.registerPayment(orderId, {
+      orderId: orderId,
+      amount: amount,
+      method: PaymentMethod.CASH,
+      status: PaymentStatus.PAID
+    }, tx);
   }
 }

@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Headers, UseGuards, Logger, Query, ParseIntPipe, Res, Req, UnauthorizedException } from '@nestjs/common';
 import { OrderService } from '../service/order.service';
 import { CreateOrderDto } from '../dto/create-order.dto';
-import { UpdateOrderDto } from '../dto/update-order.dto';
+import { UpdateOrderDto, UpdateOrderModel } from '../dto/update-order.dto';
 import { AuthGuard } from '../../auth/guards/auth.guard';
 import { CreateOrderByCartUseCase } from '../use-cases/create-order-by-cart.usecase';
 import { AuthService } from '../../auth/service/auth.service';
@@ -64,7 +64,7 @@ export class OrderController {
 
   @Patch(':id')
   update(@Param('id') id: number, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.updateOrderStatus.execute(id, updateOrderDto);
+    return this.updateOrderStatus.execute(id, new UpdateOrderModel(updateOrderDto.status));
   }
   @Delete(':id')
   remove(@Param('id') id: string) {

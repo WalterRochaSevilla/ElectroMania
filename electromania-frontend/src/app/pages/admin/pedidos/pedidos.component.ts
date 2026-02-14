@@ -80,6 +80,8 @@ export class PedidosComponent implements OnInit {
     async updateStatus(order: Order, newStatus: OrderStatus) {
         try {
             await this.orderService.updateOrder(order.id, { status: newStatus });
+            console.log(newStatus);
+            console.log(order);
             order.status = newStatus;
             this.applyFilters();
             this.toast.success(this.languageService.instant('ADMIN.ORDER_UPDATED', { id: order.id, status: this.orderService.getStatusLabel(newStatus) }));

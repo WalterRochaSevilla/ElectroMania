@@ -19,33 +19,63 @@ export class CancelOrderUseCase {
   ) {}
 
   async execute(orderId: number) {
-    this.prisma.$transaction(async (tx) => {
-      const order = await this.orderService.getById(orderId);
-      if(!order){
-        throw new NotFoundException('Order not found');
-      }
-      const updateCart: CartUpdateRequest ={
-        id: order.cart.id,
-        state: CartState.CANCELED
-      }
-      if(order.status === OrderStatus.PAID){
-        await order.cart.details.forEach(async (detail) => {
-          this.productService.addStock(detail.product.product_id, detail.quantity, tx);
-        })
-      }else{
-        await order.cart.details.forEach(async (detail) => {
-          this.productService.discountStock(detail.product.product_id, detail.quantity, tx);
-        })
-      }
-      const cart = await this.CartService.updateCart(order.cart.id,
-        updateCart
-      )
-      })
-      await this.orderService.update(orderId,{
-        orderId: orderId,
-        status: OrderStatus.CANCELED
-      })
-      return this.orderService.getById(orderId)
+    return await this.prisma.$transaction(async (tx) => {
+      const order = await this.getOrder(orderId);
+      await this.handleStockRecovery(order, tx);
+      await this.markCartAsCanceled(order.cart.id);
+      await this.markOrderAsCanceled(orderId);
+      return await this.orderService.getById(orderId);
+    });
+  }
+
+  private async getOrder(orderId: number) {
+    const order = await this.orderService.getById(orderId);
+    if (!order) {
+      throw new NotFoundException('Order not found');
     }
+    return order;
+  }
+
+  private async handleStockRecovery(order: any, tx: any): Promise<void> {
+    if (order.status === OrderStatus.PAID) {
+      await this.recoverPaidOrderStock(order.cart.details, tx);
+    } else {
+      await this.releasePendingOrderStock(order.cart.details, tx);
+    }
+  }
+
+  private async recoverPaidOrderStock(details: any[], tx: any): Promise<void> {
+    for (const detail of details) {
+      await this.productService.recoverReservedQuantity(
+        detail.product.product_id, 
+        detail.quantity, 
+        tx
+      );
+    }
+  }
+
+  private async releasePendingOrderStock(details: any[], tx: any): Promise<void> {
+    for (const detail of details) {
+      await this.productService.releaseReservedStock(
+        detail.product.product_id, 
+        detail.quantity, 
+        tx
+      );
+    }
+  }
+
+  private async markCartAsCanceled(cartId: number): Promise<void> {
+    const updateCart: CartUpdateRequest = {
+      id: cartId,
+      state: CartState.CANCELED
+    };
+    await this.CartService.updateCart(cartId, updateCart);
+  }
+
+  private async markOrderAsCanceled(orderId: number): Promise<void> {
+    await this.orderService.update(orderId, {
+      status: OrderStatus.CANCELED
+    });
+  }
   
 }

@@ -13,12 +13,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({
-    transform: true,
-    whitelist: true,
-    forbidNonWhitelisted: false,
-    transformOptions: {
-      enableImplicitConversion: true,
-    },
+    transform: true
   }));
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
     prefix: '/uploads',
