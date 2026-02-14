@@ -1,16 +1,19 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import { UserCreateRequestModel } from '../../user/models/UserCreateRequest.model';
 import { UserLoginRequestModel } from '../models/user-login.model';
 import { ApiFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserModel } from '../../user/models/User.model';
 import { UserJwtPayloadModel } from '../models/user-jwt-payload.model';
-import { access } from 'fs';
+import { Response } from 'express';
+import { LoginUseCase } from '../use-cases/login.usecase';
 
 @Controller('auth')
 @ApiTags('Auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService,
+    private readonly loginUseCase:LoginUseCase
+  ) {}
 
   @ApiOperation({
     summary: 'Registrar un nuevo usuario ',
@@ -84,9 +87,19 @@ export class AuthController {
     }
   })
   @Post('login')
-  async login(@Body() request: UserLoginRequestModel) {
-    return this.authService.login(request);
-    
+  async login(@Body() request: UserLoginRequestModel,
+    @Res({passthrough: true})res:Response
+  ) {
+    const response = await this.loginUseCase.execute(request);
+    res.cookie('access_token', response.access_token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'strict',
+      domain: 'localhost',
+      path: '/',
+      maxAge: 1000 * 60 * 60 * 24, // 1 día
+    });
+    return response.user
   }
   @Post('register-admin')
   async registerAdminUser(@Body() request: UserCreateRequestModel) {

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { PrismaService } from '../../prisma/service/prisma.service';
 import { AuthService } from '../../auth/service/auth.service';
 import { ProductService } from '../../product/service/product.service';
@@ -11,6 +11,7 @@ import { IncreaseQuantityUseCase } from "./increase-quantity.use-case";
 
 @Injectable()
 export class AddProductToCartUseCase {
+  logger = new Logger(AddProductToCartUseCase.name);
   constructor(
     private readonly prisma:PrismaService,
     private readonly productService: ProductService,

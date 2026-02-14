@@ -8,6 +8,9 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import Configuration from '../config/Configuration';
 import { UserMapper } from '../user/mapper/User.mapper';
+import { PasswordService } from '../common/utils/password.service';
+import { LoginUseCase } from './use-cases/login.usecase';
+import { UserService } from '../user/service/user.service';
 
 @Module({
   imports: [
@@ -21,7 +24,7 @@ import { UserMapper } from '../user/mapper/User.mapper';
     })
   ],
   controllers: [AuthController],
-  providers: [AuthService,PrismaService, UserMapper],
+  providers: [AuthService,PrismaService, UserMapper,PasswordService,LoginUseCase,UserService],
   exports: [PassportModule, JwtModule, AuthService]
 })
 export class AuthModule {}

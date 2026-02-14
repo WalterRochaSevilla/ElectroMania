@@ -1,16 +1,27 @@
-import { Body, Controller, Get, Headers, Post } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, Req, UseGuards } from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import { UserCreateRequestModel } from '../models/UserCreateRequest.model';
 import { UserModel } from '../models/User.model';
+import { Request } from 'express';
+import { access } from 'fs';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { UserJwtPayloadModel } from '../../auth/models/user-jwt-payload.model';
+import { AuthGuard } from '../../auth/guards/auth.guard';
+import { RolesGuard } from '../../auth/guards/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { UserRole } from '../enums/UserRole.enum';
 @Controller("users")
 export class UserController {
     constructor(private readonly userService: UserService){}
+    @Roles(UserRole.ADMIN)
+    @UseGuards(AuthGuard,RolesGuard)
     @Get("all")
     async getAllUsers(): Promise<UserModel[]> {
         return await this.userService.getAllUsers();
     }
+    @UseGuards(AuthGuard)
     @Get("get")
-    async getUserByUUID(@Headers('authorization') token: string): Promise<UserModel> {
-        return await this.userService.getUserByUUID(token.replace("Bearer ", ""));
+    async getUserByUUID(@CurrentUser() user:UserJwtPayloadModel): Promise<UserModel> {
+        return await this.userService.getUserByUUID(user.uuid);
     }
 }

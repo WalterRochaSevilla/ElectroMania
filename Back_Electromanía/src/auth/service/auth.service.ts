@@ -29,7 +29,7 @@ export class AuthService {
             return Promise.reject(error);
         }
     }
-    private async generateToken(user: UserJwtPayloadModel) {
+    async generateToken(user: UserJwtPayloadModel) {
         return new LoginResponseModel(
             this.jwtService.sign({user}),
         );

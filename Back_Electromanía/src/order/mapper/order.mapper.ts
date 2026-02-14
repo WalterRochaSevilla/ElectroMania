@@ -2,7 +2,6 @@ import { Prisma } from "@prisma/client";
 import { CreateOrderDto } from "../dto/create-order.dto";
 import { OrderReceiptModel, OrderResponseModel } from "../models/order-response.model";
 import { CartMapper } from "../../cart/mapper/cart.mapper";
-import { CartDetailsMapper } from '../../cart/mapper/cartDetails.mapper';
 type OrderWithUserOrdersAndCart = Prisma.OrderGetPayload<{
         include: {
             userOrders: {
@@ -39,9 +38,7 @@ type OrderForReceipt = Prisma.OrderGetPayload<{
 }>
 export class OrderMapper {
     private readonly cartMapper = new CartMapper()
-    private readonly cartDetailsMapper = new CartDetailsMapper()
     toRegisterEntity(CreateOrderSto:CreateOrderDto):Prisma.OrderCreateInput{
-        const orderItems = CreateOrderSto.cart.details.map(detail => (this.cartDetailsMapper.toOrderItem(detail)))
        const response:Prisma.OrderCreateInput = {
            userOrders:{
             create:{
@@ -52,9 +49,6 @@ export class OrderMapper {
             connect:{
                 cart_id:CreateOrderSto.cart.id,
             },
-           },
-           orderItems:{
-            create:orderItems
            },
            total:CreateOrderSto.cart.total
        }

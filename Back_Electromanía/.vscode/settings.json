@@ -1,3 +1,8 @@
 {
     "material-icon-theme.activeIconPack": "nest",
+    "a-file-icon-vscode.arrowTheme": "arrow",
+    "a-file-icon-vscode.activeIconPacks": [
+        "angular",
+        "rails"
+    ],
 }

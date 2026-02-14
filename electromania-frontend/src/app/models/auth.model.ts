@@ -5,6 +5,15 @@ export interface LoginRequest {
 export interface LoginResponse {
     access_token: string;
 }
+
+export interface LoginUserResponse{
+  uuid: string;
+  email: string;
+  nit_ci: string;
+  social_reason: string;
+  role: string;
+}
+
 export interface DecodedToken {
     user?: {
         uuid?: string;

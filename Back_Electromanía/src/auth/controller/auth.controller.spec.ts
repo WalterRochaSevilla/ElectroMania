@@ -8,6 +8,7 @@ import { PrismaService } from '../../prisma/service/prisma.service';
 import { PasswordService } from '../../common/utils/password.service';
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { LoginUseCase } from '../use-cases/login.usecase';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -24,7 +25,7 @@ describe('AuthController', () => {
             set: jest.fn(),
             del: jest.fn(),
           },
-        }
+        },LoginUseCase
       ],
     }).compile();
 

@@ -4,32 +4,38 @@ services:
       context: ./Back_Electromanía
       dockerfile: Dockerfile
       target: development
-    container_name: electromania-backend
+    container_name: electromania-backend-dev
+    image: electromania-backend:dev
     env_file:
-      - .env
+      - .dev.env
     depends_on:
       postgres:
         condition: service_healthy
-
     volumes:
       - ./Back_Electromanía/src:/usr/src/app/src
       - ./Back_Electromanía/prisma:/usr/src/app/prisma
+      - ./Back_Electromanía/nest-cli.json:/usr/src/app/nest-cli.json
+      - ./Back_Electromanía/tsconfig.json:/usr/src/app/tsconfig.json
+      - ./Back_Electromanía/tsconfig.build.json:/usr/src/app/tsconfig.build.json
       - uploads_data:/usr/src/app/uploads
+      - /usr/src/app/node_modules
 
     ports:
       - "3000:3000"
 
-    command: sh -c "rm -rf dist && pnpm prisma migrate dev && pnpm start:dev"
+    command: sh -c "pnpm prisma migrate dev && pnpm start:dev"
 
   frontend:
     build:
       context: ./electromania-frontend
       dockerfile: Dockerfile
       target: development
-    container_name: electromania-frontend
+    container_name: electromania-frontend-dev
+    image: electromania-frontend:dev
     volumes:
       - ./electromania-frontend:/usr/src/app
       - angular_cache:/usr/src/app/.angular/cache
+      - /usr/src/app/node_modules
     command: npm run start:dev
     ports:
       - "4200:4200"
@@ -37,7 +43,7 @@ services:
   postgres:
     image: postgres:16-alpine
     container_name: postgres-db
-    env_file: .env
+    env_file: .dev.env
     environment:
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}

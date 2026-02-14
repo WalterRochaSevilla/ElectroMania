@@ -5,6 +5,7 @@ import { Order, UpdateOrderStatusRequest } from '../models';
 import { API } from '../constants';
 import { LanguageService } from './language.service';
 import { SKIP_GLOBAL_ERROR_TOAST } from '../interceptors/error.interceptor';
+
 @Injectable({
     providedIn: 'root'
 })
@@ -51,7 +52,8 @@ export class OrderService {
         return created;
     }
     async updateOrder(id: number, data: UpdateOrderStatusRequest): Promise<Order> {
-        const updated = await firstValueFrom(this.http.patch<Order>(API.ORDER.BY_ID(id), data));
+        const updated = await firstValueFrom(this.http.patch<Order>(API.ORDER.BY_ID(id), {orderId: id, status: data.status}));
+        console.log(updated);
         this.invalidateOrdersCache();
         return updated;
     }

@@ -1,15 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Headers, UseGuards, Logger, Query, ParseIntPipe, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Headers, UseGuards, Logger, Query, ParseIntPipe, Res, Req, UnauthorizedException } from '@nestjs/common';
 import { OrderService } from '../service/order.service';
 import { CreateOrderDto } from '../dto/create-order.dto';
-import { UpdateOrderDto } from '../dto/update-order.dto';
+import { UpdateOrderDto, UpdateOrderModel } from '../dto/update-order.dto';
 import { AuthGuard } from '../../auth/guards/auth.guard';
 import { CreateOrderByCartUseCase } from '../use-cases/create-order-by-cart.usecase';
 import { AuthService } from '../../auth/service/auth.service';
 import { ConfirmPaymentForOrderUseCase } from '../use-cases/confirm-payment-for-order.use-case';
 import { UpdateOrderStatusUseCase } from '../use-cases/update-order-status.use-case';
 import { GenerateOrderXmlUseCase } from '../use-cases/generate-order-xml.usecase';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { SendOrderReceiptUseCase } from '../use-cases/send-order-receipt.use-case';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { UserJwtPayloadModel } from '../../auth/models/user-jwt-payload.model';
 
 @Controller('order')
 export class OrderController {
@@ -25,8 +27,7 @@ export class OrderController {
 
   @UseGuards(AuthGuard)
   @Post('register')
-  async register(@Headers('authorization') token: string) {
-    const user = await  this.authService.getUserFromToken(token.replace('Bearer ', ''));
+  async register(@CurrentUser() user:UserJwtPayloadModel) {
     return this.createOrderByCart.execute(user.uuid);
   }
   @Get("all")
@@ -39,7 +40,6 @@ export class OrderController {
     @Res() res: Response
   ) {
     const result = await this.generateXml.execute(id);
-    
     res.set('Content-Type', 'text/html; charset=utf-8');
     res.send(result.html);
   }
@@ -49,8 +49,8 @@ export class OrderController {
   }
   @UseGuards(AuthGuard)
   @Get()
-  async getAllOrdersBy(@Headers('authorization') token: string) {
-    return this.orderService.getByUser(token.replace('Bearer ', ''));
+  async getAllOrdersBy(@CurrentUser() user:UserJwtPayloadModel){
+    return this.orderService.getByUser(user.uuid);
   }
 
   @Get(':id')
@@ -64,7 +64,7 @@ export class OrderController {
 
   @Patch(':id')
   update(@Param('id') id: number, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.updateOrderStatus.execute(id, updateOrderDto);
+    return this.updateOrderStatus.execute(id, new UpdateOrderModel(updateOrderDto.status));
   }
   @Delete(':id')
   remove(@Param('id') id: string) {

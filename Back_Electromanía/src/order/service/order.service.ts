@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateOrderDto } from '../dto/create-order.dto';
-import { UpdateOrderDto } from '../dto/update-order.dto';
+import { UpdateOrderDto, UpdateOrderModel } from '../dto/update-order.dto';
 import { PrismaService } from '../../prisma/service/prisma.service';
 import { AuthService } from '../../auth/service/auth.service';
 import { CartService } from '../../cart/service/cart.service';
@@ -14,6 +14,8 @@ import { CacheOrderKeys } from '../cache/cache-orders.keys';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
+const CACHE_TTL = 8000;
+
 @Injectable()
 export class OrderService {
   logger = new Logger(OrderService.name);
@@ -25,234 +27,264 @@ export class OrderService {
     readonly orderMapper: OrderMapper,
     @Inject(CACHE_MANAGER) private cacheManager:Cache
   ) {}
-  async create(createOrderDto: Prisma.OrderCreateInput, tx?:Prisma.TransactionClient) {
-    const prisma = tx ? tx : this.prisma;
-    return await prisma.order.create({
-      data: createOrderDto,
-      include: {
-        userOrders: {
-          include: {
-            user: true
-          }
-        },
-        cart:{
-          include: {
-            cartDetails: {
-              include: {
-                product: true
-              },
-            },
-          },
-        }
-      }
-    });
-    
+  // ==================== Public Methods ====================
+
+  async create(createOrderDto: Prisma.OrderCreateInput, tx?: Prisma.TransactionClient) {
+    const prisma = this.getPrismaClient(tx);
+    return await this.insertOrder(createOrderDto, prisma);
   }
 
-  async register(uuid: string,cart:CartResponseModel, tx?:Prisma.TransactionClient) {
+  private async insertOrder(createOrderDto: Prisma.OrderCreateInput, prisma: Prisma.TransactionClient | PrismaService) {
+    return await prisma.order.create({
+      data: createOrderDto,
+      include: this.getOrderIncludes(),
+    });
+  }
+
+  async register(uuid: string, cart: CartResponseModel, tx?: Prisma.TransactionClient): Promise<OrderResponseModel> {
+    const orderData = this.buildOrderData(cart);
+    const order = await this.create(orderData, tx);
+    const response = this.orderMapper.toResponseModel(order as any);
+    await this.updateCacheAfterCreate(order.order_id, cart.userUUID, response);
+    return response; 
+  }
+
+  private buildOrderData(cart: CartResponseModel): Prisma.OrderCreateInput {
     const request: CreateOrderDto = {
       user_uuid: cart.userUUID,
       cart: cart,
     };
-    const order = await this.create(this.orderMapper.toRegisterEntity(request), tx);
-    this.clearOrderCache(cart.userUUID);
-    this.clearAllOrdersCache();
-    const response = this.orderMapper.toResponseModel(order);
-    this.cacheManager.set(CacheOrderKeys.orderByID(order.order_id), response, 8000);
-    return response; 
+    return this.orderMapper.toRegisterEntity(request);
   }
 
-  async getByUser(token: string):Promise<OrderResponseModel[]> {
-    const user = await this.authService.getUserFromToken(token);
-    const cachedOrders = await this.getCachedOrdersByUser(user.uuid);
-    if(cachedOrders){
-      return cachedOrders;
-    }
-    const orders = await this.prisma.order.findMany({
-      where:{
-        userOrders: {
-          some:{
-            user_uuid: user.uuid
-          }
-        },
-      },
-      include: {
-        userOrders: {
-          include: {
-            user: true
-          }
-        },
-        cart: {
-          include:{
-            cartDetails:{
-              include: {
-                product: true
-              }
-            }
-          }
-        }
-      }
-    });
-    const response = orders.map((o) => this.orderMapper.toResponseModel(o))
-    this.cacheManager.set(CacheOrderKeys.orderByUser(user.uuid), response, 8000);
+  private async updateCacheAfterCreate(orderId: number, userUuid: string, response: OrderResponseModel): Promise<void> {
+    this.clearOrderCache(userUuid);
+    this.clearAllOrdersCache();
+    await this.cacheManager.set(CacheOrderKeys.orderByID(orderId), response, CACHE_TTL);
+  }
+
+  async getByUser(userUuid: string): Promise<OrderResponseModel[]> {
+    const cached = await this.getCachedOrdersByUser(userUuid);
+    if (cached) return cached;
+
+    const orders = await this.fetchOrdersByUser(userUuid);
+    const response = this.mapOrdersToResponse(orders);
+    await this.cacheOrdersByUser(userUuid, response);
     return response;
   }
 
-  private clearOrderCache(userUuid:string){
+  private async fetchOrdersByUser(userUuid: string) {
+    return await this.prisma.order.findMany({
+      where: this.buildUserOrderFilter(userUuid),
+      include: this.getOrderIncludes(),
+    });
+  }
+
+  private buildUserOrderFilter(userUuid: string): Prisma.OrderWhereInput {
+    return {
+      userOrders: {
+        some: { user_uuid: userUuid }
+      }
+    };
+  }
+
+  private mapOrdersToResponse(orders: any[]): OrderResponseModel[] {
+    return orders.map((o) => this.orderMapper.toResponseModel(o));
+  }
+
+  private async cacheOrdersByUser(userUuid: string, orders: OrderResponseModel[]): Promise<void> {
+    await this.cacheManager.set(CacheOrderKeys.orderByUser(userUuid), orders, CACHE_TTL);
+  }
+
+  // ==================== Cache Management ====================
+
+  private clearOrderCache(userUuid: string): void {
     this.cacheManager.del(CacheOrderKeys.orderByUser(userUuid));
   }
-  private clearCachedOrderById(orderId:number){
+
+  private clearCachedOrderById(orderId: number): void {
     this.cacheManager.del(CacheOrderKeys.orderByID(orderId));
   }
-  private clearAllOrdersCache(){
+
+  private clearAllOrdersCache(): void {
     this.cacheManager.del(CacheOrderKeys.allOrders);
   }
 
-  private async getAllCachedOrders():Promise<OrderResponseModel[] | null>{
-    const cachedOrders = await this.cacheManager.get(CacheOrderKeys.allOrders);
-    if(cachedOrders){
-      return cachedOrders as OrderResponseModel[];
-    }
-    return null
-  }
-  private async getCahedOrderById(orderId:number):Promise<OrderResponseModel | null>{
-    const cachedOrder = await this.cacheManager.get(CacheOrderKeys.orderByID(orderId));
-    if(cachedOrder){
-      return cachedOrder as OrderResponseModel;
-    }
-    return null
+  private async getAllCachedOrders(): Promise<OrderResponseModel[] | null> {
+    const cached = await this.cacheManager.get(CacheOrderKeys.allOrders);
+    return cached ? (cached as OrderResponseModel[]) : null;
   }
 
-  private async getCachedOrdersByUser(userUuid:string):Promise<OrderResponseModel[] | null>{
-    const cachedOrders = await this.cacheManager.get(CacheOrderKeys.orderByUser(userUuid));
-    if(cachedOrders){
-      return cachedOrders as OrderResponseModel[];
-    }
-    return null
+  private async getCahedOrderById(orderId: number): Promise<OrderResponseModel | null> {
+    const cached = await this.cacheManager.get(CacheOrderKeys.orderByID(orderId));
+    return cached ? (cached as OrderResponseModel) : null;
   }
 
-  async getAll(){
-    const cachedOrders = await this.getAllCachedOrders();
-    if(cachedOrders){
-      return cachedOrders;
-    }
-    const orders = await this.prisma.order.findMany({
-      include: {
-        userOrders: {
-          include: {
-            user: true
-          }
-        },
-        cart: {
-          include: {
-            cartDetails: {
-              include: {
-                product: true
-              }
-            }
-          }
-        }
-      }
-    });
-    
-    const response = orders.map((o) => this.orderMapper.toResponseModel(o));
-    this.cacheManager.set(CacheOrderKeys.allOrders, response, 8000);
+  private async getCachedOrdersByUser(userUuid: string): Promise<OrderResponseModel[] | null> {
+    const cached = await this.cacheManager.get(CacheOrderKeys.orderByUser(userUuid));
+    return cached ? (cached as OrderResponseModel[]) : null;
+  }
+
+  async getAll(): Promise<OrderResponseModel[]> {
+    const cached = await this.getAllCachedOrders();
+    if (cached) return cached;
+
+    const orders = await this.fetchAllOrders();
+    const response = this.mapOrdersToResponse(orders);
+    await this.cacheAllOrders(response);
     return response;
   }
 
-  async getById(id: number) {
-    const cachedOrder = await this.getCahedOrderById(id);
-    if(cachedOrder){
-      return cachedOrder;
-    }
+  private async fetchAllOrders() {
+    return await this.prisma.order.findMany({
+      include: this.getOrderIncludes(),
+    });
+  }
+
+  private async cacheAllOrders(orders: OrderResponseModel[]): Promise<void> {
+    await this.cacheManager.set(CacheOrderKeys.allOrders, orders, CACHE_TTL);
+  }
+
+  async getById(id: number): Promise<OrderResponseModel> {
+    const cached = await this.getCahedOrderById(id);
+    if (cached) return cached;
+
+    const order = await this.findOrderById(id);
+    const response = this.orderMapper.toResponseModel(order as any);
+    await this.cacheOrderById(id, response);
+    return response;
+  }
+
+  private async findOrderById(id: number) {
     const order = await this.prisma.order.findUnique({
       where: { order_id: id },
-      include: {
-        userOrders: {
-          include: {
-            user: true
-          }
-        },
-        cart: {
-          include: {
-            cartDetails: {
-              include: {
-                product: true
-              }
-            }
-          }
-        }
-      }
+      include: this.getOrderIncludes(),
     });
+
     if (!order) {
-      throw new NotFoundException('Order not found');
+      throw new NotFoundException(`Order with ID ${id} not found`);
     }
-    const response = this.orderMapper.toResponseModel(order);
-    this.cacheManager.set(CacheOrderKeys.orderByID(id), response, 8000);
-    return response;
-  }
 
-
-  async getOrderForXML(id: number, tx?:Prisma.TransactionClient) {
-    const prisma = tx? tx : this.prisma
-    const order = await prisma.order.findUnique({
-      where: { order_id: id },
-      include: {
-        orderItems: true,
-        payment: {
-          where: {
-            order_id: id
-          }
-        },
-        cart:{
-          include:{
-            user:{
-              omit:{
-                password: true
-              }
-            }
-          }
-        }
-      }
-    })
-    if(!order){
-      throw new NotFoundException('Order not found')
-    }
-    return this.orderMapper.toOrderReceiptModel(order)
-  }
-
-  async update(id: number, updateOrderDto: UpdateOrderDto,tx?:Prisma.TransactionClient) {
-    const prisma = tx? tx : this.prisma
-    const order = await prisma.order.update({
-      where: { order_id: id },
-      data: {
-        status: updateOrderDto.status
-      },
-      include: {
-        userOrders: true
-      }
-    })
-    this.clearAllOrdersCache();
-    this.clearOrderCache(order.userOrders[0].user_uuid);
-    this.clearCachedOrderById(order.order_id);
     return order;
   }
 
-  async saveOrderItems(cartResponseModel:CartResponseModel, orderId: number, tx?:Prisma.TransactionClient){
-    const prisma = tx? tx : this.prisma
-    cartResponseModel.details.map((detail) =>
-      prisma.orderItem.create({
-        data: {
-          order_id: orderId,
-          product_id: detail.product.product_id,
-          product_name: detail.product.product_name,
-          unit_price: detail.product.price,
-          quantity: detail.quantity,
-          total: detail.total,
-        },
-      }));
+  private async cacheOrderById(orderId: number, order: OrderResponseModel): Promise<void> {
+    await this.cacheManager.set(CacheOrderKeys.orderByID(orderId), order, CACHE_TTL);
   }
-  remove(id: number) {
+
+
+  async getOrderForXML(id: number, tx?: Prisma.TransactionClient) {
+    const prisma = this.getPrismaClient(tx);
+    const order = await this.fetchOrderForReceipt(id, prisma);
+    return this.orderMapper.toOrderReceiptModel(order as any);
+  }
+
+  private async fetchOrderForReceipt(id: number, prisma: Prisma.TransactionClient | PrismaService) {
+    const order = await prisma.order.findUnique({
+      where: { order_id: id },
+      include: this.getOrderReceiptIncludes(id),
+    });
+
+    if (!order) {
+      throw new NotFoundException(`Order with ID ${id} not found`);
+    }
+
+    return order;
+  }
+
+  private getOrderReceiptIncludes(orderId: number): Prisma.OrderInclude {
+    return {
+      orderItems: true,
+      payment: {
+        where: { order_id: orderId }
+      },
+      cart: {
+        include: {
+          user: {
+            omit: { password: true }
+          }
+        }
+      }
+    };
+  }
+
+  async update(id: number, updateOrderDto: UpdateOrderModel, tx?: Prisma.TransactionClient): Promise<Order> {
+    const prisma = this.getPrismaClient(tx);
+    const order = await this.performOrderUpdate(id, updateOrderDto, prisma);
+    this.clearCachesAfterUpdate(order);
+    return order;
+  }
+
+  private async performOrderUpdate(
+    id: number, 
+    updateOrderDto: UpdateOrderModel, 
+    prisma: Prisma.TransactionClient | PrismaService
+  ) {
+    return await prisma.order.update({
+      where: { order_id: id },
+      data: { status: updateOrderDto.status },
+      include: { userOrders: true }
+    });
+  }
+
+  private clearCachesAfterUpdate(order: any): void {
+    this.clearAllOrdersCache();
+    this.clearOrderCache(order.userOrders[0].user_uuid);
+    this.clearCachedOrderById(order.order_id);
+  }
+
+  async saveOrderItems(
+    cartResponseModel: CartResponseModel, 
+    orderId: number, 
+    tx?: Prisma.TransactionClient
+  ): Promise<void> {
+    const prisma = this.getPrismaClient(tx);
+    await Promise.all(
+      cartResponseModel.details.map((detail) => 
+        this.createOrderItem(detail, orderId, prisma)
+      )
+    );
+  }
+
+  private async createOrderItem(detail: any, orderId: number, prisma: Prisma.TransactionClient | PrismaService) {
+    return await prisma.orderItem.create({
+      data: this.buildOrderItemData(detail, orderId),
+    });
+  }
+
+  private buildOrderItemData(detail: any, orderId: number) {
+    return {
+      order: { connect: { order_id: orderId } },
+      product: { connect: { product_id: detail.product.product_id } },
+      product_name: detail.product.product_name,
+      unit_price: detail.product.price,
+      quantity: detail.quantity,
+      total: detail.total,
+    };
+  }
+
+  remove(id: number): string {
     return `This action removes a #${id} order`;
+  }
+
+  // ==================== Private Helper Methods ====================
+
+  private getPrismaClient(tx?: Prisma.TransactionClient): Prisma.TransactionClient | PrismaService {
+    return tx ?? this.prisma;
+  }
+
+  private getOrderIncludes(): Prisma.OrderInclude {
+    return {
+      userOrders: {
+        include: { user: true }
+      },
+      cart: {
+        include: {
+          cartDetails: {
+            include: { product: true }
+          }
+        }
+      }
+    };
   }
 }

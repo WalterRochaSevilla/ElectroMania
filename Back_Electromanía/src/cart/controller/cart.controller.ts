@@ -1,6 +1,4 @@
-import { Body, Controller, Get, Headers, Post, UseGuards } from '@nestjs/common';
-import { CartService } from '../service/cart.service';
-import { RolesGuard } from '../../auth/guards/roles.guard';
+import { Body, Controller, Get, Headers, Logger, Post, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../../auth/guards/auth.guard';
 import { DeleteProductFromCartDto } from '../dto/delete-product-from-cart.dto';
 import { AddProductToCartUseCase } from '../use-cases/add-product-to-cart.use-case';
@@ -8,48 +6,46 @@ import { UpdateCartDetailDto } from '../dto/update-cart-detail.dto';
 import { UpdateProductQuantityUseCase } from '../use-cases/update-product-quantity.use-case';
 import { GetActiveCartUseCase } from '../use-cases/get-active-cart.use-case';
 import { RemoveProductFromCartUseCase } from '../use-cases/remove-product-from-cart-use-case';
-import { AuthService } from '../../auth/service/auth.service';
+import { CreateCartUseCase } from '../use-cases/create-cart.use-case';
+import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { UserJwtPayloadModel } from '../../auth/models/user-jwt-payload.model';
 
 @Controller('cart')
 export class CartController {
+    logger = new Logger(CartController.name);
     constructor(
-        private readonly cartService: CartService,
-        private readonly authService: AuthService,
         private readonly removeProductFromCartUseCase:RemoveProductFromCartUseCase,
         private readonly addProductToCartUseCase:AddProductToCartUseCase,
         private readonly updateCartDetails: UpdateProductQuantityUseCase,
-        private readonly getActiveCartUSeCase:GetActiveCartUseCase
+        private readonly getActiveCartUseCase:GetActiveCartUseCase,
+        private readonly createCartUseCase:CreateCartUseCase
     ) {}
 
     @UseGuards(AuthGuard)
     @Post("create")
-    async createCart(@Headers('authorization') token: string){
-        return this.cartService.createCart(token.replace('Bearer ', ''));
+    async createCart(@CurrentUser() user: UserJwtPayloadModel){
+        return this.createCartUseCase.execute(user.uuid);
     }
 
     @UseGuards(AuthGuard)
     @Get("")
-    async getCart(@Headers('authorization') token: string){
-        const user = await this.authService.getUserFromToken(token.replace('Bearer ', ''));
-        return this.getActiveCartUSeCase.execute(user.uuid);
+    async getCart(@CurrentUser() user: UserJwtPayloadModel){
+        return this.getActiveCartUseCase.execute(user.uuid);
     }
 
     @UseGuards(AuthGuard)
     @Post("addProduct")
-    async addProductToCart(@Headers('authorization') token: string,@Body() updateRequest:UpdateCartDetailDto){
-        const user = await this.authService.getUserFromToken(token.replace('Bearer ', ''));
+    async addProductToCart(@CurrentUser() user: UserJwtPayloadModel, @Body() updateRequest: UpdateCartDetailDto){
         return this.addProductToCartUseCase.execute(user.uuid, updateRequest);
     }
     @UseGuards(AuthGuard)
     @Post("deleteProduct")
-    async deleteProductToCart(@Headers('authorization') token: string,@Body() deleteRequest:DeleteProductFromCartDto){
-        const user = await this.authService.getUserFromToken(token.replace('Bearer ', ''));
+    async deleteProductToCart(@CurrentUser() user: UserJwtPayloadModel, @Body() deleteRequest: DeleteProductFromCartDto){
         return this.removeProductFromCartUseCase.execute(user.uuid, deleteRequest);
     }
     @UseGuards(AuthGuard)
     @Post("update")
-    async updateCartDetail(@Headers('authorization') token: string,@Body() addProduct:UpdateCartDetailDto){
-        const user = await this.authService.getUserFromToken(token.replace('Bearer ', ''));
+    async updateCartDetail(@CurrentUser() user: UserJwtPayloadModel, @Body() addProduct: UpdateCartDetailDto){
         return this.updateCartDetails.execute(user.uuid, addProduct);
     }
     

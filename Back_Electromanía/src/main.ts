@@ -6,15 +6,18 @@ import { ValidationPipe } from '@nestjs/common';
 import { apiReference } from '@scalar/nestjs-api-reference';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
-import * as express from 'express';
+import * as cookieParser from 'cookie-parser';
 
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.use(
-    '/uploads',
-    express.static(join(process.cwd(), 'uploads'))
-  );
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.use(cookieParser());
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true
+  }));
+  app.useStaticAssets(join(process.cwd(), 'uploads'), {
+    prefix: '/uploads',
+  });
   const config = new DocumentBuilder()
   .setTitle('Electromania')
   .setDescription('API de Compra y Venta de Productos Electrónicos')
@@ -39,16 +42,13 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       Configuration().webSiteDomain.url,
-      Configuration().webSiteDomain.url + ':' + Configuration().webSiteDomain.port,
-      "http://localhost",
-      "http://localhost:80"
+      `${Configuration().webSiteDomain.url}:${Configuration().webSiteDomain.port}`,
+      'http://localhost',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true
-  });
-  app.useGlobalPipes(new ValidationPipe({
-    transform: true
-  }));
+    credentials: true,
+  });  
   await app.listen(process.env.PORT ?? 3000);
 }
+
 bootstrap();

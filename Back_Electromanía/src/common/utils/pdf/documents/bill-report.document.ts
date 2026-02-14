@@ -203,7 +203,7 @@ export class BillReport {
                 ...this.getPayment(orderData),
 
                 // FOOTER
-                { svg: checkIcon, width: 14, height: 14, margin: [0, 2, 6, 0], alignment: 'center' },
+                { svg: checkIcon, width: 14, height: 14, margin: [6, 2, 6, 0], alignment: 'center' },
                 { text: 'Gracias por su compra', style: 'footer',alignment:'center'},
                 { text: 'Este es un recibo generado electrónicamente', style: 'footer' }
             ]

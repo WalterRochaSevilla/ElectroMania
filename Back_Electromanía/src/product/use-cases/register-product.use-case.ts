@@ -33,7 +33,7 @@ export class RegisterProductUseCase{
           productId: product.product_id,
           categoryId: request.category_id
         }
-        await this.productService.assingCategory(categoryRequest,tx)
+        await this.productService.assignCategory(categoryRequest,tx)
       }
       return await this.productService.getProductById(product.product_id,tx)
     })
