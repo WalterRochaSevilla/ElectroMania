@@ -1,4 +1,4 @@
-import { Module, UseGuards } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { CartController } from './controller/cart.controller';
 import { CartService } from './service/cart.service';
 import { PrismaService } from '../prisma/service/prisma.service';
@@ -15,10 +15,30 @@ import { DecreaseQuantityUseCase } from './use-cases/decrease-quantity.use-case'
 import { GetActiveCartUseCase } from './use-cases/get-active-cart.use-case';
 import { RemoveProductFromCartUseCase } from './use-cases/remove-product-from-cart-use-case';
 import { CreateCartUseCase } from './use-cases/create-cart.use-case';
+import { CartCleanUpService } from './service/cart-clean-up.service';
 
 @Module({
-    imports: [ProductModule, UserModule,AuthModule],
+    imports: [
+        ProductModule, 
+        UserModule,
+        AuthModule
+    ],
     controllers: [CartController],
-    providers: [CartService, RolesGuard,AuthGuard,PrismaService,CartMapper,AddProductToCartUseCase,UpdateProductQuantityUseCase,IncreaseQuantityUseCase,DecreaseQuantityUseCase,GetActiveCartUseCase,RemoveProductFromCartUseCase,CreateCartUseCase]
+    providers: [
+        CartService, 
+        RolesGuard,
+        AuthGuard,
+        PrismaService,
+        CartMapper,
+        AddProductToCartUseCase,
+        UpdateProductQuantityUseCase,
+        IncreaseQuantityUseCase,
+        DecreaseQuantityUseCase,
+        GetActiveCartUseCase,
+        RemoveProductFromCartUseCase,
+        CreateCartUseCase,
+        CartCleanUpService
+    ],
+    exports: [CartService, GetActiveCartUseCase]
 })
 export class CartModule {}

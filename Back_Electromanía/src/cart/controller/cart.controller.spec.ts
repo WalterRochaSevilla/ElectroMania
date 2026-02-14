@@ -11,6 +11,7 @@ import { DecreaseQuantityUseCase } from '../use-cases/decrease-quantity.use-case
 import { RemoveProductFromCartUseCase} from '../use-cases/remove-product-from-cart-use-case';
 import { exec } from 'child_process';
 import { AuthService } from '../../auth/service/auth.service';
+import { CreateCartUseCase } from '../use-cases/create-cart.use-case';
 
 describe('CartController', () => {
   let controller: CartController;
@@ -64,6 +65,12 @@ describe('CartController', () => {
             useValue: {
               getUserFromToken: jest.fn(),
             },
+          },
+          {
+            provide: CreateCartUseCase,
+            useValue: {
+              execute: jest.fn(),
+            }
           }
       ],
     })

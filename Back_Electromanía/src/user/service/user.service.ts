@@ -57,9 +57,8 @@ export class UserService {
       throw error;
     }
   }
-  async getUserByUUID(token: string) {
-    const userToken = await this.authService.getUserFromToken(token);
-    const user = await this.getUserByField('uuid', userToken.uuid);
+  async getUserByUUID(uuid: string) {
+    const user = await this.getUserByField('uuid',uuid);
     if(!user){
       throw new NotFoundException('User not found');
     }

@@ -77,7 +77,7 @@ model User {
   social_reason String     @db.VarChar(100)
   state         UserState  @default(ACTIVE)
   created_at    DateTime   @default(now())
-  updated_at    DateTime
+  updated_at    DateTime   @default(now())
   phone_number  String
 
   carts         Cart[]
@@ -92,6 +92,7 @@ model Cart {
   user_uuid   String
   state       CartState @default(ACTIVE)
   created_at  DateTime  @default(now())
+  updated_at  DateTime @default(now())
   reserve_at  DateTime?
 
   user        User      @relation(fields: [user_uuid], references: [uuid])

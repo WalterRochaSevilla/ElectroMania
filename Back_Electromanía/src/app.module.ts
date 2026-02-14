@@ -12,6 +12,7 @@ import { CategoryModule } from './category/category.module';
 import { OrderModule } from './order/order.module';
 import { MailModule } from './mail/mail.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CacheModule } from '@nestjs/cache-manager';
       load: [Configuration],
       envFilePath: '.env',
     }),
+    ScheduleModule.forRoot(),
     ProductModule,
     AuthModule,
     CartModule,

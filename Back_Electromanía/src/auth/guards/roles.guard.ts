@@ -12,17 +12,6 @@ export class RolesGuard implements CanActivate {
         private reflector: Reflector,
         private readonly jwtService: JwtService
     ) {}
-    private extractTokenFromHeader(request: Request): string | undefined {
-        const [type, token] = request.headers.authorization?.split(' ') ?? [];
-        if(!token){
-            throw new UnauthorizedException("Debe Iniciar Sesion");
-        }
-        return type === 'Bearer' ? token : undefined;
-    }
-    private tokenToUser(token: string): UserJwtPayloadModel {
-        const payload = this.jwtService.decode(token)
-        return payload.user as UserJwtPayloadModel
-    }
     hasRole(roles: UserRole[], user: UserJwtPayloadModel) {
         return roles.some(role=>{
             if(user.role === role){
@@ -39,8 +28,9 @@ export class RolesGuard implements CanActivate {
         if (!requiredRoles) {
             return true;
         }
-        const token = this.extractTokenFromHeader(context.switchToHttp().getRequest());
-        const user = this.tokenToUser(token?? '');
+        const request = context.switchToHttp().getRequest();
+        const user = request.user as UserJwtPayloadModel;
+        if(!user) throw new UnauthorizedException('Usuario no autenticado');
         if(!this.hasRole(requiredRoles, user)){
             throw new ForbiddenException('Acceso denegado, No tiene los permisos suficientes');
         }

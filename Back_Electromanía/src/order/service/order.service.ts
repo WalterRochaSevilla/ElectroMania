@@ -62,9 +62,8 @@ export class OrderService {
     return response; 
   }
 
-  async getByUser(token: string):Promise<OrderResponseModel[]> {
-    const user = await this.authService.getUserFromToken(token);
-    const cachedOrders = await this.getCachedOrdersByUser(user.uuid);
+  async getByUser(userUuid: string):Promise<OrderResponseModel[]> {
+    const cachedOrders = await this.getCachedOrdersByUser(userUuid);
     if(cachedOrders){
       return cachedOrders;
     }
@@ -72,7 +71,7 @@ export class OrderService {
       where:{
         userOrders: {
           some:{
-            user_uuid: user.uuid
+            user_uuid: userUuid
           }
         },
       },
@@ -94,7 +93,7 @@ export class OrderService {
       }
     });
     const response = orders.map((o) => this.orderMapper.toResponseModel(o))
-    this.cacheManager.set(CacheOrderKeys.orderByUser(user.uuid), response, 8000);
+    this.cacheManager.set(CacheOrderKeys.orderByUser(userUuid), response, 8000);
     return response;
   }
 

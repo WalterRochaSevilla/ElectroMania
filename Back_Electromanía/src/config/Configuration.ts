@@ -23,7 +23,7 @@ export default () => ({
         expiresIn: process.env.JWT_EXPIRATION
     },
     webSiteDomain: {
-        url: process.env.WEBSITE_DOMAIN,
+        url: process.env.WEBSITE_DOMAIN || 'http://localhost',
         port: process.env.WEBSITE_PORT || 80
     },
     apiDomain: {
