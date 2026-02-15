@@ -6,6 +6,8 @@ import { PrismaService } from '../../prisma/service/prisma.service';
 import { CartUpdateRequest } from '../../cart/models/CartUpdateRequest.model';
 import { CartState } from '../../cart/enums/CartState.enum';
 import { OrderStatus } from "../models/order-response.model";
+import { OrderGateway } from "../gateway/order.gateway";
+import { OrderMapper } from "../mapper/order.mapper";
 
 
 @Injectable()
@@ -15,7 +17,9 @@ export class CancelOrderUseCase {
     private readonly orderService: OrderService,
     private readonly prisma: PrismaService,
     private readonly CartService: CartService,
-    private readonly productService: ProductService
+    private readonly productService: ProductService,
+    private readonly orderGateway: OrderGateway,
+    private readonly orderMapper: OrderMapper
   ) {}
 
   async execute(orderId: number) {
@@ -24,6 +28,7 @@ export class CancelOrderUseCase {
       await this.handleStockRecovery(order, tx);
       await this.markCartAsCanceled(order.cart.id);
       await this.markOrderAsCanceled(orderId);
+      this.orderGateway.emitOrderCancelled(this.orderMapper.toOrderCancelledEventDto(order));
       return await this.orderService.getById(orderId);
     });
   }

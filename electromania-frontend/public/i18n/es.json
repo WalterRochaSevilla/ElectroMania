@@ -313,6 +313,7 @@
     "ERROR_UPDATE_STATUS": "Error al actualizar el estado",
     "ERROR_CANCEL_ORDER": "Error al cancelar el pedido",
     "ERROR_LOAD_ORDERS": "Error al cargar los pedidos",
+    "NEW_ORDER_RECEIVED": "¡Nueva orden #{{id}} recibida!",
     "ERROR_CHANGE_STATE": "Error al cambiar el estado",
     "ERROR_UPDATE_PRODUCT": "Error al actualizar el producto",
     "ERROR_CREATE_PRODUCT": "Error al crear el producto",

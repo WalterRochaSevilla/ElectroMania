@@ -29,11 +29,14 @@ import { SendOrderReceiptUseCase } from './use-cases/send-order-receipt.use-case
 import { MailService } from '../mail/service/mail.service';
 import { HttpModule } from '@nestjs/axios';
 import { PdfMakeService } from '../common/utils/pdf/pdf-make.maker';
+import { OrderGateway } from './gateway/order.gateway';
 
 
 @Module({
   imports: [ProductModule, UserModule,AuthModule, HttpModule],
   controllers: [OrderController],
-  providers: [OrderService,RolesGuard,AuthGuard,PrismaService,CartService,OrderMapper,CartMapper,CreateOrderByCartUseCase,ProductService,AuthService,UserMapper,PasswordService,JwtService, ProductMapper,ProductImageMapper,PageProductMapper,ConfirmPaymentForOrderUseCase,CancelOrderUseCase,UpdateOrderStatusUseCase,GenerateOrderXmlUseCase,OrderReceiptService,PaymentService,SendOrderReceiptUseCase,MailService,PdfMakeService],
+  providers: [OrderService,RolesGuard,AuthGuard,PrismaService,CartService,OrderMapper,CartMapper,CreateOrderByCartUseCase,ProductService,AuthService,UserMapper,PasswordService,JwtService, ProductMapper,ProductImageMapper,PageProductMapper,ConfirmPaymentForOrderUseCase,CancelOrderUseCase,UpdateOrderStatusUseCase,GenerateOrderXmlUseCase,OrderReceiptService,PaymentService,SendOrderReceiptUseCase,MailService,PdfMakeService,
+    OrderGateway
+  ],
 })
 export class OrderModule {}

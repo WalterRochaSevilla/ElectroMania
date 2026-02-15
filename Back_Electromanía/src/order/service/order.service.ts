@@ -102,7 +102,7 @@ export class OrderService {
     this.cacheManager.del(CacheOrderKeys.orderByUser(userUuid));
   }
 
-  private clearCachedOrderById(orderId: number): void {
+  clearCachedOrderById(orderId: number): void {
     this.cacheManager.del(CacheOrderKeys.orderByID(orderId));
   }
 
