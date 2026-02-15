@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { CreateOrderDto } from "../dto/create-order.dto";
-import { OrderReceiptModel, OrderResponseModel } from "../models/order-response.model";
+import { OrderReceiptModel, OrderResponseModel, OrderStatus } from "../models/order-response.model";
 import { CartMapper } from "../../cart/mapper/cart.mapper";
 import { OrderCancelledEventDto, OrderCreatedEventDto, OrderUpdatedEventDto } from "../dto/order-event.dto";
 type OrderWithUserOrdersAndCart = Prisma.OrderGetPayload<{
@@ -150,7 +150,7 @@ export class OrderMapper {
                 email: entity.user.email
             },
             total: entity.total,
-            status: entity.status,
+            status: OrderStatus[entity.status],
             createdAt: entity.createdAt.toISOString()
         }
         return response
@@ -164,7 +164,7 @@ export class OrderMapper {
                 email: entity.user.email
             },
             total: entity.total,
-            status: entity.status,
+            status: OrderStatus[entity.status],
             updatedAt: new Date().toISOString()
         }
         return response
@@ -177,6 +177,7 @@ export class OrderMapper {
                 name: entity.user.name,
                 email: entity.user.email
             },
+            status: OrderStatus.CANCELED,
             reason: reason,
             total: entity.total,
             cancelledAt: new Date().toISOString()
