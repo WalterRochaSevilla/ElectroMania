@@ -1,14 +1,16 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { OrderService } from '../../../services/order.service';
+import { OrderWebsocketService } from '../../../services/order-websocket.service';
 import { ToastService } from '../../../services/toast.service';
 import { LanguageService } from '../../../services/language.service';
 import { ModalService } from '../../../services/modal.service';
 import { AdminSidebarComponent } from '../../../components/admin-sidebar/admin-sidebar.component';
 import { ConfirmationModalComponent } from '../../../components/confirmation-modal/confirmation-modal.component';
 import { Order, OrderStatus } from '../../../models';
+import { Subscription } from 'rxjs';
 @Component({
     selector: 'app-pedidos',
     standalone: true,
@@ -16,11 +18,13 @@ import { Order, OrderStatus } from '../../../models';
     templateUrl: './pedidos.component.html',
     styleUrl: './pedidos.component.css'
 })
-export class PedidosComponent implements OnInit {
+export class PedidosComponent implements OnInit, OnDestroy {
     private orderService = inject(OrderService);
+    private orderWebsocketService = inject(OrderWebsocketService);
     private toast = inject(ToastService);
     private languageService = inject(LanguageService);
     private modalService = inject(ModalService);
+    private subscriptions: Subscription[] = [];
     orders = signal<Order[]>([]);
     filteredOrders = signal<Order[]>([]);
     loading = signal(true);
@@ -42,11 +46,69 @@ export class PedidosComponent implements OnInit {
     }
     async ngOnInit() {
         await this.loadOrders();
+        this.setupWebSocket();
+    }
+
+    ngOnDestroy() {
+        this.subscriptions.forEach(sub => sub.unsubscribe());
+        this.orderWebsocketService.disconnect();
+    }
+
+    private setupWebSocket() {
+        this.orderWebsocketService.connect();
+        const newOrderSub = this.orderWebsocketService.onNewOrder().subscribe(
+            (newOrder: Order) => {
+                console.log('Nueva orden recibida:', newOrder);
+                const currentOrders = this.orders();
+                newOrder.id = newOrder.order_id ?? newOrder.id;
+                this.orders.set(this.sortOrdersById([...currentOrders, newOrder]));
+                console.log('Órdenes actualizadas:', this.orders());
+                this.applyFilters();
+                this.toast.success(
+                    this.languageService.instant('ADMIN.NEW_ORDER_RECEIVED', { id: newOrder.order_id })
+                );
+            }
+        );
+        const updatedOrderSub = this.orderWebsocketService.onOrderUpdated().subscribe(
+            (updatedOrder: Order) => {
+                const currentOrders = this.orders();
+                const index = currentOrders.findIndex(o => o.order_id === updatedOrder.order_id);
+
+                if (index !== -1) {
+                    const updatedOrders = [...currentOrders];
+                    updatedOrders[index] = updatedOrder;
+                    this.orders.set(this.sortOrdersById(updatedOrders));
+                    this.applyFilters();
+                }
+            }
+        );
+        const cancelledOrderSub = this.orderWebsocketService.onOrderCancelled().subscribe(
+            (cancelledOrder: Order) => {
+                const currentOrders = this.orders();
+                const index = currentOrders.findIndex(o => o.order_id === cancelledOrder.order_id);
+                if (index !== -1) {
+                    const updatedOrders = [...currentOrders];
+                    updatedOrders[index] = { ...updatedOrders[index], status: 'CANCELED' };
+                    this.orders.set(this.sortOrdersById(updatedOrders));
+                    this.applyFilters();
+                    this.toast.success(
+                        this.languageService.instant('ADMIN.ORDER_CANCELED', {
+                            id: cancelledOrder.order_id,
+                        }),
+                    );
+                }
+            }
+        );
+        this.subscriptions.push(newOrderSub, updatedOrderSub, cancelledOrderSub);
+    }
+    private sortOrdersById(orders: Order[]): Order[] {
+        return orders.sort((a, b) => b.id - a.id);
     }
     async loadOrders() {
         this.loading.set(true);
         try {
-            this.orders.set(await this.orderService.getAllOrders());
+            const orders = await this.orderService.getAllOrders();
+            this.orders.set(this.sortOrdersById(orders));
             this.backendReady.set(true);
             this.applyFilters();
         }
@@ -75,15 +137,23 @@ export class PedidosComponent implements OnInit {
                 o.user?.name?.toLowerCase().includes(term) ||
                 o.user?.email?.toLowerCase().includes(term));
         }
-            this.filteredOrders.set(result);
+        this.filteredOrders.set(this.sortOrdersById(result));
     }
     async updateStatus(order: Order, newStatus: OrderStatus) {
         try {
             await this.orderService.updateOrder(order.id, { status: newStatus });
             console.log(newStatus);
             console.log(order);
-            order.status = newStatus;
-            this.applyFilters();
+
+            const currentOrders = this.orders();
+            const index = currentOrders.findIndex(o => o.id === order.id);
+            if (index !== -1) {
+                const updatedOrders = [...currentOrders];
+                updatedOrders[index] = { ...updatedOrders[index], status: newStatus };
+                this.orders.set(this.sortOrdersById(updatedOrders));
+                this.applyFilters();
+            }
+
             this.toast.success(this.languageService.instant('ADMIN.ORDER_UPDATED', { id: order.id, status: this.orderService.getStatusLabel(newStatus) }));
         }
         catch {
@@ -103,7 +173,16 @@ export class PedidosComponent implements OnInit {
         }
         try {
             await this.orderService.cancelOrder(order.id);
-            order.status = 'CANCELED';
+
+            const currentOrders = this.orders();
+            const index = currentOrders.findIndex(o => o.id === order.id);
+            if (index !== -1) {
+                const updatedOrders = [...currentOrders];
+                updatedOrders[index] = { ...updatedOrders[index], status: 'CANCELED' };
+                this.orders.set(this.sortOrdersById(updatedOrders));
+                this.applyFilters();
+            }
+
             this.toast.success(this.languageService.instant('ADMIN.ORDER_CANCELED', { id: order.id }));
         }
         catch {
