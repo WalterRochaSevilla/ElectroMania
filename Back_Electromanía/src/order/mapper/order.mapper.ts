@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import { CreateOrderDto } from "../dto/create-order.dto";
 import { OrderReceiptModel, OrderResponseModel } from "../models/order-response.model";
 import { CartMapper } from "../../cart/mapper/cart.mapper";
+import { OrderCancelledEventDto, OrderCreatedEventDto, OrderUpdatedEventDto } from "../dto/order-event.dto";
 type OrderWithUserOrdersAndCart = Prisma.OrderGetPayload<{
         include: {
             userOrders: {
@@ -137,6 +138,48 @@ export class OrderMapper {
                 },
                 amount: Number(entity.payment.amount)
             } : null
+        }
+        return response
+    }
+    toOrderCreatedEventDto(entity:OrderResponseModel):OrderCreatedEventDto{
+        const response:OrderCreatedEventDto = {
+            order_id: entity.id,
+            user: {
+                uuid: entity.user.uuid,
+                name: entity.user.name,
+                email: entity.user.email
+            },
+            total: entity.total,
+            status: entity.status,
+            createdAt: entity.createdAt.toISOString()
+        }
+        return response
+    }
+    toOrderUpdatedEventDto(entity:OrderResponseModel):OrderUpdatedEventDto{
+        const response:OrderUpdatedEventDto = {
+            order_id: entity.id,
+            user: {
+                uuid: entity.user.uuid,
+                name: entity.user.name,
+                email: entity.user.email
+            },
+            total: entity.total,
+            status: entity.status,
+            updatedAt: new Date().toISOString()
+        }
+        return response
+    }
+    toOrderCancelledEventDto(entity:OrderResponseModel, reason?: string):OrderCancelledEventDto{
+        const response:OrderCancelledEventDto = {
+            order_id: entity.id,
+            user: {
+                uuid: entity.user.uuid,
+                name: entity.user.name,
+                email: entity.user.email
+            },
+            reason: reason,
+            total: entity.total,
+            cancelledAt: new Date().toISOString()
         }
         return response
     }

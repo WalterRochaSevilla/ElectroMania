@@ -3,6 +3,8 @@ import { CartService } from '../../cart/service/cart.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/service/prisma.service';
 import { ProductService } from '../../product/service/product.service';
+import { OrderGateway } from '../gateway/order.gateway';
+import { OrderMapper } from '../mapper/order.mapper';
 
 @Injectable()
 export class CreateOrderByCartUseCase {
@@ -11,6 +13,8 @@ export class CreateOrderByCartUseCase {
     private readonly productService: ProductService,
     private readonly orderService: OrderService,
     private readonly cartService: CartService,
+    private readonly orderGateway: OrderGateway,
+    private readonly orderMapper: OrderMapper
   ){}
   async execute(userUuid: string) {
     return  this.prisma.$transaction(async (tx) => {
@@ -30,6 +34,7 @@ export class CreateOrderByCartUseCase {
       })
       const order = await this.orderService.register(userUuid,cart,tx);
       await this.orderService.saveOrderItems(cart,order.id,tx);
+      this.orderGateway.emitOrderCreated(this.orderMapper.toOrderCreatedEventDto(order));
       return order;
     })
   }

@@ -12,6 +12,7 @@ import { Request, Response } from 'express';
 import { SendOrderReceiptUseCase } from '../use-cases/send-order-receipt.use-case';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { UserJwtPayloadModel } from '../../auth/models/user-jwt-payload.model';
+import { OrderGateway } from '../gateway/order.gateway';
 
 @Controller('order')
 export class OrderController {
@@ -22,7 +23,8 @@ export class OrderController {
     private readonly confirmPayment:ConfirmPaymentForOrderUseCase,
     private readonly updateOrderStatus:UpdateOrderStatusUseCase,
     private readonly generateXml:GenerateOrderXmlUseCase,
-    private readonly sendMail:SendOrderReceiptUseCase
+    private readonly sendMail:SendOrderReceiptUseCase,
+    private readonly orderGateway: OrderGateway
   ) {}
 
   @UseGuards(AuthGuard)

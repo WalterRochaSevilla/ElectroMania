@@ -9,6 +9,8 @@ import { PaymentService } from '../../payment/service/payment.service';
 import { PaymentMethod, PaymentStatus } from 'src/payment/dto/register-payment.dto';
 import { SendOrderReceiptUseCase } from './send-order-receipt.use-case';
 import { GenerateOrderXmlUseCase } from './generate-order-xml.usecase';
+import { OrderGateway } from '../gateway/order.gateway';
+import { OrderMapper } from '../mapper/order.mapper';
 
 @Injectable()
 export class ConfirmPaymentForOrderUseCase {
@@ -20,7 +22,9 @@ export class ConfirmPaymentForOrderUseCase {
     private readonly productService:ProductService,
     private readonly paymentService:PaymentService,
     private readonly sendOrderByEmail:SendOrderReceiptUseCase,
-    private readonly generateHtml:GenerateOrderXmlUseCase
+    private readonly generateHtml:GenerateOrderXmlUseCase,
+    private readonly orderGateway: OrderGateway,
+    private readonly orderMapper: OrderMapper
   ){}
   async execute(orderId: number) {
     await this.processPaymentTransaction(orderId);
@@ -35,6 +39,7 @@ export class ConfirmPaymentForOrderUseCase {
       await this.markCartAsCompleted(order.cart.id, tx);
       await this.markOrderAsPaid(orderId, tx);
       await this.createPaymentRecord(orderId, order.total, tx);
+      this.orderGateway.emitOrderUpdated(this.orderMapper.toOrderUpdatedEventDto(order));
     });
   }
 
