@@ -34,11 +34,12 @@ export class ConfirmPaymentForOrderUseCase {
 
   private async processPaymentTransaction(orderId: number): Promise<void> {
     await this.prisma.$transaction(async (tx) => {
-      const order = await this.getOrder(orderId);
+      let order = await this.getOrder(orderId);
       await this.confirmProductsSales(order, tx);
       await this.markCartAsCompleted(order.cart.id, tx);
       await this.markOrderAsPaid(orderId, tx);
       await this.createPaymentRecord(orderId, order.total, tx);
+      order.status = OrderStatus.PAID;
       this.orderGateway.emitOrderUpdated(this.orderMapper.toOrderUpdatedEventDto(order));
     });
   }
@@ -71,6 +72,7 @@ export class ConfirmPaymentForOrderUseCase {
     await this.orderService.update(orderId, {
       status: OrderStatus.PAID,
     }, tx);
+    this.orderService.clearCachedOrderById(orderId);
   }
 
   private async createPaymentRecord(orderId: number, amount: number, tx: any): Promise<void> {
