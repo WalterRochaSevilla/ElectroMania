@@ -88,7 +88,7 @@ export class PedidosComponent implements OnInit, OnDestroy {
                 const index = currentOrders.findIndex(o => o.order_id === cancelledOrder.order_id);
                 if (index !== -1) {
                     const updatedOrders = [...currentOrders];
-                    updatedOrders[index] = { ...updatedOrders[index], status: 'CANCELED' };
+                    updatedOrders[index] = cancelledOrder;
                     this.orders.set(this.sortOrdersById(updatedOrders));
                     this.applyFilters();
                     this.toast.success(
