@@ -88,17 +88,19 @@
 </main>
 
 @if (receiptModalOpen()) {
-<div class="receipt-modal-backdrop" (click)="closeReceiptModal()">
-    <div class="receipt-modal" (click)="$event.stopPropagation()">
+<div class="receipt-modal-backdrop" (click)="closeReceiptModal()" aria-hidden="true">
+    <div class="receipt-modal" role="dialog" aria-modal="true" aria-labelledby="receipt-modal-title" tabindex="-1"
+        (click)="$event.stopPropagation()" (keydown.escape)="closeReceiptModal()">
         <div class="receipt-modal-header">
-            <h3>Recibo #{{ currentReceiptOrderId() }}</h3>
+            <h3 id="receipt-modal-title">Recibo #{{ currentReceiptOrderId() }}</h3>
             <button class="receipt-close" (click)="closeReceiptModal()" aria-label="Close receipt">×</button>
         </div>
         <div class="receipt-modal-body">
             @if (receiptLoading()) {
             <p>{{ 'MY_ORDERS.LOADING' | translate }}</p>
             } @else if (receiptUrl()) {
-            <iframe class="receipt-frame" [src]="receiptUrl()" scrolling="auto"></iframe>
+            <iframe class="receipt-frame" [src]="receiptUrl()" title="Receipt preview" scrolling="auto"
+                sandbox="allow-same-origin"></iframe>
             }
         </div>
     </div>

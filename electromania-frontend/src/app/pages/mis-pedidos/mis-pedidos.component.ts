@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -8,6 +8,7 @@ import { ConfirmationModalComponent } from '../../components/confirmation-modal/
 import { Order } from '../../models';
 import { ToastService } from '../../services/toast.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { API } from '../../constants';
 @Component({
     selector: 'app-mis-pedidos',
     standalone: true,
@@ -22,7 +23,7 @@ export class MisPedidosComponent implements OnInit, OnDestroy {
     private toast = inject(ToastService);
     private sanitizer = inject(DomSanitizer);
     private receiptObjectUrl: string | null = null;
-    private resizeHandler = this.onResize.bind(this);
+    private mobileHandoffInProgress = false;
     orders = signal<Order[]>([]);
     loading = signal(true);
     receiptModalOpen = signal(false);
@@ -31,17 +32,40 @@ export class MisPedidosComponent implements OnInit, OnDestroy {
     currentReceiptOrderId = signal<number | null>(null);
     async ngOnInit() {
         await this.loadOrders();
-        window.addEventListener('resize', this.resizeHandler);
     }
     ngOnDestroy(): void {
-        window.removeEventListener('resize', this.resizeHandler);
         this.unlockBodyScroll();
         this.releaseReceiptObjectUrl();
     }
-    private onResize(): void {
-        if (this.receiptModalOpen() && window.matchMedia('(max-width: 900px)').matches) {
+    @HostListener('document:keydown.escape')
+    onEscapeKeyDown(): void {
+        if (this.receiptModalOpen()) {
             this.closeReceiptModal();
         }
+    }
+    @HostListener('window:resize')
+    onWindowResize(): void {
+        if (this.mobileHandoffInProgress) {
+            return;
+        }
+        if (!this.receiptModalOpen()) {
+            return;
+        }
+        const currentOrderId = this.currentReceiptOrderId();
+        if (currentOrderId == null) {
+            return;
+        }
+        const isMobileView = window.matchMedia('(max-width: 900px)').matches;
+        if (!isMobileView) {
+            return;
+        }
+        this.mobileHandoffInProgress = true;
+        this.openReceiptInNewTab(currentOrderId);
+        this.closeReceiptModal();
+        this.toast.info(this.translate.instant('MY_ORDERS.RECEIPT_OPENED_MOBILE'));
+        setTimeout(() => {
+            this.mobileHandoffInProgress = false;
+        }, 300);
     }
     async loadOrders() {
         this.loading.set(true);
@@ -81,22 +105,17 @@ export class MisPedidosComponent implements OnInit, OnDestroy {
         return `${this.translate.instant('CART.BS')} ${amount.toFixed(2)}`;
     }
     async viewReceipt(orderId: number): Promise<void> {
+        const isMobileView = window.matchMedia('(max-width: 900px)').matches;
+        if (isMobileView) {
+            this.openReceiptInNewTab(orderId);
+            return;
+        }
+
         this.receiptLoading.set(true);
         try {
-            let html = await this.orderService.getReceipt(orderId);
-            const faviconLink = `<link rel="icon" type="image/png" href="${window.location.origin}/favicon.png">`;
-            const hideScrollbar = '<style>html,body{scrollbar-width:none;-ms-overflow-style:none}::-webkit-scrollbar{display:none}</style>';
-            html = html.replace(/<head[^>]*>/i, '$&' + faviconLink + hideScrollbar);
+            const html = await this.orderService.getReceipt(orderId);
             this.releaseReceiptObjectUrl();
             this.receiptObjectUrl = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
-
-            const isMobileView = window.matchMedia('(max-width: 900px)').matches;
-            if (isMobileView) {
-                window.open(this.receiptObjectUrl, '_blank', 'noopener,noreferrer');
-                this.currentReceiptOrderId.set(null);
-                setTimeout(() => this.releaseReceiptObjectUrl(), 60_000);
-                return;
-            }
 
             this.receiptUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(this.receiptObjectUrl));
             this.currentReceiptOrderId.set(orderId);
@@ -110,12 +129,16 @@ export class MisPedidosComponent implements OnInit, OnDestroy {
             this.receiptLoading.set(false);
         }
     }
+    private openReceiptInNewTab(orderId: number): void {
+        window.open(`${API.ORDER.RECEIPT}?id=${orderId}`, '_blank', 'noopener,noreferrer');
+    }
     closeReceiptModal(): void {
         this.receiptModalOpen.set(false);
         this.unlockBodyScroll();
         this.currentReceiptOrderId.set(null);
         this.releaseReceiptObjectUrl();
         this.receiptUrl.set(null);
+        this.mobileHandoffInProgress = false;
     }
     private releaseReceiptObjectUrl(): void {
         if (this.receiptObjectUrl) {

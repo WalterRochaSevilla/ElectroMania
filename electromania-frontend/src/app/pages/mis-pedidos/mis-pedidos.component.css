@@ -334,17 +334,19 @@
     cursor: pointer;
 }
 
+.receipt-close:hover,
+.receipt-close:focus,
+.receipt-close:focus-visible {
+    color: var(--text-primary);
+    background-color: rgba(0, 0, 0, 0.04);
+    outline: none;
+}
+
 .receipt-modal-body {
     flex: 1;
     background: white;
     overflow: auto;
     overscroll-behavior: contain;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
-.receipt-modal-body::-webkit-scrollbar {
-    display: none;
 }
 
 .receipt-frame {
