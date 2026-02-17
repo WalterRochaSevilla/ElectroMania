@@ -24,7 +24,7 @@ export class OrderWebsocketService{
     this.socket.on('disconnect', () => {
       console.log('Disconnected from order WebSocket');
     });
-    this.socket.on('connect_error', (error) => {
+    this.socket.on('connect_error', (error: Error) => {
       console.error('Connection error:', error);
     });
   }

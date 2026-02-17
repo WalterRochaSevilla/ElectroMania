@@ -29,7 +29,7 @@
                 <div class="order-header">
                     <div class="order-info">
                         <span class="order-id">#{{ order.id }}</span>
-                        <span class="order-date">{{ formatDate(order.created_at) }}</span>
+                        <span class="order-date">{{ formatDate(order.created_at || order.createdAt) }}</span>
                     </div>
                     <span class="status-badge" [class]="getStatusClass(order.status)">
                         {{ getStatusLabel(order.status) }}
@@ -86,3 +86,21 @@
         }
     </div>
 </main>
+
+@if (receiptModalOpen()) {
+<div class="receipt-modal-backdrop" (click)="closeReceiptModal()">
+    <div class="receipt-modal" (click)="$event.stopPropagation()">
+        <div class="receipt-modal-header">
+            <h3>Recibo #{{ currentReceiptOrderId() }}</h3>
+            <button class="receipt-close" (click)="closeReceiptModal()" aria-label="Close receipt">×</button>
+        </div>
+        <div class="receipt-modal-body">
+            @if (receiptLoading()) {
+            <p>{{ 'MY_ORDERS.LOADING' | translate }}</p>
+            } @else if (receiptUrl()) {
+            <iframe class="receipt-frame" [src]="receiptUrl()" scrolling="auto"></iframe>
+            }
+        </div>
+    </div>
+</div>
+}

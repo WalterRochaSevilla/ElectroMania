@@ -52,7 +52,7 @@ export class OrderService {
         return created;
     }
     async updateOrder(id: number, data: UpdateOrderStatusRequest): Promise<Order> {
-        const updated = await firstValueFrom(this.http.patch<Order>(API.ORDER.BY_ID(id), {orderId: id, status: data.status}));
+        const updated = await firstValueFrom(this.http.patch<Order>(API.ORDER.BY_ID(id), { status: data.status }));
         console.log(updated);
         this.invalidateOrdersCache();
         return updated;
@@ -64,8 +64,8 @@ export class OrderService {
     async cancelOrder(id: number): Promise<Order> {
         return this.updateOrder(id, { status: 'CANCELED' });
     }
-    async getReceipt(orderId: number): Promise<Blob> {
-        return firstValueFrom(this.http.get(`${API.ORDER.RECEIPT}?id=${orderId}`, { responseType: 'blob' }));
+    async getReceipt(orderId: number): Promise<string> {
+        return firstValueFrom(this.http.get(`${API.ORDER.RECEIPT}?id=${orderId}`, { responseType: 'text' }));
     }
     async sendReceipt(orderId: number): Promise<void> {
         await firstValueFrom(this.http.post(`${API.ORDER.RECEIPT_SEND}?id=${orderId}`, {}));

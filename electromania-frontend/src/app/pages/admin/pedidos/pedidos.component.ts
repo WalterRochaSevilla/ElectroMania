@@ -58,48 +58,83 @@ export class PedidosComponent implements OnInit, OnDestroy {
         this.orderWebsocketService.connect();
         const newOrderSub = this.orderWebsocketService.onNewOrder().subscribe(
             (newOrder: Order) => {
-                console.log('Nueva orden recibida:', newOrder);
-                const currentOrders = this.orders();
-                newOrder.id = newOrder.order_id ?? newOrder.id;
-                this.orders.set(this.sortOrdersById([...currentOrders, newOrder]));
-                console.log('Órdenes actualizadas:', this.orders());
+                const normalizedOrderId = newOrder.order_id ?? newOrder.id;
+                if (typeof normalizedOrderId !== 'number') {
+                    return;
+                }
+                this.upsertOrderFromEvent({
+                    ...newOrder,
+                    id: normalizedOrderId,
+                    order_id: normalizedOrderId,
+                });
                 this.applyFilters();
                 this.toast.success(
-                    this.languageService.instant('ADMIN.NEW_ORDER_RECEIVED', { id: newOrder.order_id })
+                    this.languageService.instant('ADMIN.NEW_ORDER_RECEIVED', { id: normalizedOrderId })
                 );
             }
         );
         const updatedOrderSub = this.orderWebsocketService.onOrderUpdated().subscribe(
             (updatedOrder: Order) => {
-                const currentOrders = this.orders();
-                const index = currentOrders.findIndex(o => o.order_id === updatedOrder.order_id);
-
-                if (index !== -1) {
-                    const updatedOrders = [...currentOrders];
-                    updatedOrders[index] = updatedOrder;
-                    this.orders.set(this.sortOrdersById(updatedOrders));
-                    this.applyFilters();
-                }
+                this.upsertOrderFromEvent(updatedOrder);
+                this.applyFilters();
             }
         );
         const cancelledOrderSub = this.orderWebsocketService.onOrderCancelled().subscribe(
             (cancelledOrder: Order) => {
-                const currentOrders = this.orders();
-                const index = currentOrders.findIndex(o => o.order_id === cancelledOrder.order_id);
-                if (index !== -1) {
-                    const updatedOrders = [...currentOrders];
-                    updatedOrders[index] = cancelledOrder;
-                    this.orders.set(this.sortOrdersById(updatedOrders));
-                    this.applyFilters();
-                    this.toast.success(
-                        this.languageService.instant('ADMIN.ORDER_CANCELED', {
-                            id: cancelledOrder.order_id,
-                        }),
-                    );
+                const normalizedOrderId = cancelledOrder.order_id ?? cancelledOrder.id;
+                if (typeof normalizedOrderId !== 'number') {
+                    return;
                 }
+                this.upsertOrderFromEvent(cancelledOrder);
+                this.applyFilters();
+                this.toast.success(
+                    this.languageService.instant('ADMIN.ORDER_CANCELED', {
+                        id: normalizedOrderId,
+                    }),
+                );
             }
         );
         this.subscriptions.push(newOrderSub, updatedOrderSub, cancelledOrderSub);
+    }
+    private upsertOrderFromEvent(eventOrder: Order): void {
+        const eventOrderId = eventOrder.order_id ?? eventOrder.id;
+        if (typeof eventOrderId !== 'number') {
+            return;
+        }
+        const currentOrders = this.orders();
+        const index = currentOrders.findIndex(o => (o.order_id ?? o.id) === eventOrderId);
+        const currentOrder = index >= 0 ? currentOrders[index] : null;
+        const mergedOrder: Order = {
+            ...(currentOrder ?? {
+                id: eventOrderId,
+                uuid: '',
+                total: 0,
+                status: 'PENDING',
+                created_at: eventOrder.createdAt ?? eventOrder.created_at ?? new Date().toISOString(),
+                cart: {
+                    id: 0,
+                    user_uuid: '',
+                    state: '',
+                    created_at: eventOrder.createdAt ?? eventOrder.created_at ?? new Date().toISOString(),
+                    details: [],
+                    subtotal: 0,
+                    total: 0,
+                },
+            }),
+            ...eventOrder,
+            id: eventOrderId,
+            order_id: eventOrderId,
+            created_at: eventOrder.created_at ?? currentOrder?.created_at ?? eventOrder.createdAt ?? currentOrder?.createdAt ?? new Date().toISOString(),
+            createdAt: eventOrder.createdAt ?? currentOrder?.createdAt ?? eventOrder.created_at ?? currentOrder?.created_at,
+            user: eventOrder.user ?? currentOrder?.user,
+        };
+        if (index >= 0) {
+            const updatedOrders = [...currentOrders];
+            updatedOrders[index] = mergedOrder;
+            this.orders.set(this.sortOrdersById(updatedOrders));
+            return;
+        }
+        this.orders.set(this.sortOrdersById([...currentOrders, mergedOrder]));
     }
     private sortOrdersById(orders: Order[]): Order[] {
         return orders.sort((a, b) => b.id - a.id);
