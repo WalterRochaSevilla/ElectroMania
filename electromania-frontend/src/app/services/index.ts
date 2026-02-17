@@ -4,6 +4,7 @@ export * from './category.service';
 export * from './language.service';
 export * from './modal.service';
 export * from './order.service';
+export * from './order-websocket.service';
 export * from './productos.service';
 export * from './storage.service';
 export * from './theme.service';

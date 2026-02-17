@@ -313,6 +313,7 @@
     "ERROR_UPDATE_STATUS": "Error updating status",
     "ERROR_CANCEL_ORDER": "Error canceling order",
     "ERROR_LOAD_ORDERS": "Error loading orders",
+    "NEW_ORDER_RECEIVED": "New order #{{id}} received!",
     "ERROR_CHANGE_STATE": "Error changing state",
     "ERROR_UPDATE_PRODUCT": "Error updating product",
     "ERROR_CREATE_PRODUCT": "Error creating product",
