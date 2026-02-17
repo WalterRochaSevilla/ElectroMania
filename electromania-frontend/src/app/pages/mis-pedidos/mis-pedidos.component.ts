@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -7,6 +7,8 @@ import { ModalService } from '../../services/modal.service';
 import { ConfirmationModalComponent } from '../../components/confirmation-modal/confirmation-modal.component';
 import { Order } from '../../models';
 import { ToastService } from '../../services/toast.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { API } from '../../constants';
 @Component({
     selector: 'app-mis-pedidos',
     standalone: true,
@@ -14,15 +16,56 @@ import { ToastService } from '../../services/toast.service';
     templateUrl: './mis-pedidos.component.html',
     styleUrl: './mis-pedidos.component.css'
 })
-export class MisPedidosComponent implements OnInit {
+export class MisPedidosComponent implements OnInit, OnDestroy {
     private orderService = inject(OrderService);
     private translate = inject(TranslateService);
     private modalService = inject(ModalService);
     private toast = inject(ToastService);
+    private sanitizer = inject(DomSanitizer);
+    private receiptObjectUrl: string | null = null;
+    private mobileHandoffInProgress = false;
     orders = signal<Order[]>([]);
     loading = signal(true);
+    receiptModalOpen = signal(false);
+    receiptLoading = signal(false);
+    receiptUrl = signal<SafeResourceUrl | null>(null);
+    currentReceiptOrderId = signal<number | null>(null);
     async ngOnInit() {
         await this.loadOrders();
+    }
+    ngOnDestroy(): void {
+        this.unlockBodyScroll();
+        this.releaseReceiptObjectUrl();
+    }
+    @HostListener('document:keydown.escape')
+    onEscapeKeyDown(): void {
+        if (this.receiptModalOpen()) {
+            this.closeReceiptModal();
+        }
+    }
+    @HostListener('window:resize')
+    onWindowResize(): void {
+        if (this.mobileHandoffInProgress) {
+            return;
+        }
+        if (!this.receiptModalOpen()) {
+            return;
+        }
+        const currentOrderId = this.currentReceiptOrderId();
+        if (currentOrderId == null) {
+            return;
+        }
+        const isMobileView = window.matchMedia('(max-width: 900px)').matches;
+        if (!isMobileView) {
+            return;
+        }
+        this.mobileHandoffInProgress = true;
+        this.openReceiptInNewTab(currentOrderId);
+        this.closeReceiptModal();
+        this.toast.info(this.translate.instant('MY_ORDERS.RECEIPT_OPENED_MOBILE'));
+        setTimeout(() => {
+            this.mobileHandoffInProgress = false;
+        }, 300);
     }
     async loadOrders() {
         this.loading.set(true);
@@ -42,8 +85,15 @@ export class MisPedidosComponent implements OnInit {
     getStatusClass(status: string): string {
         return this.orderService.getStatusClass(status);
     }
-    formatDate(dateString: string): string {
-        return new Date(dateString).toLocaleDateString('es-BO', {
+    formatDate(dateString?: string): string {
+        if (!dateString) {
+            return this.translate.instant('COMMON.NOT_AVAILABLE');
+        }
+        const parsedDate = new Date(dateString);
+        if (Number.isNaN(parsedDate.getTime())) {
+            return this.translate.instant('COMMON.NOT_AVAILABLE');
+        }
+        return parsedDate.toLocaleDateString('es-BO', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -55,15 +105,54 @@ export class MisPedidosComponent implements OnInit {
         return `${this.translate.instant('CART.BS')} ${amount.toFixed(2)}`;
     }
     async viewReceipt(orderId: number): Promise<void> {
+        const isMobileView = window.matchMedia('(max-width: 900px)').matches;
+        if (isMobileView) {
+            this.openReceiptInNewTab(orderId);
+            return;
+        }
+
+        this.receiptLoading.set(true);
         try {
-            const blob = await this.orderService.getReceipt(orderId);
-            const url = window.URL.createObjectURL(blob);
-            window.open(url, '_blank');
-            setTimeout(() => window.URL.revokeObjectURL(url), 1000);
+            const html = await this.orderService.getReceipt(orderId);
+            this.releaseReceiptObjectUrl();
+            this.receiptObjectUrl = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+
+            this.receiptUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(this.receiptObjectUrl));
+            this.currentReceiptOrderId.set(orderId);
+            this.lockBodyScroll();
+            this.receiptModalOpen.set(true);
         }
         catch {
             this.toast.error(this.translate.instant('MY_ORDERS.RECEIPT_ERROR'));
         }
+        finally {
+            this.receiptLoading.set(false);
+        }
+    }
+    private openReceiptInNewTab(orderId: number): void {
+        window.open(`${API.ORDER.RECEIPT}?id=${orderId}`, '_blank', 'noopener,noreferrer');
+    }
+    closeReceiptModal(): void {
+        this.receiptModalOpen.set(false);
+        this.unlockBodyScroll();
+        this.currentReceiptOrderId.set(null);
+        this.releaseReceiptObjectUrl();
+        this.receiptUrl.set(null);
+        this.mobileHandoffInProgress = false;
+    }
+    private releaseReceiptObjectUrl(): void {
+        if (this.receiptObjectUrl) {
+            URL.revokeObjectURL(this.receiptObjectUrl);
+            this.receiptObjectUrl = null;
+        }
+    }
+    private lockBodyScroll(): void {
+        document.body.classList.add('no-scroll');
+        document.documentElement.style.overflow = 'hidden';
+    }
+    private unlockBodyScroll(): void {
+        document.body.classList.remove('no-scroll');
+        document.documentElement.style.overflow = '';
     }
     canViewReceipt(status: string): boolean {
         return status === 'PAID' || status === 'SHIPPED' || status === 'DELIVERED';
