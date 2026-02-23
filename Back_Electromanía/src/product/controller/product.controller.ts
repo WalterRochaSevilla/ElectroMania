@@ -138,7 +138,7 @@ export class ProductController {
         
         return this.productService.getProductById(id);
     }
-    @Roles(UserRole.ADMIN)
+    @Roles(UserRole.ADMIN, UserRole.EMPLOYED)
     @UseGuards(AuthGuard,RolesGuard)
     @ApiOperation({
         summary: 'Registrar un producto',
@@ -195,8 +195,7 @@ export class ProductController {
     @UploadedFile() image: Express.Multer.File): Promise<ProductModel>{
         return this.registerProductUseCase.execute(product, image);
     }
-    
-    @Roles(UserRole.ADMIN)
+    @Roles(UserRole.ADMIN, UserRole.EMPLOYED)
     @UseGuards(AuthGuard,RolesGuard)
     @Post("addImage")
     @ApiOperation({
@@ -263,7 +262,6 @@ export class ProductController {
             "message": "Producto no encontrado"
         }
     })
-    // Delete product endpoint -> To need the id of the product
     @Delete('delete/:id')
     async delete(@Param('id') id: string): Promise<{ message: string }> 
     {
@@ -271,7 +269,7 @@ export class ProductController {
         return { message: 'Producto eliminado correctamente' }; // suggested message for terminal output
     }
 
-    @Roles(UserRole.ADMIN)
+    @Roles(UserRole.ADMIN, UserRole.EMPLOYED)
     @UseGuards(AuthGuard,RolesGuard)
     @ApiOperation({
         summary: 'Actualizar un producto',

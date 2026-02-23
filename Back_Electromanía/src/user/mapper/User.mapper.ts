@@ -2,7 +2,7 @@ import { Mapper } from "src/common/interfaces/Mapper.interface";
 import { UserModel } from "../models/User.model";
 import { UserCreateRequestModel } from "../models/UserCreateRequest.model";
 import {User, Cart,Prisma} from "@prisma/client"
-import { UserRole } from "../enums/UserRole.enum";
+import { UserRole } from '../enums/UserRole.enum';
 import { UserRegisterResponseModel } from "../models/UserRegisterResponse.model";
 import { UserJwtPayloadModel } from "src/auth/models/user-jwt-payload.model";
 import { Email } from "src/auth/models/value objects/email";
@@ -48,6 +48,18 @@ export class UserMapper implements Mapper<UserModel, User,Prisma.UserCreateInput
             nit_ci: model.nit_ci,
             social_reason: model.social_reason,
             role: "ADMIN",
+            updated_at: new Date(),
+            phone_number: model.phone
+        };
+    }
+    toRegisterEmployedUserEntity(model: UserCreateRequestModel): Prisma.UserCreateInput {
+        return {
+            name: model.name,
+            email: model.email,
+            password: model.password,
+            nit_ci: model.nit_ci,
+            social_reason: model.social_reason,
+            role: "EMPLOYED",
             updated_at: new Date(),
             phone_number: model.phone
         };

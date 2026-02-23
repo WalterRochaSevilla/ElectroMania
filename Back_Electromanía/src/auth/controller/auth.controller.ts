@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import { UserCreateRequestModel } from '../../user/models/UserCreateRequest.model';
 import { UserLoginRequestModel } from '../models/user-login.model';
@@ -7,6 +7,10 @@ import { UserModel } from '../../user/models/User.model';
 import { UserJwtPayloadModel } from '../models/user-jwt-payload.model';
 import { Response } from 'express';
 import { LoginUseCase } from '../use-cases/login.usecase';
+import { Roles } from '../decorators/roles.decorator';
+import { UserRole } from '../../user/enums/UserRole.enum';
+import { AuthGuard } from '../guards/auth.guard';
+import { RolesGuard } from '../guards/roles.guard';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -101,8 +105,16 @@ export class AuthController {
     });
     return response.user
   }
+  @Roles(UserRole.ADMIN)
+  @UseGuards(AuthGuard,RolesGuard)
   @Post('register-admin')
   async registerAdminUser(@Body() request: UserCreateRequestModel) {
     return this.authService.registerAdminUser(request);
+  }
+  @Roles(UserRole.ADMIN)
+  @UseGuards(AuthGuard,RolesGuard)
+  @Post('employee')
+  async registerEmployeeUser(@Body() request: UserCreateRequestModel) {
+    return this.authService.registerEmployeeUser(request);
   }
 }

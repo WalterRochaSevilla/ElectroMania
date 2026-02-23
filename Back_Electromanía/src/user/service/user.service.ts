@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/service/prisma.service';
 import { PasswordService } from '../../common/utils/password.service';
 import { UserCreateRequestModel } from '../models/UserCreateRequest.model';
@@ -52,7 +52,7 @@ export class UserService {
       return this.userMapper.toRegisterUserModel(result);
     }catch(error){
       if(error.code === 'P2002'){
-        throw new Error('User already exists');
+        throw new ConflictException('User already exists');
       }
       throw error;
     }
@@ -92,7 +92,21 @@ export class UserService {
       return this.userMapper.toRegisterUserModel(result);
     }catch(error){
       if(error.code === 'P2002'){
-        throw new Error('User already exists');
+        throw new ConflictException('User already exists');
+      }
+      throw error;
+    }
+  }
+  async registerEmployedUser(user: UserCreateRequestModel) {
+    try{
+      const hashedPassword = await this.passwordService.hashPassword(user.password);
+      user.password = hashedPassword;
+      const entity = this.userMapper.toRegisterEmployedUserEntity(user);
+      const result = await this.createUser(entity);
+      return this.userMapper.toRegisterUserModel(result);
+    }catch(error){
+      if(error.code === 'P2002'){
+        throw new ConflictException('User already exists');
       }
       throw error;
     }

@@ -70,4 +70,11 @@ export class AuthService {
             return Promise.reject(error);
         }
     }
+    async registerEmployeeUser(request: UserCreateRequestModel){
+        try{
+            return this.userService.registerEmployedUser(request);
+        }catch(error){
+            return Promise.reject(error);
+        }
+    }
 }
