@@ -415,13 +415,28 @@ export class ProductService {
     productId: number, 
     categoryId: number
   ): Promise<Product> {
-    return await prisma.product.update({
-      where: { product_id: productId },
-      data: {
-        productCategories: {
-          create: { category_id: categoryId },
+    const existingRelation = await prisma.productCategory.findUnique({
+      where: {
+        product_id_category_id: {
+          product_id: productId,
+          category_id: categoryId,
         },
       },
     });
+    if (!existingRelation) {
+      await prisma.productCategory.create({
+        data: {
+          product_id: productId,
+          category_id: categoryId,
+        },
+      });
+    }
+    const product = await prisma.product.findUnique({
+      where: { product_id: productId },
+    });
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${productId} not found`);
+    }
+    return product;
   }
 }

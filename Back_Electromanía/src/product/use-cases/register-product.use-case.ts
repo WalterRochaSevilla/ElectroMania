@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import { ProductService } from "../service/product.service";
 import { ImageStorage } from '../../common/utils/storage/image-storage.interface';
 import { CreateProductRequestModel } from "../model/CreateProductRequest.model";
@@ -11,6 +11,7 @@ import { RegisterProductCategoryDto } from '../../category/dto/register-product-
 
 @Injectable()
 export class RegisterProductUseCase{
+  logger = new Logger(RegisterProductUseCase.name);
   constructor(
     private readonly productService:ProductService,
     private readonly prisma:PrismaService,
@@ -33,9 +34,13 @@ export class RegisterProductUseCase{
           productId: product.product_id,
           categoryId: request.category_id
         }
+        this.logger.log(`Assigning category ${request.category_id} to product ${product.product_id}`);
         await this.productService.assignCategory(categoryRequest,tx)
       }
       return await this.productService.getProductById(product.product_id,tx)
-    })
+    }).catch((error) => {
+      this.logger.error(`Error registering product: ${error.message}`, error.stack);
+      throw error;
+    });
   }
 }
