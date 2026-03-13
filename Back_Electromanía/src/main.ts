@@ -44,6 +44,7 @@ async function bootstrap() {
       Configuration().webSiteDomain.url,
       `${Configuration().webSiteDomain.url}:${Configuration().webSiteDomain.port}`,
       'http://localhost',
+      'http://localhost:4200'
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,

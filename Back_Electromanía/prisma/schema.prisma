@@ -1,7 +1,3 @@
-// ----------------------------------------------------
-// GENERATOR & DATASOURCE
-// ----------------------------------------------------
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,9 +6,164 @@ datasource db {
   provider = "postgresql"
 }
 
-// ----------------------------------------------------
-// ENUMS
-// ----------------------------------------------------
+model User {
+  uuid          String      @id @default(uuid())
+  name          String      @db.VarChar(50)
+  email         String      @unique @db.VarChar(50)
+  password      String      @db.VarChar(60)
+  role          UserRole    @default(USER)
+  nit_ci        String      @db.VarChar(15)
+  social_reason String      @db.VarChar(100)
+  state         UserState   @default(ACTIVE)
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @default(now())
+  phone_number  String
+  carts         Cart[]
+  userOrders    UserOrder[]
+
+  @@map("users")
+}
+
+model Cart {
+  cart_id     Int           @id @default(autoincrement())
+  user_uuid   String
+  state       CartState     @default(ACTIVE)
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @default(now())
+  reserve_at  DateTime?
+  user        User          @relation(fields: [user_uuid], references: [uuid])
+  cartDetails CartDetails[]
+  order       Order?
+
+  @@index([user_uuid, state, reserve_at])
+  @@map("cart")
+}
+
+model CartDetails {
+  id         Int     @id @default(autoincrement())
+  cart_id    Int
+  product_id Int
+  quantity   Int
+  unit_price Decimal @db.Decimal(10, 2)
+  cart       Cart    @relation(fields: [cart_id], references: [cart_id])
+  product    Product @relation(fields: [product_id], references: [product_id])
+
+  @@unique([cart_id, product_id])
+  @@map("cart_details")
+}
+
+model Product {
+  product_id        Int               @id @default(autoincrement())
+  product_name      String            @unique @db.VarChar(50)
+  description       String            @db.VarChar(255)
+  price             Decimal           @db.Decimal(10, 2)
+  stock_total       Int               @default(0)
+  stock_reserved    Int               @default(0)
+  state             ProductState      @default(AVAILABLE)
+  cartDetails       CartDetails[]
+  orderItems        OrderItem[]
+  productCategories ProductCategory[]
+  productImages     ProductImage[]
+
+  @@map("products")
+}
+
+model ProductImage {
+  product_id Int
+  image      String  @db.VarChar(255)
+  product    Product @relation(fields: [product_id], references: [product_id])
+
+  @@id([product_id, image])
+  @@map("product_images")
+}
+
+model Category {
+  category_id       Int               @id @default(autoincrement())
+  category_name     String            @unique @db.VarChar(50)
+  description       String            @db.VarChar(100)
+  productCategories ProductCategory[]
+
+  @@map("categories")
+}
+
+model ProductCategory {
+  product_id  Int
+  category_id Int
+  category    Category @relation(fields: [category_id], references: [category_id])
+  product     Product  @relation(fields: [product_id], references: [product_id])
+
+  @@id([product_id, category_id])
+  @@map("product_categories")
+}
+
+model Order {
+  order_id   Int         @id @default(autoincrement())
+  cart_id    Int         @unique
+  total      Decimal     @db.Decimal(10, 2)
+  status     OrderStatus @default(PENDING)
+  created_at DateTime    @default(now())
+  invoice    Invoice?
+  orderItems OrderItem[]
+  cart       Cart        @relation(fields: [cart_id], references: [cart_id])
+  payment    Payment?
+  userOrders UserOrder[]
+
+  @@index([status, created_at])
+  @@map("orders")
+}
+
+model OrderItem {
+  id           Int     @id @default(autoincrement())
+  order_id     Int
+  product_id   Int
+  product_name String  @db.VarChar(50)
+  unit_price   Decimal @db.Decimal(10, 2)
+  quantity     Int
+  total        Decimal @db.Decimal(10, 2)
+  order        Order   @relation(fields: [order_id], references: [order_id])
+  product      Product @relation(fields: [product_id], references: [product_id])
+
+  @@index([order_id])
+  @@map("order_items")
+}
+
+model UserOrder {
+  user_uuid String
+  order_id  Int
+  order     Order  @relation(fields: [order_id], references: [order_id])
+  user      User   @relation(fields: [user_uuid], references: [uuid])
+
+  @@id([user_uuid, order_id])
+  @@map("user_orders")
+}
+
+model Payment {
+  payment_id Int           @id @default(autoincrement())
+  order_id   Int           @unique
+  amount     Decimal       @db.Decimal(10, 2)
+  method     PaymentMethod
+  status     PaymentStatus @default(PENDING)
+  created_at DateTime      @default(now())
+  order      Order         @relation(fields: [order_id], references: [order_id])
+
+  @@index([status, method])
+  @@map("payments")
+}
+
+model Invoice {
+  invoice_id     Int           @id @default(autoincrement())
+  order_id       Int           @unique
+  invoice_number String        @unique @db.VarChar(50)
+  nit_ci         String        @db.VarChar(15)
+  social_reason  String        @db.VarChar(100)
+  total          Decimal       @db.Decimal(10, 2)
+  status         InvoiceStatus @default(ISSUED)
+  issued_at      DateTime      @default(now())
+  order          Order         @relation(fields: [order_id], references: [order_id])
+
+  @@index([invoice_number])
+  @@map("invoices")
+}
 
 enum CartState {
   ACTIVE
@@ -48,7 +199,7 @@ enum OrderStatus {
 }
 
 enum PaymentMethod {
-  CASH // QR / efectivo / transferencia (Bolivia)
+  CASH
 }
 
 enum PaymentStatus {
@@ -60,193 +211,4 @@ enum PaymentStatus {
 enum InvoiceStatus {
   ISSUED
   CANCELED
-}
-
-// ----------------------------------------------------
-// MODELOS
-// ----------------------------------------------------
-
-// 👤 USER
-model User {
-  uuid          String     @id @default(uuid())
-  name          String     @db.VarChar(50)
-  email         String     @unique @db.VarChar(50)
-  password      String     @db.VarChar(60)
-  role          UserRole   @default(USER)
-  nit_ci        String     @db.VarChar(15)
-  social_reason String     @db.VarChar(100)
-  state         UserState  @default(ACTIVE)
-  created_at    DateTime   @default(now())
-  updated_at    DateTime   @default(now())
-  phone_number  String
-
-  carts         Cart[]
-  userOrders    UserOrder[]
-
-  @@map("users")
-}
-
-// 🛒 CART (INTENCIÓN DE COMPRA)
-model Cart {
-  cart_id     Int       @id @default(autoincrement())
-  user_uuid   String
-  state       CartState @default(ACTIVE)
-  created_at  DateTime  @default(now())
-  updated_at  DateTime @default(now())
-  reserve_at  DateTime?
-
-  user        User      @relation(fields: [user_uuid], references: [uuid])
-  cartDetails CartDetails[]
-  order       Order?
-
-  @@index([user_uuid, state,reserve_at])
-  @@map("cart")
-}
-
-// 🧾 CART DETAILS (SOLO CARRITO)
-model CartDetails {
-  id          Int      @id @default(autoincrement())
-  cart_id     Int
-  product_id  Int
-  quantity    Int
-  unit_price  Decimal  @db.Decimal(10, 2)
-
-  cart        Cart     @relation(fields: [cart_id], references: [cart_id])
-  product     Product  @relation(fields: [product_id], references: [product_id])
-
-  @@unique([cart_id, product_id])
-  @@map("cart_details")
-}
-
-// 📦 PRODUCT
-model Product {
-  product_id    Int           @id @default(autoincrement())
-  product_name  String        @unique @db.VarChar(50)
-  description   String        @db.VarChar(255)
-  price         Decimal       @db.Decimal(10, 2)
-  stock_total   Int           @default(0)
-  stock_reserved Int         @default(0)
-  state         ProductState  @default(AVAILABLE)
-
-  productImages     ProductImage[]
-  cartDetails       CartDetails[]
-  productCategories ProductCategory[]
-  orderItems        OrderItem[]
-
-  @@map("products")
-}
-
-// 🖼️ PRODUCT IMAGE
-model ProductImage {
-  product_id Int
-  image      String @db.VarChar(255)
-
-  product    Product @relation(fields: [product_id], references: [product_id])
-
-  @@id([product_id, image])
-  @@map("product_images")
-}
-
-// 🏷️ CATEGORY
-model Category {
-  category_id   Int    @id @default(autoincrement())
-  category_name String @unique @db.VarChar(50)
-  description   String @db.VarChar(100)
-
-  productCategories ProductCategory[]
-
-  @@map("categories")
-}
-
-// 🔗 PRODUCT ↔ CATEGORY
-model ProductCategory {
-  product_id  Int
-  category_id Int
-
-  product  Product  @relation(fields: [product_id], references: [product_id])
-  category Category @relation(fields: [category_id], references: [category_id])
-
-  @@id([product_id, category_id])
-  @@map("product_categories")
-}
-
-// 📦 ORDER (VENTA)
-model Order {
-  order_id   Int      @id @default(autoincrement())
-  cart_id    Int      @unique
-  total      Decimal  @db.Decimal(10, 2)
-  status     OrderStatus @default(PENDING)
-  created_at DateTime @default(now())
-
-  cart       Cart     @relation(fields: [cart_id], references: [cart_id])
-  orderItems OrderItem[]
-  payment    Payment?
-  invoice    Invoice?
-  userOrders UserOrder[]
-
-  @@index([status, created_at])
-  @@map("orders")
-}
-
-// 📦 ORDER ITEM (SNAPSHOT HISTÓRICO)
-model OrderItem {
-  id            Int      @id @default(autoincrement())
-  order_id      Int
-  product_id    Int
-  product_name  String   @db.VarChar(50)
-  unit_price    Decimal  @db.Decimal(10, 2)
-  quantity      Int
-  total         Decimal  @db.Decimal(10, 2)
-
-  order   Order   @relation(fields: [order_id], references: [order_id])
-  product Product @relation(fields: [product_id], references: [product_id])
-
-  @@index([order_id])
-  @@map("order_items")
-}
-
-// 🔗 USER ↔ ORDER
-model UserOrder {
-  user_uuid String
-  order_id  Int
-
-  user  User  @relation(fields: [user_uuid], references: [uuid])
-  order Order @relation(fields: [order_id], references: [order_id])
-
-  @@id([user_uuid, order_id])
-  @@map("user_orders")
-}
-
-// 💳 PAYMENT
-model Payment {
-  payment_id Int @id @default(autoincrement())
-  order_id   Int @unique
-  amount     Decimal @db.Decimal(10, 2)
-  method     PaymentMethod
-  status     PaymentStatus @default(PENDING)
-  created_at DateTime @default(now())
-
-  order Order @relation(fields: [order_id], references: [order_id])
-
-  @@index([status, method])
-  @@map("payments")
-}
-
-// 🧾 INVOICE (FACTURA)
-model Invoice {
-  invoice_id     Int      @id @default(autoincrement())
-  order_id       Int      @unique
-  invoice_number String  @unique @db.VarChar(50)
-
-  nit_ci         String  @db.VarChar(15)
-  social_reason  String  @db.VarChar(100)
-  total          Decimal @db.Decimal(10, 2)
-
-  status         InvoiceStatus @default(ISSUED)
-  issued_at      DateTime @default(now())
-
-  order Order @relation(fields: [order_id], references: [order_id])
-
-  @@index([invoice_number])
-  @@map("invoices")
 }
