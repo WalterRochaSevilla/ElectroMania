@@ -69,65 +69,49 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         this.themeObserver?.disconnect();
     }
     private updateChartColors() {
-        const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+        const isDark = document.documentElement.dataset['theme'] !== 'light';
         const textColor = isDark ? '#94a3b8' : '#64748b';
         const labelColor = isDark ? '#e2e8f0' : '#1e293b';
         const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
-        if (this.lineChartOptions?.scales) {
-            const scales = this.lineChartOptions.scales as Record<string, {
-                ticks?: {
-                    color?: string;
-                };
-                grid?: {
-                    color?: string;
-                };
-            }>;
-            if (scales['y']?.ticks)
-                scales['y'].ticks.color = textColor;
-            if (scales['y']?.grid)
-                scales['y'].grid.color = gridColor;
-            if (scales['x']?.ticks)
-                scales['x'].ticks.color = textColor;
-        }
-        if (this.barChartOptions?.scales) {
-            const scales = this.barChartOptions.scales as Record<string, {
-                ticks?: {
-                    color?: string;
-                };
-                grid?: {
-                    color?: string;
-                };
-            }>;
-            if (scales['x']?.ticks)
-                scales['x'].ticks.color = textColor;
-            if (scales['x']?.grid)
-                scales['x'].grid.color = gridColor;
-            if (scales['y']?.ticks)
-                scales['y'].ticks.color = labelColor;
-        }
+        this.applyScaleColors(this.lineChartOptions?.scales, {
+            x: { ticks: textColor },
+            y: { ticks: textColor, grid: gridColor }
+        });
+        this.applyScaleColors(this.barChartOptions?.scales, {
+            x: { ticks: textColor, grid: gridColor },
+            y: { ticks: labelColor }
+        });
         this.charts?.forEach(chartDirective => {
             const chart = chartDirective.chart;
-            const scales = chart?.options?.scales as Record<string, {
-                ticks?: {
-                    color?: string;
-                };
-                grid?: {
-                    color?: string;
-                };
-            }> | undefined;
-            if (!chart || !scales)
-                return;
+            if (!chart?.options?.scales) return;
             const isHorizontalBar = chart.options.indexAxis === 'y';
-            if (scales['x']?.ticks)
-                scales['x'].ticks.color = textColor;
-            if (scales['x']?.grid)
-                scales['x'].grid.color = gridColor;
-            if (scales['y']?.ticks)
-                scales['y'].ticks.color = isHorizontalBar ? labelColor : textColor;
-            if (scales['y']?.grid && !isHorizontalBar)
-                scales['y'].grid.color = gridColor;
+            this.applyScaleColors(chart.options.scales, {
+                x: { ticks: textColor, grid: gridColor },
+                y: {
+                    ticks: isHorizontalBar ? labelColor : textColor,
+                    grid: isHorizontalBar ? undefined : gridColor
+                }
+            });
         });
         this.updateAllCharts();
+    }
+    private applyScaleColors(
+        scales: unknown,
+        config: Record<string, { ticks?: string; grid?: string }>
+    ): void {
+        if (!scales) return;
+        const typedScales = scales as Record<string, {
+            ticks?: { color?: string };
+            grid?: { color?: string };
+        }>;
+        for (const [axis, colors] of Object.entries(config)) {
+            if (colors.ticks && typedScales[axis]?.ticks) {
+                typedScales[axis].ticks.color = colors.ticks;
+            }
+            if (colors.grid && typedScales[axis]?.grid) {
+                typedScales[axis].grid.color = colors.grid;
+            }
+        }
     }
     async loadDashboardData() {
         this.loading.set(true);
