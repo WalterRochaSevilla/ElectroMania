@@ -22,7 +22,7 @@ export class MisPedidosComponent implements OnInit, OnDestroy {
     private modalService = inject(ModalService);
     private toast = inject(ToastService);
     private mobileHandoffInProgress = false;
-    private receiptFrame = viewChild<ElementRef<HTMLIFrameElement>>('receiptFrame');
+    private readonly receiptFrame = viewChild<ElementRef<HTMLIFrameElement>>('receiptFrame');
     orders = signal<Order[]>([]);
     loading = signal(true);
     receiptModalOpen = signal(false);
