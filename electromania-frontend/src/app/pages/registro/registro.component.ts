@@ -8,7 +8,6 @@ import { LanguageService } from '../../services/language.service';
 import { RegisterUserRequest } from '../../models';
 import { PasswordInputComponent } from '../../components/password-input/password-input.component';
 import { isValidEmail, isValidNIT, isValidPassword, passwordsMatch, formatNIT } from '../../utils/validators';
-import * as generatePassword from 'generate-password';
 @Component({
     selector: 'app-registro',
     standalone: true,
