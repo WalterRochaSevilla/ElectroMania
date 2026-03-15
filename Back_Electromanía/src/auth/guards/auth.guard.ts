@@ -5,11 +5,14 @@ import { Request } from 'express';
 
 @Injectable()
 export class AuthGuard implements CanActivate{
-    constructor(private jwtService: JwtService){}
+    private readonly logger = new Logger(AuthGuard.name);
+    constructor(private readonly jwtService: JwtService
+    ){}
     async canActivate(context: ExecutionContext):Promise<boolean>{
         const request = context.switchToHttp().getRequest();
         const token = this.extractTokenFromHeader(request);
         if(!token){
+            this.logger.warn("No se proporcionó un token de autenticación");
             throw new UnauthorizedException("Debe Iniciar Sesion");
         }
         try {
@@ -19,6 +22,8 @@ export class AuthGuard implements CanActivate{
             request['user'] = payload.user;
             return true;
         } catch (error) {
+            this.logger.warn("Token de autenticación inválido");
+            this.logger.error(error);
             throw new UnauthorizedException("Token Invalido");
         }
     }

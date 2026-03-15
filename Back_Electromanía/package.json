@@ -46,6 +46,7 @@
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.4",
     "express": "^5.2.1",
+    "generate-password": "^1.7.1",
     "handlebars": "^4.7.8",
     "multer": "^2.0.2",
     "nodemailer": "^7.0.13",

@@ -11,6 +11,7 @@ import { Roles } from '../decorators/roles.decorator';
 import { UserRole } from '../../user/enums/UserRole.enum';
 import { AuthGuard } from '../guards/auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
+import { PasswordService } from '../../common/utils/password.service';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -34,7 +35,7 @@ export class AuthController {
           example: {
             name: 'prueba',
             email: 'prueba@gmail',
-            password: 'password',
+            password: PasswordService.generateStrongPassword(),
             nit_ci: '123456789',
             social_reason: 'prueba'
           }
@@ -77,7 +78,7 @@ export class AuthController {
           },
           example: {
             email: 'prueba@gmail',
-            password: 'password',
+            password: PasswordService.generateStrongPassword(),
           }
         },
       },
