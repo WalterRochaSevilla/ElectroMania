@@ -78,12 +78,13 @@ export class RegistroComponent {
         this.confirmarContrasena = '';
     }
     generarContrasena() {
-        const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-        let contrasenaGenerada = '';
-        for (let i = 0; i < 12; i++) {
-            contrasenaGenerada += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-        }
-        this.contrasena = contrasenaGenerada;
-        this.confirmarContrasena = contrasenaGenerada;
+      const chars ="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+      const randomValues = new Uint8Array(12);
+      globalThis.crypto.getRandomValues(randomValues);
+      const contrasenaGenerada = Array.from(randomValues)
+                                  .map(v => chars[v % chars.length])
+                                  .join("");
+      this.contrasena = contrasenaGenerada;
+      this.confirmarContrasena = contrasenaGenerada;
     }
 }

@@ -143,7 +143,7 @@ export class ProductosComponent implements OnInit {
                 this.numeroFactura.set(`PED-${order.id ?? order.order_id}`);
             }
             else {
-                this.numeroFactura.set(`PED-${Math.floor(10000 + Math.random() * 90000)}`);
+                this.numeroFactura.set(`PED-${crypto.randomUUID().slice(0, 8).toUpperCase()}`);
             }
             const whatsappMessage = this.generateWhatsAppMessage();
             const whatsappUrl = this.generateWhatsAppUrl(whatsappMessage);
