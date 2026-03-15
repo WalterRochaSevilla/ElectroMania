@@ -71,31 +71,22 @@ export class ProductosComponent implements OnInit {
             return;
         try {
             const user = await this.userService.getCurrentUser();
-            if (user) {
-                if (user.email) {
-                    this.emailFactura.set(user.email);
-                }
-                if (user.social_reason) {
-                    this.nombreFactura.set(user.social_reason);
-                }
-                else if (user.name) {
-                    this.nombreFactura.set(user.name);
-                }
-                if (user.nit_ci) {
-                    this.nitFactura.set(user.nit_ci);
-                }
-            }
+            this.applyUserFields(user?.email, user?.social_reason || user?.name, user?.nit_ci);
         }
         catch {
             const jwtUser = this.currentUser();
-            if (jwtUser) {
-                if (jwtUser.email) {
-                    this.emailFactura.set(jwtUser.email);
-                }
-                if (jwtUser.nombre) {
-                    this.nombreFactura.set(jwtUser.nombre);
-                }
-            }
+            this.applyUserFields(jwtUser?.email, jwtUser?.nombre);
+        }
+    }
+    private applyUserFields(email?: string | null, name?: string | null, nit?: string | null) {
+        if (email) {
+            this.emailFactura.set(email);
+        }
+        if (name) {
+            this.nombreFactura.set(name);
+        }
+        if (nit) {
+            this.nitFactura.set(nit);
         }
     }
     irACatalogo() {
