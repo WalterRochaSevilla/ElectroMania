@@ -8,6 +8,7 @@ import { LanguageService } from '../../services/language.service';
 import { RegisterUserRequest } from '../../models';
 import { PasswordInputComponent } from '../../components/password-input/password-input.component';
 import { isValidEmail, isValidNIT, isValidPassword, passwordsMatch, formatNIT } from '../../utils/validators';
+import * as generatePassword from 'generate-password';
 @Component({
     selector: 'app-registro',
     standalone: true,
@@ -78,11 +79,14 @@ export class RegistroComponent {
         this.confirmarContrasena = '';
     }
     generarContrasena() {
-        const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-        let contrasenaGenerada = '';
-        for (let i = 0; i < 12; i++) {
-            contrasenaGenerada += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-        }
+        const contrasenaGenerada = generatePassword.generate({
+            length: 12,
+            numbers: true,
+            symbols: true,
+            uppercase: true,
+            lowercase: true,
+            strict: true
+        })
         this.contrasena = contrasenaGenerada;
         this.confirmarContrasena = contrasenaGenerada;
     }

@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { randomBytes, randomInt, randomUUID } from "crypto";
+import { randomBytes, randomInt, randomUUID } from "node:crypto";
 @Injectable()
 export class CryptoService{
     generateToken(bytes: number = 32): string{
