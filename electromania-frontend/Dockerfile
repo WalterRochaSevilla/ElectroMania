@@ -16,7 +16,9 @@ COPY package.json package-lock.json ./
 RUN npm install --frozen-lockfile
 
 # copiar código
-COPY . .
+COPY --chown=node:node . .
+
+
 
 # exponer puerto de angular
 EXPOSE 4200
@@ -37,7 +39,7 @@ COPY package.json package-lock.json ./
 
 RUN npm install --frozen-lockfile
 
-COPY . .
+COPY --chown=node:node . .
 
 RUN npm run build --prod
 

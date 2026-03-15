@@ -11,20 +11,30 @@ import { UserMapper } from '../user/mapper/User.mapper';
 import { PasswordService } from '../common/utils/password.service';
 import { LoginUseCase } from './use-cases/login.usecase';
 import { UserService } from '../user/service/user.service';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     CommonModule,
     forwardRef(() => UserModule),
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.register({
-      secret: Configuration().jwtConstants.secret,
-      signOptions: { expiresIn: "24h" },
-      global: true
-    })
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('jwtConstants.secret'),
+        signOptions: { expiresIn: '24h' },
+      }),
+    }),
   ],
   controllers: [AuthController],
-  providers: [AuthService,PrismaService, UserMapper,PasswordService,LoginUseCase,UserService],
-  exports: [PassportModule, JwtModule, AuthService]
+  providers: [
+    AuthService,
+    PrismaService,
+    UserMapper,
+    PasswordService,
+    LoginUseCase,
+    UserService,
+  ],
+  exports: [PassportModule, JwtModule, AuthService],
 })
 export class AuthModule {}

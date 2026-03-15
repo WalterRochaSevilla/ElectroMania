@@ -9,10 +9,11 @@ import { ProductMapper } from './mapper/Product.mapper';
 import { ProductImageMapper } from './mapper/ProductImage.mapper';
 import { PageProductMapper } from './mapper/PageProduct.mapper';
 import { CommonModule } from 'src/common/common.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
-    CommonModule
+    CommonModule, AuthModule
   ],
   controllers: [ProductController],
   providers: [ProductService,PrismaService,AuthGuard,RolesGuard,ProductMapper,ProductImageMapper,PageProductMapper,RegisterProductUseCase
