@@ -43,7 +43,7 @@ export class ThemeService {
         if (!this.isBrowser)
             return;
         const theme = this.theme();
-        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.dataset['theme'] = theme;
         this.storageService.setItem(STORAGE_KEY, theme);
         const metaThemeColor = document.querySelector('meta[name="theme-color"]');
         if (metaThemeColor) {
