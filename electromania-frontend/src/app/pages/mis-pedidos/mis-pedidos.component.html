@@ -98,8 +98,8 @@
         <div class="receipt-modal-body">
             @if (receiptLoading()) {
             <p>{{ 'MY_ORDERS.LOADING' | translate }}</p>
-            } @else if (receiptUrl()) {
-            <iframe class="receipt-frame" [src]="receiptUrl()" title="Receipt preview" scrolling="auto"
+            } @else if (receiptReady()) {
+            <iframe #receiptFrame class="receipt-frame" title="Receipt preview" scrolling="auto"
                 sandbox="allow-same-origin"></iframe>
             }
         </div>
