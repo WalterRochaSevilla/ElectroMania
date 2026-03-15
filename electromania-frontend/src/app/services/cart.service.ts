@@ -47,7 +47,9 @@ export class CartService {
     constructor() {
         effect(() => {
             const isAuth = this.authService.isAuthenticated$();
-            if (this.previousAuthState !== null && this.previousAuthState !== isAuth) {
+            if (this.previousAuthState === null) {
+                this.refreshCart();
+            } else if (this.previousAuthState !== isAuth) {
                 if (isAuth) {
                     this.handleLogin();
                 }
@@ -57,7 +59,6 @@ export class CartService {
             }
             this.previousAuthState = isAuth;
         });
-        this.refreshCart();
     }
     private async handleLogin(): Promise<void> {
         const guestItems = this.itemsSignal();
