@@ -7,6 +7,7 @@ import { RegisterProductImageRequestModel } from '../model/RegisterProductImageR
 import { ProductModel, ProductWithCategoriesAndImagesModel } from '../model/Product.model';
 import { JwtService } from '@nestjs/jwt';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Logger } from '@nestjs/common';
 
 // Mock más completo del AuthGuard
 class AuthGuardMock {

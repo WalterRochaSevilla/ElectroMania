@@ -18,9 +18,10 @@ import { RegisterProductUseCase } from '../use-cases/register-product.use-case';
 @Controller('products')
 @ApiTags('Products')
 export class ProductController {
+    private readonly logger = new Logger(ProductController.name);
     constructor(
         private readonly productService: ProductService,
-        private readonly registerProductUseCase:RegisterProductUseCase
+        private readonly registerProductUseCase:RegisterProductUseCase,
     ){}
 
     @Get("all")
@@ -265,6 +266,7 @@ export class ProductController {
     @Delete('delete/:id')
     async delete(@Param('id') id: string): Promise<{ message: string }> 
     {
+        this.logger.log(`Eliminando producto con ID: ${id}`);
         await this.productService.deleteProduct(Number(id));
         return { message: 'Producto eliminado correctamente' }; // suggested message for terminal output
     }
