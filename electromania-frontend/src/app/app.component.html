@@ -1,10 +1,10 @@
 
 <header class="navbar" [class.navbar-hidden]="isScrolled()">
   <div class="nav-content">
-    <div class="brand" (click)="irA('bienvenida')" (keyup.enter)="irA('bienvenida')" tabindex="0" role="button">
+    <button class="brand" (click)="irA('bienvenida')">
       <img src="/logo.png" alt="ElectroMania" class="main-logo">
       <div class="brand-name">Electro<span>Mania</span></div>
-    </div>
+    </button>
     <nav class="nav-right">
       <div class="nav-links">
         <a (click)="irA('bienvenida')" (keyup.enter)="irA('bienvenida')" tabindex="0" class="nav-item">
@@ -160,10 +160,10 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-info">
-        <div class="brand" (click)="irA('bienvenida')" (keyup.enter)="irA('bienvenida')" tabindex="0" role="button">
+        <button class="brand" (click)="irA('bienvenida')">
           <img src="/logo.png" alt="Logo ElectroMania" class="main-logo">
           <span class="brand-name">Electro<span>Mania</span></span>
-        </div>
+        </button>
         <p class="brand-description">
           {{ 'FOOTER.BRAND_DESC' | translate }}
         </p>
