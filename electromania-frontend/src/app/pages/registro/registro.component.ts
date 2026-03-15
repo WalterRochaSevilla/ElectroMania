@@ -79,15 +79,13 @@ export class RegistroComponent {
         this.confirmarContrasena = '';
     }
     generarContrasena() {
-        const contrasenaGenerada = generatePassword.generate({
-            length: 12,
-            numbers: true,
-            symbols: true,
-            uppercase: true,
-            lowercase: true,
-            strict: true
-        })
-        this.contrasena = contrasenaGenerada;
-        this.confirmarContrasena = contrasenaGenerada;
+      const chars ="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+      const randomValues = new Uint8Array(12);
+      globalThis.crypto.getRandomValues(randomValues);
+      const contrasenaGenerada = Array.from(randomValues)
+                                  .map(v => chars[v % chars.length])
+                                  .join("");
+      this.contrasena = contrasenaGenerada;
+      this.confirmarContrasena = contrasenaGenerada;
     }
 }
