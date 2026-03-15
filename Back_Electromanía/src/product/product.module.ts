@@ -13,17 +13,14 @@ import { R2ImageStorage } from '../common/utils/storage/r2-image-storage.storage
 import { ProductImageMapper } from './mapper/ProductImage.mapper';
 import { PageProductMapper } from './mapper/PageProduct.mapper';
 import { CategoryService } from '../category/service/category.service';
+import { CommonModule } from 'src/common/common.module';
 
 @Module({
   imports: [
+    CommonModule
   ],
   controllers: [ProductController],
-  providers: [ProductService,PrismaService,AuthGuard,RolesGuard,ProductMapper,ProductImageMapper,PageProductMapper,
-    {
-      provide: 'ImageStorage',
-      useClass: config().storage.driver === 'cloudinary' ? CloudinaryImageStorage : config().storage.driver === 'r2' ?
-      R2ImageStorage : LocalImageStorage,
-    },RegisterProductUseCase
+  providers: [ProductService,PrismaService,AuthGuard,RolesGuard,ProductMapper,ProductImageMapper,PageProductMapper,RegisterProductUseCase
   ],
   exports: [ProductService],
 })

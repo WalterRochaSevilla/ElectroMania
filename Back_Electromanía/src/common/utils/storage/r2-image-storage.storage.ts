@@ -5,6 +5,7 @@ import * as sharp from 'sharp';
 import { unlink } from 'fs/promises';
 import { join, parse } from 'path';
 import config from '../../../config/Configuration';
+import { randomBytes } from 'node:crypto';
 
 @Injectable()
 export class R2ImageStorage implements ImageStorage {
@@ -89,7 +90,7 @@ export class R2ImageStorage implements ImageStorage {
   private getOptimizedPath(originalPath: string): string {
     const { dir, name, ext } = parse(originalPath);
     const timestamp = Date.now();
-    const random = Math.floor(Math.random() * 10000);
+    const random = randomBytes(16).toString('hex');
     return join(dir, `${name}-${timestamp}-${random}.webp`);
   }
 }
