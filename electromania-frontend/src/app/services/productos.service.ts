@@ -145,9 +145,14 @@ export class ProductosService {
             .reduce((sum, order) => sum + order.total, 0);
         const revenueChange = this.calculateRevenueChange(orders);
         const lowStockCount = products.filter(p => p.stock <= INVENTORY.LOW_STOCK_THRESHOLD).length;
-        const systemStatus: 'online' | 'offline' | 'maintenance' = hasFailures
-            ? (hasData ? 'maintenance' : 'offline')
-            : 'online';
+        let systemStatus: 'online' | 'offline' | 'maintenance';
+        if (!hasFailures) {
+            systemStatus = 'online';
+        } else if (hasData) {
+            systemStatus = 'maintenance';
+        } else {
+            systemStatus = 'offline';
+        }
         return {
             total_revenue: Number(totalRevenue.toFixed(2)),
             revenue_change: revenueChange,
