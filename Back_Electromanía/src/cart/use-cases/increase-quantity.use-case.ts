@@ -17,7 +17,6 @@ export class IncreaseQuantityUseCase{
     private readonly cartService: CartService
   ){}
   async execute(uuid: string, request:UpdateCartDetailDto, tx?:Prisma.TransactionClient) {
-    const prisma = tx? tx : this.prisma
       let activeCart = await this.cartService.getActiveCartByUser(uuid, tx);
       if(!activeCart) {
         activeCart = await this.cartService.createCart(uuid, tx);
@@ -27,10 +26,10 @@ export class IncreaseQuantityUseCase{
         throw new ForbiddenException('Product not found');
       }
       const detail = await this.cartService.getCartDetailByCartAndProduct(activeCart.id, request.productId, tx);
-      if(!detail){
-        await this.cartService.createCartDetail(activeCart.id, request, tx);
-      }else{
+      if(detail){
         await this.cartService.increaseQuantity(detail.id, request, tx);
+      }else{
+        await this.cartService.createCartDetail(activeCart.id, request, tx);
       }
       await this.productService.reserveStock(request.productId, request.quantity, tx);
       
