@@ -82,7 +82,7 @@ export class AuthService {
     }
     async registerEmployeeUser(request: UserCreateRequestModel){
         try{
-            return this.userService.registerEmployedUser(request);
+            return await this.userService.registerEmployedUser(request);
         }catch(error){
             this.handlePrismaError(error);
         }
