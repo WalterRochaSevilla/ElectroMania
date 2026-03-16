@@ -6,7 +6,6 @@ import { UserModule } from '../user/user.module';
 import { PrismaService } from '../prisma/service/prisma.service';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import Configuration from '../config/Configuration';
 import { UserMapper } from '../user/mapper/User.mapper';
 import { PasswordService } from '../common/utils/password.service';
 import { LoginUseCase } from './use-cases/login.usecase';
