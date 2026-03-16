@@ -4,39 +4,34 @@ services:
       context: ./Back_Electromanía
       dockerfile: Dockerfile
       target: development
+      args:
+        UID: ${UID:-1000}   # toma tu UID del host automáticamente
     container_name: electromania-backend-dev
-    image: electromania-backend:dev
+    # sin user: root
     env_file:
       - .dev.env
     depends_on:
       postgres:
         condition: service_healthy
     volumes:
-      - ./Back_Electromanía/src:/usr/src/app/src
-      - ./Back_Electromanía/prisma:/usr/src/app/prisma
-      - ./Back_Electromanía/nest-cli.json:/usr/src/app/nest-cli.json
-      - ./Back_Electromanía/tsconfig.json:/usr/src/app/tsconfig.json
-      - ./Back_Electromanía/tsconfig.build.json:/usr/src/app/tsconfig.build.json
-      - uploads_data:/usr/src/app/uploads
-      - /usr/src/app/node_modules
-
+    - ./Back_Electromanía:/usr/src/app:Z
+    - /usr/src/app/node_modules
+    - uploads_data:/usr/src/app/uploads
     ports:
       - "3000:3000"
-
-    command: sh -c "pnpm prisma migrate dev && pnpm start:dev"
-
   frontend:
     build:
       context: ./electromania-frontend
       dockerfile: Dockerfile
       target: development
     container_name: electromania-frontend-dev
-    image: electromania-frontend:dev
+    user: root
+    env_file:
+      - .dev.env
     volumes:
-      - ./electromania-frontend:/usr/src/app
-      - angular_cache:/usr/src/app/.angular/cache
+      - ./electromania-frontend:/usr/src/app:cached,Z
       - /usr/src/app/node_modules
-    command: npm run start:dev
+      - angular_cache:/usr/src/app/.angular/cache
     ports:
       - "4200:4200"
 
@@ -57,6 +52,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
 volumes:
   pg_data:
   uploads_data:
