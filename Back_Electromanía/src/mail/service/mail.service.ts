@@ -6,7 +6,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 export class MailService implements OnModuleInit {
   private readonly logger = new Logger(MailService.name);
 
-  constructor(private mailerService: MailerService) {}
+  constructor(private readonly mailerService: MailerService) {}
 
   async onModuleInit() {
     try {
