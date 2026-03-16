@@ -1,5 +1,4 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty } from "class-validator";
 
 type Primitives = string | number | boolean | Date;
 
@@ -15,7 +14,7 @@ export abstract class ValueObject<T extends Primitives> {
     }
     private isDefined(value: T){
         if(value === null || value === undefined){
-            throw Error('Value most be defined');
+            throw new Error('Value most be defined');
         }
     }
 }

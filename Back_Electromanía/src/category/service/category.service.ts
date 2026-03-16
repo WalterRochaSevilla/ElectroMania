@@ -1,9 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from '../dto/create-category.dto';
-import { UpdateCategoryDto } from '../dto/update-category.dto';
 import { PrismaService } from '../../prisma/service/prisma.service';
 import { CategoryMapper } from '../mapper/category.mapper';
-import { Prisma, Category } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { RegisterProductCategoryDto } from '../dto/register-product-category.dto';
 
 @Injectable()
@@ -18,7 +17,7 @@ export class CategoryService {
   }
 
   async registerCategoryToProduct(registerProductCategory: RegisterProductCategoryDto,tx?: Prisma.TransactionClient) {
-    const prisma = tx? tx : this.prisma
+    const prisma = tx || this.prisma
     const category = await prisma.category.findUnique({
       where: { category_id: registerProductCategory.categoryId },
     });
@@ -30,7 +29,7 @@ export class CategoryService {
     )
   }
   async update(id: number, category: Prisma.CategoryUpdateInput,tx?: Prisma.TransactionClient) {
-    const prisma = tx? tx : this.prisma
+    const prisma = tx || this.prisma
     return await prisma.category.update({
       where: { category_id: id },
       data: category,
