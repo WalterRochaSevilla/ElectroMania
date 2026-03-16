@@ -5,7 +5,6 @@ import { randomUUID } from 'node:crypto';
 export const productMulterConfig = {
   storage: diskStorage({
     destination: (req, file, cb) => {
-      // Usar ruta absoluta desde el directorio raíz del proyecto
       cb(null, join(process.cwd(), 'uploads', 'tmp'));
     },
     filename: (req, file, cb) => {
@@ -13,7 +12,7 @@ export const productMulterConfig = {
     },
   }),
   limits: {
-    fileSize: 2 * 1024 * 1024, // 2MB
+    fileSize: 2000000, // 2MB
     files: 1
   },
   fileFilter: (req, file, cb) => {

@@ -8,7 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class RolesGuard implements CanActivate {
     constructor(
-        private reflector: Reflector,
+        private readonly reflector: Reflector,
         private readonly jwtService: JwtService
     ) {}
     hasRole(roles: UserRole[], user: UserJwtPayloadModel) {

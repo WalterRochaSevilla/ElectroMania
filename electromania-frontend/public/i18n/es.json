@@ -409,7 +409,7 @@
     "WHATSAPP_MESSAGE": "Hola, me interesa mas informacion sobre sus servicios",
     "EMAIL_SUBJECT": "Consulta ElectroMania",
     "EMAIL_BODY": "Hola, me interesa mas informacion sobre...",
-    "OFFICE_IMAGE_ALT": "Oficina de ElectroMania"
+    "OFFICE_ALT": "Oficina principal de ElectroMania"
   },
   "ABOUT": {
     "TITLE": "Sobre Nosotros",

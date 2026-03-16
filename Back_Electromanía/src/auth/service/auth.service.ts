@@ -26,7 +26,14 @@ export class AuthService {
                 secret: config().jwtConstants.secret
             });
         } catch (error) {
-            return Promise.reject(error);
+            switch(error.name){
+                case 'TokenExpiredError':
+                    throw new UnauthorizedException("Token Expirado");
+                case 'JsonWebTokenError':
+                    throw new UnauthorizedException("Token Invalido");
+                default:
+                    throw new UnauthorizedException("Token generico invalido");
+            }
         }
     }
     async generateToken(user: UserJwtPayloadModel) {
@@ -50,9 +57,9 @@ export class AuthService {
 
     async registerUser(request: UserCreateRequestModel){
         try{
-            return this.userService.registerUser(request);
+            return await this.userService.registerUser(request);
         }catch(error){
-            return Promise.reject(error);
+            this.handlePrismaError(error);
         }
     }
     async validateUserById(uuid:string){
@@ -60,21 +67,34 @@ export class AuthService {
     }
     async getUserFromToken(token: string){
         const verify = await this.validateToken(token);
-        return this.jwtService.decode(token).user;
+        if(verify){
+            return this.userService.getUserByField('uuid', verify.uuid);
+        }
+        throw new UnauthorizedException("Invalid Token");
     }
 
     async registerAdminUser(request: UserCreateRequestModel){
         try{
-            return this.userService.registerAdminUser(request);
+            return await this.userService.registerAdminUser(request);
         }catch(error){
-            return Promise.reject(error);
+            this.handlePrismaError(error);
         }
     }
     async registerEmployeeUser(request: UserCreateRequestModel){
         try{
-            return this.userService.registerEmployedUser(request);
+            return await this.userService.registerEmployedUser(request);
         }catch(error){
-            return Promise.reject(error);
+            this.handlePrismaError(error);
+        }
+    }
+    private handlePrismaError(error: any){
+        switch(error.code){
+            case 'P2002':
+                throw new UnauthorizedException("Email already in use");
+            case 'P2003':
+                throw new UnauthorizedException("Role Invalido");
+            default:
+                throw new UnauthorizedException("Error registering user");
         }
     }
 }

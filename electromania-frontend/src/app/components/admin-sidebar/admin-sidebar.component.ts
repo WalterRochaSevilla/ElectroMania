@@ -109,7 +109,7 @@ import { AuthService } from '../../services/auth.service';
   `]
 })
 export class AdminSidebarComponent {
-    private authService = inject(AuthService);
+    private readonly authService = inject(AuthService);
     get isAdmin(): boolean {
     return this.authService.isAdmin();
     }
