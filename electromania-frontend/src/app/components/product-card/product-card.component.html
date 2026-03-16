@@ -1,5 +1,4 @@
-<div class="card-producto" [class.is-offer]="isOffer" (click)="onCardClick()" (keyup.enter)="onCardClick()" tabindex="0"
-  role="button">
+<button class="card-producto" [class.is-offer]="isOffer" (click)="onCardClick()" (keyup.enter)="onCardClick()" tabindex="0">
   <div class="badge-container">
     @if (isOffer) {
     <span class="badge badge-offer">{{ 'PRODUCT_CARD.OFFER' | translate }}</span>
@@ -52,4 +51,4 @@
       {{ (product.stock === 0 ? 'PRODUCT_CARD.OUT_OF_STOCK' : (isOffer ? 'PRODUCT_CARD.ADD_OFFER' : 'PRODUCT_CARD.ADD')) | translate }}
     </button>
   </div>
-</div>
+</button>

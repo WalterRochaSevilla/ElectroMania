@@ -74,10 +74,9 @@
                   </span>
                 </td>
                 <td>
-                  <span class="status-indicator" [class.active]="producto.activo" (click)="toggleActivo(producto)"
-                    (keyup.enter)="toggleActivo(producto)" tabindex="0" role="button">
+                  <button class="status-indicator" [class.active]="producto.activo" (click)="toggleActivo(producto)">
                     {{ producto.activo ? ('ADMIN.ACTIVE' | translate) : ('ADMIN.INACTIVE' | translate) }}
-                  </span>
+                  </button>
                 </td>
                 <td>
                   <div class="actions-cell">
