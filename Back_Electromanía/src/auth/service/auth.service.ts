@@ -26,7 +26,14 @@ export class AuthService {
                 secret: config().jwtConstants.secret
             });
         } catch (error) {
-            return Promise.reject(error);
+            switch(error){
+                case 'TokenExpiredError':
+                    throw new UnauthorizedException("Token Expirado");
+                case 'JsonWebTokenError':
+                    throw new UnauthorizedException("Token Invalido");
+                default:
+                    throw new UnauthorizedException("Token generico invalido");
+            }
         }
     }
     async generateToken(user: UserJwtPayloadModel) {
