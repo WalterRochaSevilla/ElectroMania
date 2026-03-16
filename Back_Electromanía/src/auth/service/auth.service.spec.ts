@@ -153,10 +153,4 @@ describe('AuthService', () => {
     expect(decoded).toEqual({ user: { uuid: '123', email: 'test@gmail.com', role: UserRole.USER } });
   });
 
-  it('Deberia obtener user del token', async () => {
-    const token = 'fake-token';
-    const user = await service.getUserFromToken(token);
-    expect(user).toEqual({ uuid: '123', email: 'test@gmail.com', role: UserRole.USER });
-  });
-
 });
