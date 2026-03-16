@@ -57,7 +57,7 @@ export class AuthService {
 
     async registerUser(request: UserCreateRequestModel){
         try{
-            return this.userService.registerUser(request);
+            return await this.userService.registerUser(request);
         }catch(error){
             this.handlePrismaError(error);
         }
