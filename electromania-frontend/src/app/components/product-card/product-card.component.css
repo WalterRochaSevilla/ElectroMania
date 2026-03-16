@@ -1,4 +1,3 @@
-
 .card-producto {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -10,6 +9,11 @@
     flex-direction: column;
     height: 100%;
     cursor: pointer;
+    padding: 0;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    width: 100%;
 }
 
 .card-producto:hover {
@@ -106,6 +110,7 @@
 
     overflow: hidden;
     display: -webkit-box;
+    line-clamp: 2;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
 }
