@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Logger, Post, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../../auth/guards/auth.guard';
 import { DeleteProductFromCartDto } from '../dto/delete-product-from-cart.dto';
 import { AddProductToCartUseCase } from '../use-cases/add-product-to-cart.use-case';

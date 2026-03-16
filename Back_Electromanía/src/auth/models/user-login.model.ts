@@ -1,6 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString, IsStrongPassword } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-import { SerializeOptions } from "@nestjs/common";
 
 export class UserLoginRequestModel {
     @IsNotEmpty({message: "El email no puede estar vacio"})

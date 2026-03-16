@@ -3,7 +3,6 @@ import { Reflector } from '@nestjs/core';
 import { UserRole } from '../../user/enums/UserRole.enum';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 import { UserJwtPayloadModel } from '../models/user-jwt-payload.model';
-import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
