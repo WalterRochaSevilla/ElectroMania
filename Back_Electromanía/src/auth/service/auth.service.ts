@@ -57,7 +57,7 @@ export class AuthService {
 
     async registerUser(request: UserCreateRequestModel){
         try{
-            return this.userService.registerUser(request);
+            return await this.userService.registerUser(request);
         }catch(error){
             this.handlePrismaError(error);
         }
@@ -75,14 +75,14 @@ export class AuthService {
 
     async registerAdminUser(request: UserCreateRequestModel){
         try{
-            return this.userService.registerAdminUser(request);
+            return await this.userService.registerAdminUser(request);
         }catch(error){
             this.handlePrismaError(error);
         }
     }
     async registerEmployeeUser(request: UserCreateRequestModel){
         try{
-            return this.userService.registerEmployedUser(request);
+            return await this.userService.registerEmployedUser(request);
         }catch(error){
             this.handlePrismaError(error);
         }

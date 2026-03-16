@@ -3,13 +3,12 @@ import { Reflector } from '@nestjs/core';
 import { UserRole } from '../../user/enums/UserRole.enum';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 import { UserJwtPayloadModel } from '../models/user-jwt-payload.model';
-import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
     constructor(
-        private reflector: Reflector,
+        private readonly reflector: Reflector,
         private readonly jwtService: JwtService
     ) {}
     hasRole(roles: UserRole[], user: UserJwtPayloadModel) {
