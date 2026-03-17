@@ -47,8 +47,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     loading = signal(true);
     connectionLost = signal(false);
     lowStockProducts = signal<LowStockProduct[]>([]);
-    async ngOnInit() {
-        await this.loadDashboardData();
+    ngOnInit() {
+        this.loadDashboardData();
     }
     ngAfterViewInit() {
         this.applyCurrentThemeToCharts();
