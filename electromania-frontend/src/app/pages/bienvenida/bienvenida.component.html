@@ -24,7 +24,7 @@
   <div class="container">
     @if (productosOferta().length > 0) {
     <div class="flag-oferta-wrapper">
-      <div class="flag-diseno" (click)="toggleOfertas()" (keyup.enter)="toggleOfertas()" tabindex="0"
+      <button type="button" class="flag-diseno" (click)="toggleOfertas()"
         [class.active]="ofertasAbiertas()" [title]="(ofertasAbiertas() ? 'WELCOME.HIDE_OFFERS' : 'WELCOME.SHOW_OFFERS') | translate">
         <span class="punto-pulso"></span>
         <span class="flag-texto">
@@ -47,7 +47,7 @@
             </svg>
           }
         </span>
-      </div>
+      </button>
       <div class="carrusel-oferta" [class.mostrar]="ofertasAbiertas()">
         <div class="grid-productos fade-edges" #ofertasList appDraggableScroll>
           @for (producto of productosOferta(); track producto.product_id) {
