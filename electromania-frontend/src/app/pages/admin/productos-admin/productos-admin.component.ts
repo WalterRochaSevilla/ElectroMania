@@ -46,8 +46,8 @@ export class ProductosAdminComponent implements OnInit {
     stockBajoCount = signal(0);
     paginatedProducts = signal<ProductDisplay[]>([]);
     exportMenuOpen = signal(false);
-    async ngOnInit() {
-        await this.cargarProductos();
+    ngOnInit() {
+        this.cargarProductos();
     }
     async cargarProductos() {
         this.loading.set(true);
