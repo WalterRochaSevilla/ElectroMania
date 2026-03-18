@@ -44,8 +44,8 @@ export class PedidosComponent implements OnInit, OnDestroy {
             { value: 'CANCELED', label: this.languageService.instant('ORDERS.STATUS_CANCELED') }
         ];
     }
-    async ngOnInit() {
-        await this.loadOrders();
+    ngOnInit() {
+        this.loadOrders();
         this.setupWebSocket();
     }
 

@@ -540,8 +540,8 @@ export class ProductFormModalComponent implements OnChanges, OnInit, OnDestroy {
     isDragOver = false;
     imagePreview: string | null = null;
     selectedExistingImage: string | null = null;
-    async ngOnInit() {
-        await this.loadCategories();
+    ngOnInit() {
+        this.loadCategories();
     }
     ngOnDestroy() {
         document.body.style.overflow = '';

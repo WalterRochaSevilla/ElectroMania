@@ -32,8 +32,8 @@ export class UsuariosAdminComponent implements OnInit {
     usuarios = signal<UserDisplay[]>([]);
     usuariosFiltrados = signal<UserDisplay[]>([]);
     private rawUsers: User[] = [];
-    async ngOnInit() {
-        await this.cargarUsuarios();
+    ngOnInit() {
+        this.cargarUsuarios();
     }
     async cargarUsuarios() {
         this.loading.set(true);
