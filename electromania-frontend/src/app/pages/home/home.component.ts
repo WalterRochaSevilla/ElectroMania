@@ -53,9 +53,9 @@ export class HomeComponent implements OnInit {
             this.precioSeleccionado !== '' ||
             this.disponibilidadSeleccionada !== '';
     }
-    async ngOnInit() {
+    ngOnInit() {
         this.cargarFiltrosGuardados();
-        await this.cargarProductos();
+        this.cargarProductos();
         this.cargarCategorias();
     }
     async cargarProductos() {
