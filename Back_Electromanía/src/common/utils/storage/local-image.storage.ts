@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ImageStorage } from './image-storage.interface';
-import { join, parse } from 'path';
+import { join, parse } from 'node:path';
 import config from '../../../config/Configuration';
 import * as sharp from 'sharp';
-import { promises as fs } from 'fs';
+import { promises as fs } from 'node:fs';
 
 @Injectable()
 export class LocalImageStorage implements ImageStorage {

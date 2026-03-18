@@ -1,7 +1,4 @@
-import { access } from "fs";
-import { parse } from "path";
-
-export default () => ({
+const configuration = () => ({
     port: process.env.PORT || 3000,
     storage : {
         driver: process.env.STORAGE_DRIVER
@@ -16,7 +13,7 @@ export default () => ({
         syncronize: process.env.DATABASE_STYNCHRONIZE
     },
     bcrypt:{
-        saltRounds: parseInt(process.env.BCRYPT_SALT_ROUNDS || '10')
+        saltRounds: Number.parseInt(process.env.BCRYPT_SALT_ROUNDS || '10')
     },
     jwtConstants:{
         secret: process.env.JWT_SECRET,
@@ -55,4 +52,5 @@ export default () => ({
     gotenberg:{
         url: process.env.GOTENBERG_URL || "http://localhost:3001"
     }
-})
+});
+export default configuration;

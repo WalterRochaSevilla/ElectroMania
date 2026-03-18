@@ -1,8 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { PrismaService } from '../../prisma/service/prisma.service';
 import { AuthService } from '../../auth/service/auth.service';
-import { ProductService } from '../../product/service/product.service';
-import { CartService } from "../service/cart.service";
 import { UpdateCartDetailDto } from "../dto/update-cart-detail.dto";
 import { IncreaseQuantityUseCase } from "./increase-quantity.use-case";
 import { DecreaseQuantityUseCase } from "./decrease-quantity.use-case";

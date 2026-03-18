@@ -17,19 +17,19 @@ export class DecreaseQuantityUseCase {
       private readonly removeProductFromCartUseCase: RemoveProductFromCartUseCase
     ){}
     async execute(uuid: string, request:UpdateCartDetailDto, tx?:Prisma.TransactionClient) {
-      const prisma = tx? tx : this.prisma
+
       let activeCart = await this.cartService.getActiveCartByUser(uuid, tx);
       if(!activeCart) {
         throw new ForbiddenException('Cart not found');
       }
       const detail = await this.cartService.getCartDetailByCartAndProduct(activeCart.id, request.productId, tx);
-      if(!detail){
-        throw new ForbiddenException('Product not found in cart');
-      }else{
+      if(detail){
         if(detail.quantity < request.quantity){
           return this.removeProductFromCartUseCase.execute(uuid,request, tx);
         }
         await this.cartService.decreaseQuantity(detail.id, request, tx);
+      }else{
+        throw new ForbiddenException('Product not found in cart');
       }
       await this.productService.releaseReservedStock(request.productId, request.quantity, tx);
       return true

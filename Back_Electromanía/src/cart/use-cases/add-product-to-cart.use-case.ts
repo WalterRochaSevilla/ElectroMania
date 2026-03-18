@@ -1,6 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { PrismaService } from '../../prisma/service/prisma.service';
-import { AuthService } from '../../auth/service/auth.service';
 import { ProductService } from '../../product/service/product.service';
 import { AddProductToCartRequestDto } from "../dto/addProductToCartRequest.dto";
 import { CartService } from '../service/cart.service';
@@ -27,9 +26,8 @@ export class AddProductToCartUseCase {
     return this.prisma.$transaction(async (tx) => {
       let activeCart = await this.getActiceCartUseCase.execute(userUuid,tx);
       if(!activeCart) {
-        activeCart = await this.cartService.createCart(userUuid, tx);
+        await this.cartService.createCart(userUuid, tx);
       }
-      const detail = await this.cartService.getCartDetailByCartAndProduct(activeCart.id,addProductRequest.productId)
       await this.increaseQuantityUseCase.execute(userUuid,addProductRequest,tx);
       return await this.getActiceCartUseCase.execute(userUuid,tx);
     })

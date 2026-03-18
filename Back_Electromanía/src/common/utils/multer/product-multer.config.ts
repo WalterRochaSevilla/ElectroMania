@@ -1,4 +1,4 @@
-import { extname, join } from 'path';
+import { extname, join } from 'node:path';
 import { BadRequestException } from '@nestjs/common';
 import { diskStorage } from 'multer';
 import { randomUUID } from 'node:crypto';

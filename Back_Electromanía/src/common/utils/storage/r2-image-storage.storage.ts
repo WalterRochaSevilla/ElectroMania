@@ -2,8 +2,8 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { ImageStorage } from './image-storage.interface';
 import * as sharp from 'sharp';
-import { unlink } from 'fs/promises';
-import { join, parse } from 'path';
+import { unlink } from 'node:fs/promises';
+import { join, parse } from 'node:path';
 import config from '../../../config/Configuration';
 import { randomBytes } from 'node:crypto';
 
@@ -88,7 +88,7 @@ export class R2ImageStorage implements ImageStorage {
   }
 
   private getOptimizedPath(originalPath: string): string {
-    const { dir, name, ext } = parse(originalPath);
+    const { dir, name } = parse(originalPath);
     const timestamp = Date.now();
     const random = randomBytes(16).toString('hex');
     return join(dir, `${name}-${timestamp}-${random}.webp`);

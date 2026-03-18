@@ -16,7 +16,7 @@ import { MailService } from './service/mail.service';
         return {
           transport: {
             host,
-            port: parseInt(port || '587'),
+            port: Number.parseInt(port || '587'),
             secure: true,
             auth: {
               user,

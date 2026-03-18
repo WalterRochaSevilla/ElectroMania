@@ -3,7 +3,7 @@ import { PdfMaker } from "./pdf-maker.interface";
 import * as pdfMake from 'pdfmake';
 import { OrderReceiptModel } from "../../../order/models/order-response.model";
 import { BillReport } from "./documents/bill-report.document";
-import * as path from 'path';
+import * as path from 'node:path';
 
 const fonts = {
     Roboto: {

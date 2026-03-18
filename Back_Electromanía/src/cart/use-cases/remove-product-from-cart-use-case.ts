@@ -2,7 +2,6 @@ import { ForbiddenException, Injectable } from "@nestjs/common";
 import { CartService } from "../service/cart.service";
 import { ProductService } from '../../product/service/product.service';
 import { Prisma } from "@prisma/client";
-import { UpdateCartDetailDto } from "../dto/update-cart-detail.dto";
 import { DeleteProductFromCartDto } from "../dto/delete-product-from-cart.dto";
 import { GetActiveCartUseCase } from "./get-active-cart.use-case";
 

@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import Configuration from 'src/config/Configuration';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import * as generatePassword from 'generate-password';
 
 @Injectable()
 export class PasswordService {
-    constructor(private config: ConfigService) {
+    constructor(private readonly config: ConfigService) {
 
     }
     async hashPassword(password: string): Promise<string> {
