@@ -29,8 +29,8 @@ export class MisPedidosComponent implements OnInit, OnDestroy {
     receiptLoading = signal(false);
     receiptReady = signal(false);
     currentReceiptOrderId = signal<number | null>(null);
-    async ngOnInit() {
-        await this.loadOrders();
+    ngOnInit() {
+        this.loadOrders();
     }
     ngOnDestroy(): void {
         this.unlockBodyScroll();

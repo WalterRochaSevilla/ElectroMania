@@ -24,8 +24,8 @@ export class PerfilComponent implements OnInit {
     user = signal<UserProfile | null>(null);
     loading = signal(true);
     isAdminRole = isAdminRole;
-    async ngOnInit() {
-        await this.loadProfile();
+    ngOnInit() {
+        this.loadProfile();
     }
     async loadProfile() {
         this.loading.set(true);

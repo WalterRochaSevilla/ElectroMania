@@ -27,9 +27,9 @@ export class BienvenidaComponent implements OnInit, AfterViewInit {
     loading = signal(false);
     productosDestacados = signal<ProductCard[]>([]);
     productosOferta = signal<ProductCard[]>([]);
-    async ngOnInit() {
+    ngOnInit() {
         this.checkBackgroundImage();
-        await this.cargarProductos();
+        this.cargarProductos();
     }
     ngAfterViewInit() {
         setTimeout(() => {

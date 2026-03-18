@@ -44,11 +44,11 @@ export class DetalleProductoComponent implements OnInit {
     idRecibido: string | null = null;
     loading = signal(false);
     producto = signal<ProductDetail | null>(null);
-    async ngOnInit() {
+    ngOnInit() {
         const idParam = this.route.snapshot.paramMap.get('id');
         if (idParam) {
             this.idRecibido = idParam;
-            await this.cargarDatosDelProducto(parseInt(idParam));
+            this.cargarDatosDelProducto(Number.parseInt(idParam));
         }
     }
     async cargarDatosDelProducto(id: number) {
